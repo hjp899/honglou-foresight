@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>红楼伏笔 — 结构化探佚推理系统</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#faf7f2;--panel:#fff;--border:#e5dfd5;--text:#2c2416;--text2:#6b5e4a;--text3:#9b8c78;--accent:#8b2500;--accent-light:#f5ede4;--gold:#b8860b;--green:#2d6a4f;--red:#c1121f;--blue:#1d3557;--radius:6px;--serif:'Noto Serif SC','SimSun','STSong',serif;--mono:'IBM Plex Mono','Courier New',monospace}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--serif);background:var(--bg);color:var(--text);line-height:1.7}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+.app{max-width:1200px;margin:0 auto;padding:0 20px}
+.header{padding:48px 0 32px;text-align:center;border-bottom:2px solid var(--accent);margin-bottom:32px}
+.header h1{font-size:32px;font-weight:700;letter-spacing:2px;margin-bottom:8px}
+.header .subtitle{color:var(--text2);font-size:16px}
+.badge-row{margin-top:12px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.badge{display:inline-block;padding:4px 12px;border:1px solid var(--border);border-radius:20px;font-size:12px;color:var(--text2);font-family:var(--mono)}
+.nav{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:24px;overflow-x:auto}
+.nav-btn{padding:10px 20px;border:none;background:none;font-family:var(--serif);font-size:15px;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s}
+.nav-btn:hover{color:var(--accent)}.nav-btn.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
+.panel{display:none}.panel.active{display:block}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px;transition:box-shadow .2s}
+.card:hover{box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.card-title{font-size:17px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.card-body{font-size:15px}
+.fate-card{border-left:4px solid var(--accent);padding-left:16px}
+.confidence{display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:600}
+.c-确定{background:#d4edda;color:var(--green)}.c-极有可能{background:#fff3cd;color:#856404}
+.c-有可能{background:#e2e3e5;color:#383d41}.c-存疑{background:#f8d7da;color:var(--red)}
+.evidence-list{margin-top:12px}
+.evidence-item{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid #f0ebe0;font-size:14px}
+.evidence-item:last-child{border-bottom:none}
+.evidence-type{font-size:11px;padding:1px 6px;border-radius:2px;white-space:nowrap;font-family:var(--mono)}
+.et-脂批直接提示{background:#d4edda;color:var(--green)}.et-判词谶语{background:#e8d5f5;color:#6b2fa0}
+.et-文本伏笔{background:#cce5ff;color:var(--blue)}.et-其他{background:#e2e3e5;color:#383d41}
+.evidence-ref{color:var(--accent);font-family:var(--mono);font-size:12px;white-space:nowrap}
+.detail-toggle{cursor:pointer;color:var(--accent);font-size:13px;margin-top:8px;display:inline-block}
+.detail-content{display:none;margin-top:8px;padding:12px;background:var(--accent-light);border-radius:var(--radius);font-size:14px;line-height:1.8}
+.detail-content.open{display:block}
+.fs-card .fs-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.fs-card .fs-chapter{font-size:13px;color:var(--text3);font-family:var(--mono)}
+.fs-card .fs-content{font-size:15px;line-height:1.9;margin-bottom:8px;padding:8px 12px;background:var(--accent-light);border-radius:var(--radius)}
+.fs-card .fs-context{font-size:14px;color:var(--text2)}
+.timeline{position:relative;padding-left:30px}
+.timeline::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:2px;background:var(--border)}
+.timeline-item{position:relative;margin-bottom:28px}
+.timeline-item::before{content:'';position:absolute;left:-24px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--accent);border:2px solid var(--bg)}
+.timeline-item .tl-chapter{font-family:var(--mono);font-size:13px;color:var(--accent);font-weight:600}
+.timeline-item .tl-title{font-size:16px;font-weight:700}
+.timeline-item .tl-desc{font-size:14px;color:var(--text2);margin-top:4px;line-height:1.8}
+.constraint-item{display:flex;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid #f0ebe0;font-size:14px}
+.constraint-item .arrow{color:var(--gold);font-weight:700;white-space:nowrap}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:24px}
+.stat-box{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center}
+.stat-box .stat-num{font-size:36px;font-weight:700;color:var(--accent);font-family:var(--mono)}
+.stat-box .stat-label{font-size:13px;color:var(--text3);margin-top:4px}
+.search-bar{margin-bottom:20px}
+.search-bar input{width:100%;padding:12px 16px;border:1px solid var(--border);border-radius:var(--radius);font-family:var(--serif);font-size:15px;background:var(--panel);color:var(--text);outline:none}
+.search-bar input:focus{border-color:var(--accent)}
+.filter-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.filter-chip{padding:6px 14px;border:1px solid var(--border);border-radius:20px;font-size:13px;cursor:pointer;transition:all .2s;background:var(--panel);color:var(--text2)}
+.filter-chip:hover{border-color:var(--accent);color:var(--accent)}
+.filter-chip.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.footer{padding:40px 0 24px;text-align:center;color:var(--text3);font-size:13px;border-top:1px solid var(--border);margin-top:40px}
+@media(max-width:768px){.header h1{font-size:24px}.nav-btn{padding:8px 12px;font-size:13px}}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="header">
+<h1>🏮 红楼伏笔</h1>
+<p class="subtitle">《红楼梦》结构化探佚推理系统 — 伏笔·脂批·约束·推理</p>
+<div class="badge-row">
+<span class="badge">60条伏笔</span><span class="badge">29个人物</span><span class="badge">40条约束</span><span class="badge">22个事件</span><span class="badge">15个页面</span><span class="badge">开源协作</span>
+</div>
+</div>
+
+<div class="nav" id="nav">
+<button class="nav-btn active" data-panel="overview">概览</button>
+<button class="nav-btn" data-panel="characters">人物结局</button>
+<button class="nav-btn" data-panel="foreshadowing">伏笔索引</button>
+<button class="nav-btn" data-panel="constraints">约束图</button>
+<button class="nav-btn" data-panel="timeline">事件时间线</button>
+</div>
+
+<div class="panel active" id="panel-overview">
+<div class="stats-grid">
+<div class="stat-box"><div class="stat-num" id="stat-fs">60</div><div class="stat-label">结构化伏笔</div></div>
+<div class="stat-box"><div class="stat-num" id="stat-chars">29</div><div class="stat-label">人物结局</div></div>
+<div class="stat-box"><div class="stat-num" id="stat-cst">40</div><div class="stat-label">逻辑约束</div></div>
+<div class="stat-box"><div class="stat-num" id="stat-evt">22</div><div class="stat-label">重建事件</div></div>
+</div>
+
+<div class="card">
+<div class="card-title">关于这个项目</div>
+<div class="card-body">
+<p style="margin-bottom:12px"><b>开源的结构化探佚推理系统</b>。把曹雪芹在前80回中埋下的每一条伏笔、脂砚斋留下的每一条批语、红学家数十年的探佚成果转化为可计算、可验证、可追溯的数据。</p>
+<p style="margin-bottom:12px">核心假设：曹雪芹已写完《红楼梦》全书（110回），后30回因借阅者"迷失"而佚失。但大量伏笔和脂批提供了足够的约束条件——这些约束本质上定义了一个逻辑推理问题。</p>
+<p>与 MiroFish（多智能体社会仿真）和 OpenStory（角色沙盒演化）不同，本项目走证据链路线：逐条伏笔 → 约束图 → 逻辑传播 → 一致性验证。</p>
+</div>
+</div>
+
+<div class="card">
+<div class="card-title">🔬 核心方法</div>
+<div class="card-body">
+<ol style="padding-left:20px;line-height:2.2">
+<li><b>伏笔结构化</b> — 将前80回中的每一条伏笔与脂批按统一格式录入</li>
+<li><b>约束图构建</b> — 建立伏笔间的逻辑关系：必然导致、支持、矛盾/互斥、时间顺序、因果依赖</li>
+<li><b>约束传播</b> — 给定一条伏笔为真，自动传播其对其他伏笔/结局的影响</li>
+<li><b>一致性验证</b> — 检查一组结局假设是否与所有已知约束兼容</li>
+<li><b>拓扑排序</b> — 基于时间顺序约束对事件进行排序，重建后三十回的事件序列</li>
+</ol>
+</div>
+</div>
+
+<div class="card">
+<div class="card-title">📖 快速入口</div>
+<div class="card-body" style="line-height:2.2">
+<p>📊 <a href="results.html">探佚成果页</a> — 后三十回共识推演（实时更新）</p>
+<p>🕸️ <a href="relationship-graph.html">十二钗命运网络</a> — D3.js 力导向关系图谱</p>
+<p>👤 <a href="character-lin-daiyu.html">林黛玉 · 人物详页</a> — 精装版证据链展示（其余11人从顶部导航进入）</p>
+<p>📖 <a href="https://github.com/hjp899/honglou-meng-foreshadowing">GitHub 仓库</a> — 完整源码 + 数据文件</p>
+</div>
+</div>
+</div>
+
+<div class="panel" id="panel-characters">
+<div class="search-bar"><input type="text" id="charSearch" placeholder="搜索人物..."></div>
+<div class="filter-row" id="charFilters">
+<span class="filter-chip active" data-filter="all">全部</span>
+<span class="filter-chip" data-filter="核心">十二钗正册</span>
+<span class="filter-chip" data-filter="重要">副册/又副册</span>
+<span class="filter-chip" data-filter="次要">重要配角</span>
+</div>
+<div id="charList"></div>
+</div>
+
+<div class="panel" id="panel-foreshadowing">
+<div class="search-bar"><input type="text" id="fsSearch" placeholder="搜索伏笔内容或回目..."></div>
+<div class="filter-row" id="fsFilters">
+<span class="filter-chip active" data-filter="all">全部</span>
+<span class="filter-chip" data-filter="确定">确定</span>
+<span class="filter-chip" data-filter="极有可能">极有可能</span>
+<span class="filter-chip" data-filter="脂批直接提示">脂批直接提示</span>
+</div>
+<div id="fsList"></div>
+</div>
+
+<div class="panel" id="panel-constraints">
+<div class="card"><div class="card-title">五种约束类型</div>
+<div class="card-body" style="font-size:14px;line-height:2">
+<p>🔗 <b>必然导致</b> · ✅ <b>支持</b> · ❌ <b>矛盾/互斥</b> · ⏱️ <b>时间顺序</b> · 🔀 <b>因果依赖</b></p>
+</div></div>
+<div id="cstList"></div>
+</div>
+
+<div class="panel" id="panel-timeline">
+<div class="card"><div class="card-title">后三十回事件时间线（基于约束推导）</div>
+<div class="card-body" style="font-size:14px;color:var(--text2)">基于时间顺序约束和因果依赖关系的拓扑排序结果。回目数字为探佚推算，仅供参考排序。</div></div>
+<div class="timeline" id="tlList"></div>
+</div>
+
+<div class="footer">
+红楼伏笔 · 开源结构化探佚推理系统 · 数据基于前80回原文 + 脂砚斋批语 + 红学探佚学研究成果 · 欢迎参与贡献
+</div>
+</div>
+
+<script>
+let characters=[],foreshadowings=[],constraints=[],events=[];
+async function loadData(){
+  try{
+    const bs='data/';
+    const[cR,fR,csR,eR]=await Promise.all([fetch(bs+'characters.json'),fetch(bs+'foreshadowing.json'),fetch(bs+'constraints.json'),fetch(bs+'events.json')]);
+    const cD=await cR.json(),fD=await fR.json(),csD=await csR.json(),eD=await eR.json();
+    characters=cD.characters||[];foreshadowings=fD.foreshadowings||[];constraints=csD.constraints||[];events=eD.events||[];
+    try{const c2=await fetch(bs+'characters_batch2.json');characters=characters.concat(await c2.json());}catch(_){}
+    try{const f2=await fetch(bs+'foreshadowing_batch2.json');foreshadowings=foreshadowings.concat(await f2.json());}catch(_){}
+    try{const cs2=await fetch(bs+'constraints_batch2.json');constraints=constraints.concat(await cs2.json());}catch(_){}
+    try{const e2=await fetch(bs+'events_batch2.json');events=events.concat(await e2.json());}catch(_){}
+    document.getElementById('stat-fs').textContent=foreshadowings.length;
+    document.getElementById('stat-chars').textContent=characters.length;
+    document.getElementById('stat-cst').textContent=constraints.length;
+    document.getElementById('stat-evt').textContent=events.length;
+    renderAll();
+  }catch(e){console.error(e);document.querySelectorAll('.panel').forEach(p=>p.innerHTML='<div style="padding:40px;text-align:center;color:#9b8c78">数据加载中...请确保通过 GitHub Pages 或本地服务器打开此页面。</div>');}
+}
+document.getElementById('nav').addEventListener('click',e=>{
+  const btn=e.target.closest('.nav-btn');if(!btn)return;
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+btn.dataset.panel).classList.add('active');
+});
+
+function renderCharacters(filter='all',search=''){
+  const c=document.getElementById('charList');let f=characters;
+  if(filter!=='all')f=f.filter(c=>c.significance===filter);
+  if(search){const s=search.toLowerCase();f=f.filter(c=>c.name.includes(s)||c.alias.some(a=>a.includes(s))||c.fateSummary.includes(s));}
+  if(!f.length){c.innerHTML='<div style="padding:40px;text-align:center;color:#9b8c78">没有找到匹配的人物</div>';return;}
+  c.innerHTML=f.map(ch=>{
+    const sig={'核心':'十二钗正册','重要':'副册/又副册','次要':'重要配角','边缘':'边缘人物'};
+    let html='<div class="card fate-card"><div class="card-title">'+ch.name+' <span style="font-size:12px;color:var(--text3);font-weight:400">'+(ch.alias||[]).slice(0,2).join(' / ')+'</span> <span class="confidence c-'+ch.confidence+'">'+ch.confidence+'</span> <span style="font-size:11px;color:var(--text3)">'+(sig[ch.significance]||ch.significance)+'</span></div><div class="card-body"><p style="font-weight:600;margin-bottom:4px">'+ch.fateSummary+'</p><p style="font-size:14px;color:var(--text2)">'+(ch.fateDetail||'')+'</p>';
+    if(ch.supportingForeshadowings&&ch.supportingForeshadowings.length){
+      html+='<div class="evidence-list"><div style="font-size:14px;font-weight:600;margin-top:8px;color:var(--text2)">支持证据</div>';
+      for(const fid of ch.supportingForeshadowings.slice(0,4)){const fs=foreshadowings.find(f=>f.id===fid);if(fs)html+='<div class="evidence-item"><span class="evidence-type et-'+fs.evidenceType+'">'+fs.evidenceType+'</span><span class="evidence-ref">'+fs.id+'</span><span>'+(fs.content.length>60?fs.content.slice(0,60)+'...':fs.content)+'</span></div>';}
+      html+='</div>';
+    }
+    return html+'</div></div>';
+  }).join('');
+}
+document.getElementById('charSearch').addEventListener('input',e=>{const af=document.querySelector('#charFilters .filter-chip.active')?.dataset.filter||'all';renderCharacters(af,e.target.value);});
+document.getElementById('charFilters').addEventListener('click',e=>{const chip=e.target.closest('.filter-chip');if(!chip)return;document.querySelectorAll('#charFilters .filter-chip').forEach(c=>c.classList.remove('active'));chip.classList.add('active');renderCharacters(chip.dataset.filter,document.getElementById('charSearch').value);});
+
+function renderForeshadowing(filter='all',search=''){
+  const c=document.getElementById('fsList');let f=foreshadowings;
+  if(filter!=='all'){if(['确定','极有可能','有可能','存疑'].includes(filter))f=f.filter(fs=>fs.confidence===filter);else f=f.filter(fs=>fs.evidenceType===filter);}
+  if(search){const s=search.toLowerCase();f=f.filter(fs=>fs.content.includes(s)||fs.context.includes(s)||fs.id.includes(s.toUpperCase())||String(fs.chapter).includes(s));}
+  if(!f.length){c.innerHTML='<div style="padding:40px;text-align:center;color:#9b8c78">没有找到匹配的伏笔</div>';return;}
+  f.sort((a,b)=>a.chapter-b.chapter);
+  c.innerHTML=f.map(fs=>'<div class="card fs-card"><div class="fs-header"><div style="display:flex;gap:8px;align-items:center"><span class="fs-chapter">第'+fs.chapter+'回</span><span class="confidence c-'+fs.confidence+'">'+fs.confidence+'</span></div><span class="evidence-ref">'+fs.id+'</span></div><div class="fs-content">「'+fs.content+'」</div><div class="fs-context">'+fs.context+'</div><div style="margin-top:8px;font-size:12px;color:var(--text3)">来源：'+(fs.source||'—')+' | 关联人物：'+(fs.relatedCharacters||[]).map(c=>c.name).join('、')+' | 关联事件：'+(fs.relatedEvents||[]).map(e=>e.name).join('、')+'</div></div>').join('');
+}
+document.getElementById('fsSearch').addEventListener('input',e=>{const af=document.querySelector('#fsFilters .filter-chip.active')?.dataset.filter||'all';renderForeshadowing(af,e.target.value);});
+document.getElementById('fsFilters').addEventListener('click',e=>{const chip=e.target.closest('.filter-chip');if(!chip)return;document.querySelectorAll('#fsFilters .filter-chip').forEach(c=>c.classList.remove('active'));chip.classList.add('active');renderForeshadowing(chip.dataset.filter,document.getElementById('fsSearch').value);});
+
+function renderConstraints(){
+  const c=document.getElementById('cstList');if(!constraints.length){c.innerHTML='<div style="padding:40px;text-align:center;color:#9b8c78">暂无约束数据</div>';return;}
+  const tm={'必然导致':'🔗','支持':'✅','矛盾/互斥':'❌','时间顺序约束':'⏱️','因果依赖':'🔀'};
+  c.innerHTML=constraints.map(cst=>{
+    const fsSource=foreshadowings.find(f=>f.id===cst.sourceForeshadowing);
+    return '<div class="constraint-item"><span style="font-size:18px">'+(tm[cst.type]||'?')+'</span><span style="font-weight:600;font-size:12px;color:var(--accent);white-space:nowrap">'+cst.type+'</span><span style="font-size:13px">'+(fsSource?fsSource.content.slice(0,30)+'...':cst.sourceForeshadowing)+'</span><span class="arrow">→</span><span style="font-size:13px;color:var(--blue)">'+cst.targetForeshadowingOrFate+'</span><span style="font-size:11px;padding:2px 6px;background:#f0ebe0;border-radius:3px">'+(cst.strength||'')+'</span><span style="font-size:12px;color:var(--text3);flex:1">'+cst.rationale.slice(0,80)+'</span></div>';
+  }).join('');
+}
+
+function renderTimeline(){
+  const c=document.getElementById('tlList');if(!events.length){c.innerHTML='<div style="padding:40px;text-align:center;color:#9b8c78">暂无事件数据</div>';return;}
+  const sorted=[...events].sort((a,b)=>(a.chapter||999)-(b.chapter||999));
+  c.innerHTML=sorted.map(evt=>{
+    const charNames=(evt.characters||[]).map(cid=>{const ch=characters.find(c=>c.id===cid);return ch?ch.name:cid;}).join(' · ');
+    return '<div class="timeline-item"><div class="tl-header"><span class="tl-chapter">第'+evt.chapter+'回</span><span class="tl-title">'+evt.title+'</span><span class="confidence c-'+evt.confidence+'">'+evt.confidence+'</span></div><div class="tl-desc">'+evt.description+'</div><div style="font-size:12px;color:var(--text3);margin-top:4px">👥 '+(charNames||'—')+'</div></div>';
+  }).join('');
+}
+
+function renderAll(){renderCharacters();renderForeshadowing();renderConstraints();renderTimeline();}
+loadData();
+</script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+{
+  "_comment": "合作者填写此模板。引擎自动代入RACS公式计算该学者的综合权威权重。仅需提供学者信息，无需自行打分。",
+
+  "scholar_name": "",
+  "scholar_name_zh": "",
+  "bio_summary": "",
+
+  "works": [
+    {
+      "title": "",
+      "type": "专著",
+      "publisher_or_journal": "",
+      "year": 0,
+      "isbn_or_issn": "",
+      "description": ""
+    }
+  ],
+
+  "institutional_affiliation": {
+    "current": "",
+    "historical": [""],
+    "roles": [""]
+  },
+
+  "peer_recognition": {
+    "official_positions": [""],
+    "awards": [""],
+    "cited_by": [""],
+    "endorsed_by": [""]
+  },
+
+  "consensus_stance": {
+    "on_hou40hui": "完全否定(伪续)",
+    "on_zhipi": "基本信任(审慎采用)",
+    "on_authorship": "曹雪芹为唯一作者",
+    "major_disputed_views": [""]
+  },
+
+  "methodology_description": "",
+  "original_sources_accessed": [""],
+
+  "our_assessment": {
+    "strength": "",
+    "weakness": "",
+    "recommended_tier": "",
+    "notes": ""
+  }
+}

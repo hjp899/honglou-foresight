@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>红楼伏笔 — 结构化探佚推理系统</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #faf7f2;
+  --panel: #fff;
+  --border: #e5dfd5;
+  --text: #2c2416;
+  --text-secondary: #6b5e4a;
+  --text-muted: #9b8c78;
+  --accent: #8b2500;
+  --accent-light: #f5ede4;
+  --gold: #b8860b;
+  --green: #2d6a4f;
+  --red: #c1121f;
+  --blue: #1d3557;
+  --radius: 6px;
+  --serif: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+  --mono: 'IBM Plex Mono', 'Courier New', monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--serif);background:var(--bg);color:var(--text);line-height:1.7}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* Layout */
+.app{max-width:1200px;margin:0 auto;padding:0 20px}
+.header{padding:48px 0 32px;text-align:center;border-bottom:2px solid var(--accent);margin-bottom:32px}
+.header h1{font-size:32px;font-weight:700;letter-spacing:2px;margin-bottom:8px}
+.header .subtitle{color:var(--text-secondary);font-size:16px}
+.header .badge-row{margin-top:12px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.badge{display:inline-block;padding:4px 12px;border:1px solid var(--border);border-radius:20px;font-size:12px;color:var(--text-secondary);font-family:var(--mono)}
+
+/* Nav */
+.nav{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:24px;overflow-x:auto}
+.nav-btn{padding:10px 20px;border:none;background:none;font-family:var(--serif);font-size:15px;color:var(--text-secondary);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s}
+.nav-btn:hover{color:var(--accent)}
+.nav-btn.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
+
+/* Panels */
+.panel{display:none}
+.panel.active{display:block}
+
+/* Cards */
+.card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px;transition:box-shadow .2s}
+.card:hover{box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.card-title{font-size:17px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.card-subtitle{font-size:13px;color:var(--text-muted);margin-bottom:12px}
+.card-body{font-size:15px}
+
+/* Fate card */
+.fate-card{border-left:4px solid var(--accent);padding-left:16px}
+.fate-card .confidence{display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:600}
+.confidence.确定{background:#d4edda;color:var(--green)}
+.confidence.极有可能{background:#fff3cd;color:#856404}
+.confidence.有可能{background:#e2e3e5;color:#383d41}
+.confidence.存疑{background:#f8d7da;color:var(--red)}
+
+.evidence-list{margin-top:12px}
+.evidence-item{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid #f0ebe0;font-size:14px}
+.evidence-item:last-child{border-bottom:none}
+.evidence-type{font-size:11px;padding:1px 6px;border-radius:2px;white-space:nowrap;font-family:var(--mono)}
+.evidence-type.脂批直接提示{background:#d4edda;color:var(--green)}
+.evidence-type.判词谶语{background:#e8d5f5;color:#6b2fa0}
+.evidence-type.文本伏笔{background:#cce5ff;color:var(--blue)}
+.evidence-type.其他{background:#e2e3e5;color:#383d41}
+.evidence-ref{color:var(--accent);font-family:var(--mono);font-size:12px;white-space:nowrap}
+
+/* Detail toggle */
+.detail-toggle{cursor:pointer;color:var(--accent);font-size:13px;margin-top:8px;display:inline-block}
+.detail-content{display:none;margin-top:8px;padding:12px;background:var(--accent-light);border-radius:var(--radius);font-size:14px;line-height:1.8}
+.detail-content.open{display:block}
+
+/* FS cards */
+.fs-card .fs-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.fs-card .fs-type{font-size:11px;padding:2px 8px;border:1px solid var(--border);border-radius:3px}
+.fs-card .fs-chapter{font-size:13px;color:var(--text-muted);font-family:var(--mono)}
+.fs-card .fs-content{font-size:15px;line-height:1.9;margin-bottom:8px;padding:8px 12px;background:var(--accent-light);border-radius:var(--radius)}
+.fs-card .fs-context{font-size:14px;color:var(--text-secondary)}
+
+/* Timeline */
+.timeline{position:relative;padding-left:30px}
+.timeline::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:2px;background:var(--border)}
+.timeline-item{position:relative;margin-bottom:28px}
+.timeline-item::before{content:'';position:absolute;left:-24px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--accent);border:2px solid var(--bg)}
+.timeline-item .tl-header{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.timeline-item .tl-chapter{font-family:var(--mono);font-size:13px;color:var(--accent);font-weight:600}
+.timeline-item .tl-title{font-size:16px;font-weight:700}
+.timeline-item .tl-desc{font-size:14px;color:var(--text-secondary);margin-top:4px;line-height:1.8}
+.timeline-item .tl-basis{font-size:12px;color:var(--text-muted);margin-top:4px;font-family:var(--mono)}
+
+/* Constraint graph viz */
+.constraint-item{display:flex;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid #f0ebe0;font-size:14px}
+.constraint-item .arrow{color:var(--gold);font-weight:700;white-space:nowrap}
+.constraint-item .rationale{color:var(--text-secondary);font-size:13px}
+
+/* Stats */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:24px}
+.stat-box{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center}
+.stat-box .stat-num{font-size:36px;font-weight:700;color:var(--accent);font-family:var(--mono)}
+.stat-box .stat-label{font-size:13px;color:var(--text-muted);margin-top:4px}
+
+/* Search */
+.search-bar{margin-bottom:20px}
+.search-bar input{width:100%;padding:12px 16px;border:1px solid var(--border);border-radius:var(--radius);font-family:var(--serif);font-size:15px;background:var(--panel);color:var(--text);outline:none}
+.search-bar input:focus{border-color:var(--accent)}
+
+/* Filter */
+.filter-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.filter-chip{padding:6px 14px;border:1px solid var(--border);border-radius:20px;font-size:13px;cursor:pointer;transition:all .2s;background:var(--panel);color:var(--text-secondary)}
+.filter-chip:hover{border-color:var(--accent);color:var(--accent)}
+.filter-chip.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* Empty state */
+.empty-state{text-align:center;padding:48px 20px;color:var(--text-muted)}
+.empty-state svg{width:48px;height:48px;margin-bottom:12px;opacity:.4}
+
+/* Footer */
+.footer{padding:40px 0 24px;text-align:center;color:var(--text-muted);font-size:13px;border-top:1px solid var(--border);margin-top:40px}
+
+/* Responsive */
+@media(max-width:768px){
+  .header h1{font-size:24px}
+  .nav-btn{padding:8px 12px;font-size:13px}
+  .card{padding:14px}
+}
+
+/* Tooltip for character ref */
+.char-ref{cursor:pointer;border-bottom:1px dotted var(--accent)}
+.char-ref:hover{color:var(--accent)}
+
+/* Connection line */
+.connector{display:flex;align-items:center;gap:4px;font-family:var(--mono);font-size:12px;color:var(--text-muted)}
+.connector svg{width:16px;height:16px;opacity:.5}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="header">
+    <h1>🏮 红楼伏笔</h1>
+    <p class="subtitle">《红楼梦》结构化探佚推理系统 —— 伏笔·脂批·约束·推理</p>
+    <div class="badge-row">
+      <span class="badge">v1.0.0</span>
+      <span class="badge">前80回 + 脂批</span>
+      <span class="badge">30条伏笔</span>
+      <span class="badge">18条约束</span>
+      <span class="badge">17个重建事件</span>
+      <span class="badge">18个人物</span>
+      <span class="badge">开源协作</span>
+    </div>
+  </div>
+
+  <div class="nav" id="nav">
+    <button class="nav-btn active" data-panel="overview">概览</button>
+    <button class="nav-btn" data-panel="characters">人物结局</button>
+    <button class="nav-btn" data-panel="foreshadowing">伏笔索引</button>
+    <button class="nav-btn" data-panel="constraints">约束图</button>
+    <button class="nav-btn" data-panel="timeline">事件时间线</button>
+    <button class="nav-btn" data-panel="contribute">参与贡献</button>
+  </div>
+
+  <!-- ============ 概览 ============ -->
+  <div class="panel active" id="panel-overview">
+    <div class="stats-grid">
+      <div class="stat-box"><div class="stat-num" id="stat-fs">30</div><div class="stat-label">结构化伏笔</div></div>
+      <div class="stat-box"><div class="stat-num" id="stat-chars">18</div><div class="stat-label">人物结局</div></div>
+      <div class="stat-box"><div class="stat-num" id="stat-cst">18</div><div class="stat-label">逻辑约束</div></div>
+      <div class="stat-box"><div class="stat-num" id="stat-evt">17</div><div class="stat-label">重建事件</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">关于这个项目</div>
+      <div class="card-body">
+        <p style="margin-bottom:12px">这是一个<b>开源的结构化探佚推理系统</b>。不同于用大语言模型直接"续写"红楼梦结局，我们做的是把曹雪芹在前80回中埋下的<b>每一条伏笔</b>、脂砚斋留下的<b>每一条批语提示</b>、红学家们<b>数十年的探佚成果</b>，转化为<b>可计算、可验证、可追溯的数据</b>。</p>
+        <p style="margin-bottom:12px">核心假设是：<b>曹雪芹已经写完了《红楼梦》全书</b>（110回），后30回因借阅者"迷失"而佚失。但大量伏笔和脂批提供了足够的约束条件，这些约束本质上定义了一个<b>逻辑推理问题</b>——哪些结局组合是逻辑一致的，哪些是矛盾的？</p>
+        <p>与 <b>MiroFish</b>（多智能体社会仿真）和 <b>OpenStory</b>（角色沙盒演化）不同，本项目走的是<b>证据链路线</b>：逐条伏笔 → 约束图 → 逻辑传播 → 一致性验证。</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🔬 核心方法</div>
+      <div class="card-body">
+        <ol style="padding-left:20px;line-height:2.2">
+          <li><b>伏笔结构化</b>：将前80回中的每一条伏笔与脂批按统一格式录入（回目、类型、置信度、关联人物、关联事件）</li>
+          <li><b>约束图构建</b>：建立伏笔之间的逻辑关系——必然导致、支持、矛盾/互斥、时间顺序、因果依赖</li>
+          <li><b>约束传播</b>：给定一条伏笔为真，自动传播其对其他伏笔/结局的影响</li>
+          <li><b>一致性验证</b>：检查一组结局假设是否与所有已知约束兼容，发现矛盾</li>
+          <li><b>拓扑排序</b>：基于时间顺序约束对事件进行排序，重建后三十回的事件序列</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📖 与已有项目的互补关系</div>
+      <div class="card-body">
+        <table style="width:100%;font-size:14px;border-collapse:collapse;margin-top:8px">
+          <tr style="border-bottom:1px solid var(--border)">
+            <th style="text-align:left;padding:8px">项目</th><th style="text-align:left;padding:8px">方法</th><th style="text-align:left;padding:8px">本项目的补充价值</th>
+          </tr>
+          <tr style="border-bottom:1px solid #f0ebe0">
+            <td style="padding:8px">MiroFish</td><td style="padding:8px">多智能体仿真</td><td style="padding:8px">提供结构化伏笔库作为Agent的行为约束</td>
+          </tr>
+          <tr style="border-bottom:1px solid #f0ebe0">
+            <td style="padding:8px">OpenStory</td><td style="padding:8px">角色沙盒演化</td><td style="padding:8px">提供人物命运"必然后果"的约束注入</td>
+          </tr>
+          <tr style="border-bottom:1px solid #f0ebe0">
+            <td style="padding:8px">GraphRAG红学</td><td style="padding:8px">知识图谱问答</td><td style="padding:8px">提供高质量的结构化节点和边</td>
+          </tr>
+          <tr><td style="padding:8px">大模型续写</td><td style="padding:8px">文本生成</td><td style="padding:8px">提供事实性约束防止幻觉和前后矛盾</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 人物结局 ============ -->
+  <div class="panel" id="panel-characters">
+    <div class="search-bar"><input type="text" id="charSearch" placeholder="搜索人物..."></div>
+    <div class="filter-row" id="charFilters">
+      <span class="filter-chip active" data-filter="all">全部</span>
+      <span class="filter-chip" data-filter="核心">十二钗正册</span>
+      <span class="filter-chip" data-filter="重要">副册/又副册</span>
+      <span class="filter-chip" data-filter="次要">重要配角</span>
+    </div>
+    <div id="charList"></div>
+  </div>
+
+  <!-- ============ 伏笔索引 ============ -->
+  <div class="panel" id="panel-foreshadowing">
+    <div class="search-bar"><input type="text" id="fsSearch" placeholder="搜索伏笔内容或回目..."></div>
+    <div class="filter-row" id="fsFilters">
+      <span class="filter-chip active" data-filter="all">全部</span>
+      <span class="filter-chip" data-filter="确定">确定</span>
+      <span class="filter-chip" data-filter="极有可能">极有可能</span>
+      <span class="filter-chip" data-filter="有可能">有可能</span>
+      <span class="filter-chip" data-filter="脂批直接提示">脂批直接提示</span>
+      <span class="filter-chip" data-filter="判词/谶语">判词/谶语</span>
+    </div>
+    <div id="fsList"></div>
+  </div>
+
+  <!-- ============ 约束图 ============ -->
+  <div class="panel" id="panel-constraints">
+    <div class="card">
+      <div class="card-title">约束类型说明</div>
+      <div class="card-body" style="font-size:14px;line-height:2">
+        <p>🔗 <b>必然导致</b>：前提成立时结论必然成立（如"脂批明确指出秦可卿淫丧天香楼" → "原稿非病死"）</p>
+        <p>✅ <b>支持</b>：前提增加了结论的可信度（如"冷月葬花魂" → 支持沉湖说）</p>
+        <p>❌ <b>矛盾/互斥</b>：两个结论不能同时为真（如"'万苦不怨'的黛玉之死" 与 "程高本焚稿断情"矛盾）</p>
+        <p>⏱️ <b>时间顺序约束</b>：事件A必须在事件B之前发生（如元春之死 → 贾府之败）</p>
+        <p>🔀 <b>因果依赖</b>：事件A是事件B的前提条件（如元春失宠 → 贾府失去政治保护）</p>
+      </div>
+    </div>
+    <div id="cstList"></div>
+  </div>
+
+  <!-- ============ 事件时间线 ============ -->
+  <div class="panel" id="panel-timeline">
+    <div class="card">
+      <div class="card-title">后三十回事件时间线（拓扑排序）</div>
+      <div class="card-body" style="font-size:14px;color:var(--text-secondary)">
+        基于时间顺序约束和因果依赖关系的拓扑排序结果。回目数字为探佚推算，仅供参考排序。<br>
+        注：秦可卿事件(EVT-009)发生在前80回内，因其重要性列入。
+      </div>
+    </div>
+    <div class="timeline" id="tlList"></div>
+  </div>
+
+  <!-- ============ 参与贡献 ============ -->
+  <div class="panel" id="panel-contribute">
+    <div class="card">
+      <div class="card-title">🤝 如何贡献</div>
+      <div class="card-body" style="line-height:2;font-size:15px">
+        <p>这个项目的核心资产是<b>数据</b>，而不是代码。每一条你录入的伏笔、补全的人物结局、添加的约束关系，都在直接增加整个系统的推理能力。</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📝 贡献方式一：添加伏笔</div>
+      <div class="card-body" style="font-size:14px;line-height:2">
+        <p>在 <code>data/foreshadowing.json</code> 中添加新条目，格式如下：</p>
+        <pre style="background:var(--accent-light);padding:12px;border-radius:var(--radius);overflow-x:auto;font-family:var(--mono);font-size:12px;line-height:1.6">{
+  "id": "FS-031",              ← 递增ID
+  "chapter": 34,               ← 回目（1-80）
+  "section": "情中情因情感妹妹",
+  "type": "文本伏笔",          ← 类型：文本伏笔|脂批批语|谶语判词|命名谐音|物事象征|梦境预兆|戏曲点题|对话暗示
+  "content": "原文或批语...",
+  "context": "解读...",
+  "evidenceType": "前80回文本伏笔",  ← 证据类型
+  "confidence": "极有可能",    ← 确定|极有可能|有可能|存疑
+  "relatedCharacters": [{"id":"CHAR-XX","name":"人物名"}],
+  "relatedEvents": [{"id":"EVT-XXX","name":"事件名"}],
+  "source": "出处说明",
+  "contributor": "你的GitHub ID"
+}</pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📝 贡献方式二：添加约束</div>
+      <div class="card-body" style="font-size:14px;line-height:2">
+        <p>在 <code>data/constraints.json</code> 中添加新约束，连接已有的伏笔/人物/事件：</p>
+        <pre style="background:var(--accent-light);padding:12px;border-radius:var(--radius);overflow-x:auto;font-family:var(--mono);font-size:12px;line-height:1.6">{
+  "id": "CST-0019",
+  "type": "支持",              ← 必然导致|支持|矛盾/互斥|时间顺序约束|因果依赖
+  "sourceForeshadowing": "FS-XXX",
+  "targetForeshadowingOrFate": "CHAR-XX",
+  "rationale": "你的推理依据...",
+  "strength": "强（极可能）"    ← 刚性|强|弱
+}</pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📝 贡献方式三：补全人物</div>
+      <div class="card-body" style="font-size:14px;line-height:2">
+        <p>在 <code>data/characters.json</code> 中添加新人物（如鸳鸯、平儿、司棋等又副册人物），或为现有人物补充新的伏笔引用和替代结局理论。</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📝 贡献方式四：改进推理引擎</div>
+      <div class="card-body" style="font-size:14px;line-height:2">
+        <p>Python 推理引擎位于 <code>src/core/engine.py</code>，欢迎为以下能力贡献代码：</p>
+        <ul style="padding-left:20px;line-height:2.2">
+          <li>更精确的约束传播算法（带权重的概率传播）</li>
+          <li>多假设对比（同时评估多个替代结局方案的一致性得分）</li>
+          <li>自动伏笔发现（用NLP从原文中检测潜在的伏笔文本）</li>
+          <li>可视化约束图（D3.js或Mermaid生成依赖关系图）</li>
+          <li>连接到MiroFish/OpenStory的约束注入接口</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📋 提交规范</div>
+      <div class="card-body" style="font-size:14px;line-height:2">
+        <ol style="padding-left:20px">
+          <li>Fork 本仓库，在分支上进行修改</li>
+          <li>伏笔内容必须是<b>前80回原文</b>或<b>脂批原文</b>，不可自行编造</li>
+          <li>每条伏笔/约束需提供<b>出处</b>（版本、回目、批语位置）</li>
+          <li>约束推理需写明<b>逻辑依据</b>（为什么A能推出B）</li>
+          <li>发 PR 时附上简短说明</li>
+          <li>不确定的地方标注 <code>"confidence": "存疑"</code></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    红楼伏笔 · 开源结构化探佚推理系统 · 数据基于前80回原文 + 脂砚斋批语 + 红学探佚学研究成果 · 欢迎参与贡献
+  </div>
+</div>
+
+<script>
+// ============ DATA LOADING ============
+let characters = [];
+let foreshadowings = [];
+let constraints = [];
+let events = [];
+
+async function loadData() {
+  try {
+    const [cRes, fRes, cstRes, eRes] = await Promise.all([
+      fetch('data/characters.json'),
+      fetch('data/foreshadowing.json'),
+      fetch('data/constraints.json'),
+      fetch('data/events.json'),
+    ]);
+    const cData = await cRes.json();
+    const fData = await fRes.json();
+    const cstData = await cstRes.json();
+    const eData = await eRes.json();
+
+    characters = cData.characters || [];
+    foreshadowings = fData.foreshadowings || [];
+    constraints = cstData.constraints || [];
+    events = eData.events || [];
+
+    // Merge batch2 data
+    try {
+      const c2 = await fetch('data/characters_batch2.json');
+      characters = characters.concat(await c2.json());
+    } catch(_) {}
+    try {
+      const f2 = await fetch('data/foreshadowing_batch2.json');
+      foreshadowings = foreshadowings.concat(await f2.json());
+    } catch(_) {}
+    try {
+      const cst2 = await fetch('data/constraints_batch2.json');
+      constraints = constraints.concat(await cst2.json());
+    } catch(_) {}
+    try {
+      const e2 = await fetch('data/events_batch2.json');
+      events = events.concat(await e2.json());
+    } catch(_) {}
+
+    updateStats();
+    renderAll();
+  } catch (err) {
+    console.error('Failed to load data:', err);
+    // Fallback: render error state
+    document.querySelectorAll('.panel').forEach(p => {
+      p.innerHTML = '<div class="empty-state"><p>数据加载失败。请确保在本地服务器中打开此页面。<br><code>python3 -m http.server 8000</code></p></div>';
+    });
+  }
+}
+
+function updateStats() {
+  document.getElementById('stat-fs').textContent = foreshadowings.length;
+  document.getElementById('stat-chars').textContent = characters.length;
+  document.getElementById('stat-cst').textContent = constraints.length;
+  document.getElementById('stat-evt').textContent = events.length;
+}
+
+// ============ NAVIGATION ============
+document.getElementById('nav').addEventListener('click', (e) => {
+  const btn = e.target.closest('.nav-btn');
+  if (!btn) return;
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + btn.dataset.panel).classList.add('active');
+  // Re-render on switch
+  renderAll();
+});
+
+// ============ CHARACTERS PANEL ============
+function renderCharacters(filter = 'all', search = '') {
+  const container = document.getElementById('charList');
+  let filtered = characters;
+
+  if (filter !== 'all') {
+    filtered = filtered.filter(c => c.significance === filter);
+  }
+  if (search) {
+    const s = search.toLowerCase();
+    filtered = filtered.filter(c =>
+      c.name.includes(s) ||
+      c.alias.some(a => a.includes(s)) ||
+      c.fateSummary.includes(s) ||
+      c.fateDetail.includes(s)
+    );
+  }
+
+  if (filtered.length === 0) {
+    container.innerHTML = '<div class="empty-state"><p>没有找到匹配的人物</p></div>';
+    return;
+  }
+
+  let html = '';
+  for (const char of filtered) {
+    const sigMap = { '核心': '十二钗正册', '重要': '副册/又副册', '次要': '重要配角', '边缘': '边缘人物' };
+    const fsIds = char.supportingForeshadowings || [];
+    const contraIds = char.contradictingForeshadowings || [];
+
+    html += `<div class="card fate-card">
+      <div class="card-title">
+        ${char.name}
+        <span style="font-size:12px;color:var(--text-muted);font-weight:400">${char.alias.slice(0,2).join(' / ')}</span>
+        <span class="confidence ${char.confidence}">${char.confidence}</span>
+        <span style="font-size:11px;color:var(--text-muted)">${sigMap[char.significance] || char.significance}</span>
+      </div>
+      <div class="card-body">
+        <p style="font-weight:600;margin-bottom:4px">${char.fateSummary}</p>
+        <p style="font-size:14px;color:var(--text-secondary);margin-bottom:8px">${char.fateDetail}</p>
+        ${char.quote ? `<p style="font-size:14px;color:var(--gold);font-style:italic">「${char.quote}」</p>` : ''}
+        <div class="evidence-list">
+          <div style="font-size:14px;font-weight:600;margin-top:8px;color:var(--text-secondary)">📌 支持证据</div>`;
+
+    for (const fsId of fsIds) {
+      const fs = foreshadowings.find(f => f.id === fsId);
+      if (fs) {
+        html += `<div class="evidence-item">
+          <span class="evidence-type ${fs.evidenceType}">${fs.evidenceType}</span>
+          <span class="evidence-ref">${fs.id}</span>
+          <span>${fs.content.length > 60 ? fs.content.slice(0,60)+'...' : fs.content}</span>
+          <span style="color:var(--text-muted);font-size:12px">第${fs.chapter}回</span>
+        </div>`;
+      }
+    }
+
+    if (contraIds.length > 0) {
+      html += `<div style="font-size:14px;font-weight:600;margin-top:8px;color:var(--red)">⚠️ 反对证据</div>`;
+      for (const fsId of contraIds) {
+        const fs = foreshadowings.find(f => f.id === fsId);
+        if (fs) {
+          html += `<div class="evidence-item">
+            <span class="evidence-type ${fs.evidenceType}">${fs.evidenceType}</span>
+            <span class="evidence-ref">${fs.id}</span>
+            <span>${fs.content.slice(0,60)}...</span>
+          </div>`;
+        }
+      }
+    }
+
+    html += '</div>';
+
+    // Alternative theories
+    if (char.alternativeTheories && char.alternativeTheories.length > 0) {
+      html += `<span class="detail-toggle" onclick="this.nextElementSibling.classList.toggle('open')">🔍 查看替代学说 (${char.alternativeTheories.length})</span>`;
+      html += '<div class="detail-content">';
+      for (const alt of char.alternativeTheories) {
+        html += `<p style="margin-bottom:8px"><b>${alt.theory}</b> <span class="confidence ${alt.confidence}">${alt.confidence}</span><br>提出者：${alt.proponent}<br>${alt.description}</p>`;
+      }
+      html += '</div>';
+    }
+
+    html += '</div></div>';
+  }
+
+  container.innerHTML = html;
+}
+
+document.getElementById('charSearch').addEventListener('input', (e) => {
+  const activeFilter = document.querySelector('#charFilters .filter-chip.active')?.dataset.filter || 'all';
+  renderCharacters(activeFilter, e.target.value);
+});
+document.getElementById('charFilters').addEventListener('click', (e) => {
+  const chip = e.target.closest('.filter-chip');
+  if (!chip) return;
+  document.querySelectorAll('#charFilters .filter-chip').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  const search = document.getElementById('charSearch').value;
+  renderCharacters(chip.dataset.filter, search);
+});
+
+// ============ FORESHADOWING PANEL ============
+function renderForeshadowing(filter = 'all', search = '') {
+  const container = document.getElementById('fsList');
+  let filtered = foreshadowings;
+
+  if (filter !== 'all') {
+    if (['确定','极有可能','有可能','存疑'].includes(filter)) {
+      filtered = filtered.filter(f => f.confidence === filter);
+    } else if (['脂批直接提示','判词/谶语','前80回文本伏笔'].includes(filter)) {
+      filtered = filtered.filter(f => f.evidenceType === filter);
+    }
+  }
+  if (search) {
+    const s = search.toLowerCase();
+    filtered = filtered.filter(f =>
+      f.content.includes(s) ||
+      f.context.includes(s) ||
+      f.id.includes(s.toUpperCase()) ||
+      String(f.chapter).includes(s)
+    );
+  }
+
+  if (filtered.length === 0) {
+    container.innerHTML = '<div class="empty-state"><p>没有找到匹配的伏笔</p></div>';
+    return;
+  }
+
+  filtered.sort((a, b) => a.chapter - b.chapter || a.id.localeCompare(b.id));
+
+  let html = '';
+  for (const fs of filtered) {
+    html += `<div class="card fs-card">
+      <div class="fs-header">
+        <div style="display:flex;gap:8px;align-items:center">
+          <span class="fs-chapter">第${fs.chapter}回</span>
+          <span class="fs-type">${fs.type}</span>
+          <span class="confidence ${fs.confidence}">${fs.confidence}</span>
+        </div>
+        <span class="evidence-ref">${fs.id}</span>
+      </div>
+      <div class="fs-content">「${fs.content}」</div>
+      <div class="fs-context">${fs.context}</div>
+      <div style="margin-top:8px;font-size:12px;color:var(--text-muted)">
+        证据类型：${fs.evidenceType} &nbsp;|&nbsp; 来源：${fs.source || '—'}
+        &nbsp;|&nbsp; 关联人物：${(fs.relatedCharacters||[]).map(c=>c.name).join('、') || '—'}
+        &nbsp;|&nbsp; 关联事件：${(fs.relatedEvents||[]).map(e=>e.name).join('、') || '—'}
+      </div>
+    </div>`;
+  }
+
+  container.innerHTML = html;
+}
+
+document.getElementById('fsSearch').addEventListener('input', (e) => {
+  const activeFilter = document.querySelector('#fsFilters .filter-chip.active')?.dataset.filter || 'all';
+  renderForeshadowing(activeFilter, e.target.value);
+});
+document.getElementById('fsFilters').addEventListener('click', (e) => {
+  const chip = e.target.closest('.filter-chip');
+  if (!chip) return;
+  document.querySelectorAll('#fsFilters .filter-chip').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  renderForeshadowing(chip.dataset.filter, document.getElementById('fsSearch').value);
+});
+
+// ============ CONSTRAINTS PANEL ============
+function renderConstraints() {
+  const container = document.getElementById('cstList');
+  if (constraints.length === 0) {
+    container.innerHTML = '<div class="empty-state"><p>暂无约束数据</p></div>';
+    return;
+  }
+
+  const typeMap = {
+    '必然导致': '🔗', '支持': '✅', '矛盾/互斥': '❌', '时间顺序约束': '⏱️', '因果依赖': '🔀'
+  };
+  const strengthMap = { '刚性（逻辑必然）': '刚性', '强（极可能）': '强', '弱（可能支持）': '弱' };
+
+  let html = '';
+  for (const c of constraints) {
+    const fsSource = foreshadowings.find(f => f.id === c.sourceForeshadowing);
+    const sourceLabel = fsSource ? `[${fsSource.id}] ${fsSource.content.slice(0,30)}...` : c.sourceForeshadowing;
+
+    html += `<div class="constraint-item">
+      <span style="font-size:18px">${typeMap[c.type] || '?'}</span>
+      <span style="font-weight:600;font-size:12px;color:var(--accent);white-space:nowrap">${c.type}</span>
+      <span style="font-size:13px">${sourceLabel}</span>
+      <span class="arrow">→</span>
+      <span style="font-size:13px;color:var(--blue)">${c.targetForeshadowingOrFate}</span>
+      <span style="font-size:11px;padding:2px 6px;background:#f0ebe0;border-radius:3px">${strengthMap[c.strength]||c.strength}</span>
+      <span style="font-size:12px;color:var(--text-muted);flex:1">${c.rationale.slice(0,80)}${c.rationale.length>80?'...':''}</span>
+      <span style="font-family:var(--mono);font-size:11px;color:var(--text-muted)">${c.id}</span>
+    </div>`;
+  }
+
+  container.innerHTML = html;
+}
+
+// ============ TIMELINE PANEL ============
+function renderTimeline() {
+  const container = document.getElementById('tlList');
+  if (events.length === 0) {
+    container.innerHTML = '<div class="empty-state"><p>暂无事件数据</p></div>';
+    return;
+  }
+
+  const sorted = [...events].sort((a, b) => {
+    // First sort by constraint-based order if we had topology, else by chapter
+    return (a.chapter || 999) - (b.chapter || 999);
+  });
+
+  let html = '';
+  for (const evt of sorted) {
+    const charNames = (evt.characters || []).map(cid => {
+      const c = characters.find(ch => ch.id === cid);
+      return c ? c.name : cid;
+    }).join('、');
+
+    const basisLabels = (evt.basis || []).map(fid => {
+      const f = foreshadowings.find(fs => fs.id === fid);
+      return f ? `<span title="${f.content.slice(0,60)}...">${fid}</span>` : fid;
+    }).join(', ');
+
+    html += `<div class="timeline-item">
+      <div class="tl-header">
+        <span class="tl-chapter">第${evt.chapter}回</span>
+        <span class="tl-title">${evt.title}</span>
+        <span class="confidence ${evt.confidence}">${evt.confidence}</span>
+      </div>
+      <div class="tl-desc">${evt.description}</div>
+      <div class="tl-basis" style="margin-top:4px">
+        👥 ${charNames || '—'} &nbsp;|&nbsp; 📌 依据：${basisLabels || '—'}
+      </div>
+    </div>`;
+  }
+
+  container.innerHTML = html;
+}
+
+// ============ RENDER ALL ============
+function renderAll() {
+  renderCharacters();
+  renderForeshadowing();
+  renderConstraints();
+  renderTimeline();
+}
+
+// ============ INIT ============
+loadData();
+</script>
+</body>
+</html>

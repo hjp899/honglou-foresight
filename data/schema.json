@@ -1,0 +1,133 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "红楼梦伏笔约束系统 — 数据模型",
+  "description": "结构化存储《红楼梦》前80回中的伏笔、脂批线索、人物结局推断及其逻辑约束关系",
+
+  "definitions": {
+    "EvidenceType": {
+      "type": "string",
+      "enum": [
+        "脂批直接提示",
+        "前80回文本伏笔",
+        "判词/谶语",
+        "人物性格逻辑",
+        "曹家家世背景",
+        "红学家考据共识",
+        "其他"
+      ]
+    },
+
+    "Confidence": {
+      "type": "string",
+      "enum": ["确定", "极有可能", "有可能", "存疑"],
+      "description": "确定性评级：脂批直接提示=确定，文本强伏笔=极有可能，推测=有可能，猜测=存疑"
+    },
+
+    "ConstraintType": {
+      "type": "string",
+      "enum": [
+        "必然导致",
+        "支持",
+        "矛盾/互斥",
+        "时间顺序约束",
+        "因果依赖",
+        "等价/同一事件"
+      ]
+    }
+  },
+
+  "Foreshadowing": {
+    "type": "object",
+    "required": ["id", "chapter", "type", "content", "evidenceType", "confidence", "relatedCharacters", "relatedEvents"],
+    "properties": {
+      "id": {"type": "string", "pattern": "^FS-\\d{3}$"},
+      "chapter": {"type": "integer", "minimum": 1, "maximum": 80},
+      "section": {"type": "string", "description": "回内具体位置描述"},
+      "type": {
+        "type": "string",
+        "enum": ["文本伏笔", "脂批批语", "谶语判词", "命名谐音", "物事象征", "梦境预兆", "戏曲点题", "对话暗示"]
+      },
+      "content": {"type": "string", "description": "伏笔原文或批语原文"},
+      "context": {"type": "string", "description": "伏笔出现的上下文和解读"},
+      "evidenceType": {"$ref": "#/definitions/EvidenceType"},
+      "confidence": {"$ref": "#/definitions/Confidence"},
+      "relatedCharacters": {"type": "array", "items": {"$ref": "#/definitions/CharacterRef"}},
+      "relatedEvents": {"type": "array", "items": {"$ref": "#/definitions/EventRef"}},
+      "source": {"type": "string", "description": "出处：脂批版本、学者研究等"},
+      "contributor": {"type": "string", "description": "录入者ID"}
+    }
+  },
+
+  "CharacterRef": {
+    "type": "object",
+    "required": ["id"],
+    "properties": {
+      "id": {"type": "string", "pattern": "^CHAR-\\d{2}$"},
+      "name": {"type": "string"}
+    }
+  },
+
+  "EventRef": {
+    "type": "object",
+    "required": ["id"],
+    "properties": {
+      "id": {"type": "string", "pattern": "^EVT-\\d{3}$"},
+      "name": {"type": "string"}
+    }
+  },
+
+  "CharacterFate": {
+    "type": "object",
+    "required": ["id", "name", "fateSummary", "confidence", "supportingForeshadowings"],
+    "properties": {
+      "id": {"$ref": "#/definitions/CharacterRef/properties/id"},
+      "name": {"type": "string"},
+      "alias": {"type": "array", "items": {"type": "string"}},
+      "significance": {"type": "string", "enum": ["核心", "重要", "次要", "边缘"], "description": "金陵十二钗正册=核心，副册/又副册=重要，有名配角=次要，无名配角=边缘"},
+      "fateSummary": {"type": "string", "description": "后30回结局概述"},
+      "fateDetail": {"type": "string", "description": "结局详细描述"},
+      "confidence": {"$ref": "#/definitions/Confidence"},
+      "alternativeTheories": {"type": "array", "items": {
+        "type": "object",
+        "properties": {
+          "theory": {"type": "string"},
+          "proponent": {"type": "string"},
+          "confidence": {"$ref": "#/definitions/Confidence"},
+          "description": {"type": "string"}
+        }
+      }},
+      "supportingForeshadowings": {"type": "array", "items": {"type": "string", "pattern": "^FS-\\d{3}$"}},
+      "contradictingForeshadowings": {"type": "array", "items": {"type": "string", "pattern": "^FS-\\d{3}$"}},
+      "mortalityChapter": {"type": "integer", "description": "预估去世/结局发生的回目（后30回中）"},
+      "lastChapterAppeared": {"type": "integer", "description": "前80回中最后一次重要出场回目"},
+      "quote": {"type": "string", "description": "代表性的判词/曲/谶语"}
+    }
+  },
+
+  "Constraint": {
+    "type": "object",
+    "required": ["id", "type", "sourceForeshadowing", "targetForeshadowingOrFate"],
+    "properties": {
+      "id": {"type": "string", "pattern": "^CST-\\d{4}$"},
+      "type": {"$ref": "#/definitions/ConstraintType"},
+      "sourceForeshadowing": {"type": "string", "pattern": "^FS-\\d{3}$"},
+      "targetForeshadowingOrFate": {"type": "string"},
+      "rationale": {"type": "string", "description": "逻辑推理依据"},
+      "strength": {"type": "string", "enum": ["刚性（逻辑必然）", "强（极可能）", "弱（可能支持）"]}
+    }
+  },
+
+  "SceneReconstruction": {
+    "type": "object",
+    "required": ["id", "chapter", "title", "description", "basis"],
+    "properties": {
+      "id": {"type": "string", "pattern": "^SCN-\\d{3}$"},
+      "chapter": {"type": "integer", "description": "对应后30回中的回数"},
+      "title": {"type": "string"},
+      "characters": {"type": "array", "items": {"$ref": "#/definitions/CharacterRef"}},
+      "description": {"type": "string"},
+      "basis": {"type": "array", "items": {"type": "string", "pattern": "^FS-\\d{3}$"}},
+      "confidence": {"$ref": "#/definitions/Confidence"}
+    }
+  }
+}

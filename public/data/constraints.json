@@ -1,0 +1,153 @@
+{
+  "meta": {
+    "version": "1.0.0",
+    "totalConstraints": 18,
+    "description": "伏笔之间的逻辑约束关系。每条约束从一条伏笔出发，推理出它对另一条伏笔或人物结局的支持/矛盾关系。"
+  },
+  "constraints": [
+    {
+      "id": "CST-0001",
+      "type": "必然导致",
+      "sourceForeshadowing": "FS-002",
+      "targetForeshadowingOrFate": "CHAR-02",
+      "rationale": "绛珠仙草'还泪'的神话设定(FS-002)直接决定了黛玉的结局只能是'泪尽夭亡'——泪尽即死，这在逻辑上没有其他可能。黛玉之死不是'焚稿断情'式的激愤而死，而是平静的耗尽。",
+      "strength": "刚性（逻辑必然）"
+    },
+    {
+      "id": "CST-0002",
+      "type": "必然导致",
+      "sourceForeshadowing": "FS-001",
+      "targetForeshadowingOrFate": "CHAR-01",
+      "rationale": "第一回'因空见色→由色生情→传情入色→自色悟空'的十六字纲领(FS-001)已经完整画出宝玉的人生弧线，最终必须回到'悟空'即出家。",
+      "strength": "刚性（逻辑必然）"
+    },
+    {
+      "id": "CST-0003",
+      "type": "时间顺序约束",
+      "sourceForeshadowing": "FS-017",
+      "targetForeshadowingOrFate": "FS-017",
+      "rationale": "第十八回四出戏谶(FS-017)隐含了时间顺序：《一捧雪》(贾府败)→《乞巧》(元妃死)→《仙缘》(送玉)→《离魂》(黛玉死)。脂批称这是'通部书之大过节、大关键'，四事依次发生。",
+      "strength": "刚性（逻辑必然）"
+    },
+    {
+      "id": "CST-0004",
+      "type": "因果依赖",
+      "sourceForeshadowing": "FS-008",
+      "targetForeshadowingOrFate": "FS-017",
+      "rationale": "元妃被赐死(FS-008，'虎兕相逢大梦归')是贾府失去政治保护伞的直接原因，这进一步导致了贾府被抄(FS-017中《一捧雪》)。元妃之死在时间线上应先于贾府之败。",
+      "strength": "强（极可能）"
+    },
+    {
+      "id": "CST-0005",
+      "type": "因果依赖",
+      "sourceForeshadowing": "FS-013",
+      "targetForeshadowingOrFate": "CHAR-02",
+      "rationale": "脂批'虽诔晴雯，实乃诔黛玉'(FS-013)建立了晴雯之死与黛玉之死的镜像关系。晴雯被毁谤→逐出→天亡的结构，暗示黛玉之死也是被外力催化的（非自然、非怨恨）。",
+      "strength": "强（极可能）"
+    },
+    {
+      "id": "CST-0006",
+      "type": "支持",
+      "sourceForeshadowing": "FS-009",
+      "targetForeshadowingOrFate": "CHAR-02",
+      "rationale": "'冷月葬花魂'(FS-009)如果'花魂'是正文，则支持沉湖说——黛玉在月夜投水而亡。如果'诗魂'是正文，则黛玉以生命完成诗谶。两条路径都指向同一终点：黛玉早亡。",
+      "strength": "弱（可能支持）"
+    },
+    {
+      "id": "CST-0007",
+      "type": "支持",
+      "sourceForeshadowing": "FS-004",
+      "targetForeshadowingOrFate": "FS-015",
+      "rationale": "巧姐判词(FS-004)'偶因济刘氏，巧得遇恩人'与板儿巧姐互换佛手柚子(FS-015)互为支撑——判词揭示了'谁救'，佛手柚子暗示了'救之后的归宿（嫁板儿）'。",
+      "strength": "强（极可能）"
+    },
+    {
+      "id": "CST-0008",
+      "type": "矛盾/互斥",
+      "sourceForeshadowing": "FS-005",
+      "targetForeshadowingOrFate": "EVT-003",
+      "rationale": "判曲《终身误》(FS-005)已说明宝玉'空对着'宝钗、'终不忘'黛玉——宝黛爱情以悲剧告终(FS-003)。这与程高本后四十回的'调包计'（宝玉被骗娶宝钗）在精神气质上矛盾——曹雪芹原意中宝玉是清醒而痛苦地娶了宝钗，而非被欺骗。",
+      "strength": "强（极可能）"
+    },
+    {
+      "id": "CST-0009",
+      "type": "支持",
+      "sourceForeshadowing": "FS-024",
+      "targetForeshadowingOrFate": "CHAR-03",
+      "rationale": "脂批回目提示(FS-024)'薛宝钗借词含讽谏'直接证实：婚后宝钗劝谏宝玉仕途经济，导致二人冲突激化、婚姻破裂。宝钗最终的孤寂结局(CHAR-03)是'讽谏'失败的必然结果。",
+      "strength": "刚性（逻辑必然）"
+    },
+    {
+      "id": "CST-0010",
+      "type": "支持",
+      "sourceForeshadowing": "FS-020",
+      "targetForeshadowingOrFate": "CHAR-06",
+      "rationale": "'因麒麟伏白首双星'(FS-020)中金麒麟作为信物，暗示湘云婚姻与麒麟息息相关。脂批指明卫若兰后文佩戴此麒麟——湘云嫁卫若兰而非宝玉(大概率)。但'白首双星'意象可能暗示成婚之后旋即分离。",
+      "strength": "强（极可能）"
+    },
+    {
+      "id": "CST-0011",
+      "type": "因果依赖",
+      "sourceForeshadowing": "FS-012",
+      "targetForeshadowingOrFate": "CHAR-10",
+      "rationale": "脂批'凤姐扫雪拾玉'(FS-012)说明凤姐从管家奶奶沦为扫雪仆役——这是判词'冰山既倒雌凤坠'的具象化。'扫雪'必须在贾府败落(FS-017中《一捧雪》)之后才可能发生。",
+      "strength": "强（极可能）"
+    },
+    {
+      "id": "CST-0012",
+      "type": "支持",
+      "sourceForeshadowing": "FS-030",
+      "targetForeshadowingOrFate": "EVT-005",
+      "rationale": "宝钗灯谜谶(FS-030)'恩爱夫妻不到冬'揭示二宝婚姻极为短暂（不到一年）。与判曲中的'空对着'互相印证——婚后宝玉很快出家或被羁押，宝钗独守空闺。",
+      "strength": "刚性（逻辑必然）"
+    },
+    {
+      "id": "CST-0013",
+      "type": "时间顺序约束",
+      "sourceForeshadowing": "FS-022",
+      "targetForeshadowingOrFate": "FS-016",
+      "rationale": "尤氏警告凤姐'太满了就泼出来了'(FS-022)提出预警→凤姐一步步继续膨胀→最终'一从二令三人木'(FS-016判词)的命运降临。这是一个'盛→警→衰→死'的时序结构。",
+      "strength": "弱（可能支持）"
+    },
+    {
+      "id": "CST-0014",
+      "type": "支持",
+      "sourceForeshadowing": "FS-014",
+      "targetForeshadowingOrFate": "CHAR-17",
+      "rationale": "脂批(FS-014)'略有些瓜葛，是数十回后之正脉也'将刘姥姥一进荣国府的微小关联，升格为后文最重要的情节线。刘姥姥三进贾府(CHAR-17)——一进求告、二进游览、三进赎救——已在脂砚斋眼中构成'正脉'，即决定了巧姐命运的走向。",
+      "strength": "刚性（逻辑必然）"
+    },
+    {
+      "id": "CST-0015",
+      "type": "支持",
+      "sourceForeshadowing": "FS-018",
+      "targetForeshadowingOrFate": "CHAR-01",
+      "rationale": "宝玉反复说'你死了，我做和尚去'(FS-018)是全书最明确的谶语之一。脂批多处批注印证宝玉最终出家(CHAR-01)。",
+      "strength": "刚性（逻辑必然）"
+    },
+    {
+      "id": "CST-0016",
+      "type": "矛盾/互斥",
+      "sourceForeshadowing": "FS-026",
+      "targetForeshadowingOrFate": "EVT-002",
+      "rationale": "《葬花吟》(FS-026)'质本洁来还洁去，强于污淖陷渠沟'——黛玉自况宁死也不愿陷入污浊。这与高鹗续书中黛玉'焚稿断情'含恨而死的处理方式精神矛盾——'还洁去'是平静接受而非激烈抗争。同时，程高本让黛玉在宝钗出嫁同一时刻死亡(调包计)，在时间线上也与四出戏谶(FS-017)暗示的顺序不符。",
+      "strength": "强（极可能）"
+    },
+    {
+      "id": "CST-0017",
+      "type": "因果依赖",
+      "sourceForeshadowing": "FS-010",
+      "targetForeshadowingOrFate": "CHAR-09",
+      "rationale": "惜春'剃了头当姑子去'的童言(FS-010)需要在目睹三位姐姐(元春死、迎春死、探春远嫁)的悲剧之后才会'勘破'并践行——三春去后方有惜春的出家(CHAR-09)。",
+      "strength": "强（极可能）"
+    },
+    {
+      "id": "CST-0018",
+      "type": "支持",
+      "sourceForeshadowing": "FS-016",
+      "targetForeshadowingOrFate": "FS-024",
+      "rationale": "凤姐判词'一从二令三人木'(FS-016，人木=休)预示凤姐被休。而脂批回目(FS-024)'王熙凤知命强英雄'中凤姐的'知命强英雄'恰发生在她被休后的挣扎阶段——她明知命运已定，仍试图重振雄风。两条脂批勾画出凤姐末路的完整弧线。",
+      "strength": "强（极可能）"
+    }
+  ]
+}

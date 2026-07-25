@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>十二钗命运网络 — 红楼伏笔</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+:root{--bg:#faf7f2;--panel:#fff;--border:#e5dfd5;--text:#2c2416;--text2:#6b5e4a;--text3:#9b8c78;--accent:#8b2500;--green:#2d6a4f;--red:#c1121f;--blue:#1d3557;--gold:#b8860b;--serif:'Noto Serif SC','SimSun',serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--serif);background:var(--bg);color:var(--text);overflow:hidden;height:100vh}
+.header{position:absolute;top:0;left:0;right:0;padding:16px 24px;background:var(--bg);z-index:10;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.header h1{font-size:18px;font-weight:700;letter-spacing:2px}
+.header a{font-size:13px;color:var(--accent);text-decoration:none}
+svg{width:100%;height:100%;display:block}
+.tooltip{position:absolute;pointer-events:none;background:var(--panel);border:1px solid var(--border);padding:12px 16px;border-radius:6px;font-size:13px;max-width:280px;box-shadow:0 2px 12px rgba(0,0,0,.08);opacity:0;transition:opacity .15s;z-index:100}
+.tooltip .tt-name{font-size:16px;font-weight:700;margin-bottom:4px}
+.tooltip .tt-fate{color:var(--text2);font-size:12px;line-height:1.6}
+.tooltip .tt-click{font-size:11px;color:var(--text3);margin-top:6px}
+.legend{position:absolute;bottom:20px;left:20px;font-size:12px;color:var(--text3);display:flex;gap:16px}
+.legend-item{display:flex;align-items:center;gap:4px}
+.legend-circle{width:10px;height:10px;border-radius:50%}
+</style>
+</head>
+<body>
+<div class="header">
+<h1>🏮 十二钗命运网络</h1>
+<a href="index.html">← 返回目录</a>
+</div>
+<svg id="graph"></svg>
+<div class="tooltip" id="tooltip"></div>
+<div class="legend">
+<div class="legend-item"><div class="legend-circle" style="background:var(--accent)"></div>正册</div>
+<div class="legend-item"><div class="legend-circle" style="background:var(--blue)"></div>宝玉</div>
+<div class="legend-item"><div class="legend-circle" style="background:var(--green)"></div>确定</div>
+<div class="legend-item"><div class="legend-circle" style="background:var(--gold)"></div>极有可能</div>
+<div class="legend-item"><div class="legend-circle" style="background:#ccc"></div>存疑</div>
+</div>
+<script>
+const width = window.innerWidth;
+const height = window.innerHeight;
+
+const nodes = [
+  {id:"贾宝玉",group:"核心",fate:"悬崖撒手出家为僧",confidence:"确定",page:"character-jia-baoyu.html"},
+  {id:"林黛玉",group:"正册",fate:"泪尽夭亡",confidence:"极有可能",page:"character-lin-daiyu.html"},
+  {id:"薛宝钗",group:"正册",fate:"独守空闺·金簪雪里埋",confidence:"极有可能",page:"character-xue-baochai.html"},
+  {id:"贾元春",group:"正册",fate:"被赐死于政治斗争",confidence:"确定",page:"character-jia-yuanchun.html"},
+  {id:"贾探春",group:"正册",fate:"远嫁海外和番",confidence:"确定",page:"character-jia-tanchun.html"},
+  {id:"史湘云",group:"正册",fate:"嫁卫若兰后丈夫死难",confidence:"极有可能",page:"character-shi-xiangyun.html"},
+  {id:"妙玉",group:"正册",fate:"终陷淖泥·被玷污",confidence:"极有可能",page:"character-miaoyu.html"},
+  {id:"贾迎春",group:"正册",fate:"被孙绍祖虐待致死",confidence:"确定",page:"character-jia-yingchun.html"},
+  {id:"贾惜春",group:"正册",fate:"出家为尼·独卧青灯",confidence:"确定",page:"character-jia-xichun.html"},
+  {id:"王熙凤",group:"正册",fate:"被休弃·沦为仆役·惨死",confidence:"极有可能",page:"character-wang-xifeng.html"},
+  {id:"巧姐",group:"正册",fate:"被刘姥姥赎出·嫁板儿",confidence:"确定",page:"character-qiaojie.html"},
+  {id:"李纨",group:"正册",fate:"贾兰中举后旋即身亡",confidence:"极有可能",page:"character-li-wan.html"},
+  {id:"秦可卿",group:"正册",fate:"淫丧天香楼(原稿)",confidence:"确定",page:"character-qin-keqing.html"},
+  {id:"晴雯",group:"副册",fate:"被逐后抱屈夭亡",confidence:"确定",page:null},
+  {id:"袭人",group:"副册",fate:"嫁蒋玉菡",confidence:"确定",page:null},
+  {id:"香菱",group:"副册",fate:"被夏金桂折磨致死",confidence:"确定",page:null},
+  {id:"鸳鸯",group:"副册",fate:"贾母死后自尽",confidence:"极有可能",page:null},
+  {id:"平儿",group:"副册",fate:"凤姐死后被扶正",confidence:"有可能",page:null},
+  {id:"紫鹃",group:"副册",fate:"黛玉死后去向不明",confidence:"存疑",page:null},
+];
+
+const links = [
+  {source:"贾宝玉",target:"林黛玉",type:"木石前盟",strength:5},
+  {source:"贾宝玉",target:"薛宝钗",type:"金玉良缘·婚后破裂",strength:3},
+  {source:"贾宝玉",target:"史湘云",type:"金麒麟之缘(存疑)",strength:1},
+  {source:"贾宝玉",target:"妙玉",type:"精神共鸣·王孙无缘",strength:2},
+  {source:"贾宝玉",target:"晴雯",type:"晴为黛影·芙蓉诔预哀",strength:4},
+  {source:"贾宝玉",target:"袭人",type:"公子无缘·嫁蒋玉菡",strength:3},
+  {source:"林黛玉",target:"晴雯",type:"晴为黛影·命运镜像",strength:4},
+  {source:"林黛玉",target:"香菱",type:"同为'莲'命(甄英莲/芙蓉)",strength:3},
+  {source:"林黛玉",target:"紫鹃",type:"慧心护主·主死仆悲",strength:3},
+  {source:"薛宝钗",target:"袭人",type:"袭为钗副·劝谏共构",strength:3},
+  {source:"王熙凤",target:"贾宝玉",type:"管家护主·狱神庙同囚",strength:2},
+  {source:"王熙凤",target:"巧姐",type:"母遗托孤·刘氏救赎",strength:4},
+  {source:"王熙凤",target:"平儿",type:"主仆·钥匙·同命",strength:3},
+  {source:"贾元春",target:"贾宝玉",type:"姐弟·入宫·庇护贾府",strength:4},
+  {source:"贾探春",target:"贾宝玉",type:"兄妹·远嫁·风筝断线",strength:3},
+  {source:"贾迎春",target:"贾宝玉",type:"兄妹·'二木头'·最先凋零",strength:2},
+  {source:"贾惜春",target:"贾宝玉",type:"兄妹·同归空门",strength:3},
+  {source:"李纨",target:"贾宝玉",type:"寡嫂·'如冰水好'",strength:2},
+  {source:"秦可卿",target:"王熙凤",type:"托梦·遗言·'月满则亏'",strength:4},
+  {source:"鸳鸯",target:"王熙凤",type:"贾母死后同遭难",strength:2},
+  {source:"林黛玉",target:"薛宝钗",type:"钗黛合一·亦敌亦友",strength:3},
+  {source:"贾元春",target:"贾探春",type:"元迎探惜·三春去后",strength:3},
+  {source:"贾探春",target:"贾迎春",type:"三春·凋零顺序",strength:3},
+  {source:"贾迎春",target:"贾惜春",type:"三春去·惜春勘破",strength:3},
+];
+
+const colorMap = {
+  "正册":"#8b2500","核心":"#1d3557","副册":"#6b5e4a"
+};
+const confSize = {"确定":18,"极有可能":14,"有可能":12,"存疑":10};
+const confColor = {"确定":"#2d6a4f","极有可能":"#b8860b","有可能":"#9b8c78","存疑":"#ccc"};
+
+const svg = d3.select("#graph");
+const g = svg.append("g");
+
+const simulation = d3.forceSimulation(nodes)
+  .force("link", d3.forceLink(links).id(d=>d.id).distance(d=>120-d.strength*15))
+  .force("charge", d3.forceManyBody().strength(-600))
+  .force("center", d3.forceCenter(width/2, height/2))
+  .force("collision", d3.forceCollide(40));
+
+const link = g.selectAll("line")
+  .data(links).join("line")
+  .attr("stroke", d=>d.strength>=4?"#8b2500":d.strength>=3?"#b8860b":"#ccc")
+  .attr("stroke-opacity", d=>d.strength>=4?0.5:0.2)
+  .attr("stroke-width", d=>d.strength*0.8)
+  .attr("stroke-dasharray", d=>d.strength<3?"4,4":null);
+
+const node = g.selectAll("g")
+  .data(nodes).join("g")
+  .call(d3.drag()
+    .on("start",(e,d)=>{if(!e.active)simulation.alphaTarget(0.3).restart();d.fx=d.x;d.fy=d.y})
+    .on("drag",(e,d)=>{d.fx=e.x;d.fy=e.y})
+    .on("end",(e,d)=>{if(!e.active)simulation.alphaTarget(0);d.fx=null;d.fy=null}));
+
+node.append("circle")
+  .attr("r", d=>confSize[d.confidence]||14)
+  .attr("fill", d=>colorMap[d.group]||"#999")
+  .attr("stroke", d=>confColor[d.confidence]||"#999")
+  .attr("stroke-width",2.5)
+  .attr("opacity",0.9);
+
+node.append("text")
+  .text(d=>d.id)
+  .attr("text-anchor","middle")
+  .attr("dy",d=>(confSize[d.confidence]||14)+16)
+  .attr("font-family","'Noto Serif SC',serif")
+  .attr("font-size","13px")
+  .attr("font-weight","600")
+  .attr("fill","#2c2416");
+
+node.on("mouseenter",(e,d)=>{
+  const tt=d3.select("#tooltip");
+  tt.style("opacity",1)
+    .html(`<div class="tt-name">${d.id}</div>
+           <div class="tt-fate">${d.fate}</div>
+           ${d.page?`<div class="tt-click">🖱️ 点击查看详情</div>`:''}`);
+})
+.on("mousemove",(e)=>{d3.select("#tooltip").style("left",(e.pageX+12)+"px").style("top",(e.pageY-20)+"px")})
+.on("mouseleave",()=>{d3.select("#tooltip").style("opacity",0)})
+.on("click",(e,d)=>{
+  if(d.page)window.location.href=d.page;
+});
+
+simulation.on("tick",()=>{
+  link.attr("x1",d=>d.source.x).attr("y1",d=>d.source.y)
+      .attr("x2",d=>d.target.x).attr("y2",d=>d.target.y);
+  node.attr("transform",d=>`translate(${d.x},${d.y})`);
+});
+</script>
+</body>
+</html>

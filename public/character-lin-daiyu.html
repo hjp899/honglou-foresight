@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>林黛玉 — 红楼伏笔 · 探佚推理</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#faf7f2;--panel:#fff;--border:#e5dfd5;--text:#2c2416;--text2:#6b5e4a;--text3:#9b8c78;--accent:#8b2500;--accent-light:#f5ede4;--gold:#b8860b;--green:#2d6a4f;--red:#c1121f;--blue:#1d3557;--radius:6px;--serif:'Noto Serif SC','SimSun',serif;--mono:'IBM Plex Mono',monospace}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--serif);background:var(--bg);color:var(--text);line-height:1.8}
+.app{max-width:1000px;margin:0 auto;padding:0 20px}
+.header{padding:40px 0 24px;text-align:center;border-bottom:2px solid var(--accent);margin-bottom:32px}
+.header .char-name{font-size:36px;font-weight:700;letter-spacing:4px;margin-bottom:4px}
+.header .char-aliases{font-size:14px;color:var(--text3);margin-bottom:8px}
+.header .char-quote{font-size:17px;color:var(--gold);font-style:italic;margin-bottom:16px}
+.header .nav-back{font-size:13px;color:var(--accent);text-decoration:none;margin-top:8px;display:inline-block}
+.header .nav-back:hover{text-decoration:underline}
+.section{margin-bottom:28px}
+.section-title{font-size:19px;font-weight:700;margin-bottom:12px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+.fate-card{background:var(--panel);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:var(--radius);padding:16px 20px;margin-bottom:16px}
+.fate-card .fate-head{font-size:17px;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+.confidence{display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:600}
+.c-确定{background:#d4edda;color:var(--green)}.c-极有可能{background:#fff3cd;color:#856404}
+.c-有可能{background:#e2e3e5;color:#383d41}.c-存疑{background:#f8d7da;color:var(--red)}
+.evidence-row{display:flex;gap:8px;padding:6px 0;border-bottom:1px solid #f0ebe0;font-size:14px;align-items:flex-start}
+.evidence-row:last-child{border-bottom:none}
+.evidence-tag{font-size:11px;padding:1px 6px;border-radius:2px;white-space:nowrap;font-family:var(--mono)}
+.et-脂批直接提示{background:#d4edda;color:var(--green)}.et-判词谶语{background:#e8d5f5;color:#6b2fa0}
+.et-文本伏笔{background:#cce5ff;color:var(--blue)}.et-其他{background:#e2e3e5;color:#383d41}
+.constraint-item{display:flex;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid #f0ebe0;font-size:14px}
+.constraint-item .arrow{color:var(--gold);font-weight:700}
+.rel-nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.rel-chip{padding:6px 14px;border:1px solid var(--border);border-radius:20px;font-size:13px;text-decoration:none;color:var(--text2);transition:all .15s}
+.rel-chip:hover{border-color:var(--accent);color:var(--accent)}
+.rel-chip.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.timeline-dot{position:relative;padding-left:24px;margin-bottom:16px}
+.timeline-dot::before{content:'';position:absolute;left:4px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--accent)}
+@media(max-width:768px){.header .char-name{font-size:26px}}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="header">
+<div class="rel-nav">
+<a href="character-lin-daiyu.html" class="rel-chip active">黛玉</a>
+<a href="character-jia-baoyu.html" class="rel-chip">宝玉</a>
+<a href="character-xue-baochai.html" class="rel-chip">宝钗</a>
+<a href="character-wang-xifeng.html" class="rel-chip">凤姐</a>
+<a href="character-jia-yuanchun.html" class="rel-chip">元春</a>
+<a href="character-jia-tanchun.html" class="rel-chip">探春</a>
+<a href="character-shi-xiangyun.html" class="rel-chip">湘云</a>
+<a href="character-miaoyu.html" class="rel-chip">妙玉</a>
+<a href="character-jia-yingchun.html" class="rel-chip">迎春</a>
+<a href="character-jia-xichun.html" class="rel-chip">惜春</a>
+<a href="character-qiaojie.html" class="rel-chip">巧姐</a>
+<a href="character-li-wan.html" class="rel-chip">李纨</a>
+<a href="index.html" class="rel-chip">← 返回目录</a>
+</div>
+<div class="char-name">林黛玉</div>
+<div class="char-aliases">颦颦 · 潇湘妃子 · 颦儿</div>
+<div class="char-quote">「质本洁来还洁去，强于污淖陷渠沟。」</div>
+</div>
+
+<div class="section">
+<div class="section-title">📜 结局推断</div>
+<div class="fate-card">
+<div class="fate-head">泪尽夭亡 <span class="confidence c-极有可能">极有可能</span></div>
+<p>绛珠仙草下世时已定'还泪'之约——一生所有的眼泪还给神瑛侍者，泪尽之日即归天之时。这是全书最根本的神话约束，决定了黛玉的结局只能是'泪尽'而非任何形式的自尽或他杀。</p>
+<p style="margin-top:8px">推考回目：第85回前后。宝玉罹祸狱神庙期间，黛玉急痛忧忿加速泪尽，十七岁春末病逝。脂批揭示黛玉之死'不因离恨而落，为惜其石而落——至死不干，万苦不怨'。她的死亡过程平静，无怨恨，是对宝玉最深情的终极完成。</p>
+<p style="margin-top:8px;font-size:13px;color:var(--text3)">关键证据：绛珠还泪神话(FS-002) → 判词'玉带林中挂'(FS-003) → 脂批'虽诔晴雯实诔黛玉'(FS-013) → 茗玉小姐十七岁病死(FS-038) → 葬花吟(FS-026)</p>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title">🔬 替代学说</div>
+
+<div class="fate-card">
+<div class="fate-head">沉湖说 <span class="confidence c-有可能">有可能</span></div>
+<p style="font-size:13px;color:var(--text3)">提出者：周汝昌、俞平伯</p>
+<p style="margin-top:4px">黛玉践行'质本洁来还洁去'，于月夜投水身亡。'冷月葬花魂'(FS-009)为最直接的诗谶。全书多处水意象(沁芳闸、花落水流红、芙蓉诔中的水中意象)均指向此说。但该说缺乏脂批直接支持——脂批从未说黛玉'沉水'。</p>
+<p style="margin-top:8px;font-size:13px;color:var(--text3)">支持伏笔：FS-003(判词配画) · FS-009(冷月葬花魂) · FS-026(葬花吟：质本洁来还洁去)</p>
+<p style="font-size:13px;color:var(--red)">反对证据：缺乏脂批直接支持 · 与'还泪=泪尽'的神话逻辑不完全契合(投水≠泪尽)</p>
+</div>
+
+<div class="fate-card">
+<div class="fate-head">焚稿断情说（程高本） <span class="confidence c-存疑">存疑</span></div>
+<p style="font-size:13px;color:var(--text3)">出处：程高本后四十回</p>
+<p style="margin-top:4px">黛玉在宝玉被骗娶宝钗的同一时刻焚毁诗稿，含恨而死。该说与脂批'万苦不怨'直接矛盾——黛玉之死不应有怨恨。且'调包计'本身也违背人物性格逻辑（贾母在前80回中明显更偏爱黛玉、薛姨妈从未表示支持'金玉良缘'）。</p>
+<p style="margin-top:8px;font-size:13px;color:var(--red)">反对证据：与'万苦不怨'脂批矛盾 · 不符合前80回人物关系 · 调包计属'俗套'小说手法</p>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title">📌 支撑证据链</div>
+
+<div class="evidence-row">
+<span class="evidence-tag et-文本伏笔">文本伏笔</span>
+<span style="font-family:var(--mono);font-size:12px;color:var(--accent)">FS-002</span>
+<span>绛珠仙草"还泪"设定——下世即为还泪，泪尽归天</span>
+<span style="color:var(--text3);font-size:12px;margin-left:auto">第1回 · 确定</span>
+</div>
+
+<div class="evidence-row">
+<span class="evidence-tag et-判词谶语">判词/谶语</span>
+<span style="font-family:var(--mono);font-size:12px;color:var(--accent)">FS-003</span>
+<span>判词"玉带林中挂" · 判曲《枉凝眉》"心事终虚化"</span>
+<span style="color:var(--text3);font-size:12px;margin-left:auto">第5回 · 确定</span>
+</div>
+
+<div class="evidence-row">
+<span class="evidence-tag et-脂批直接提示">脂批直接提示</span>
+<span style="font-family:var(--mono);font-size:12px;color:var(--accent)">FS-013</span>
+<span>"虽诔晴雯，实乃诔黛玉"——芙蓉诔是预先为黛玉写的悼文</span>
+<span style="color:var(--text3);font-size:12px;margin-left:auto">第78回 · 确定</span>
+</div>
+
+<div class="evidence-row">
+<span class="evidence-tag et-文本伏笔">文本伏笔</span>
+<span style="font-family:var(--mono);font-size:12px;color:var(--accent)">FS-026</span>
+<span>《葬花吟》"质本洁来还洁去""花落人亡两不知"</span>
+<span style="color:var(--text3);font-size:12px;margin-left:auto">第27回 · 极有可能</span>
+</div>
+
+<div class="evidence-row">
+<span class="evidence-tag et-文本伏笔">文本伏笔</span>
+<span style="font-family:var(--mono);font-size:12px;color:var(--accent)">FS-038</span>
+<span>刘姥姥讲茗玉小姐——十七岁一病死了，暗写黛玉</span>
+<span style="color:var(--text3);font-size:12px;margin-left:auto">第39回 · 极有可能</span>
+</div>
+
+<div class="evidence-row">
+<span class="evidence-tag et-文本伏笔">文本伏笔</span>
+<span style="font-family:var(--mono);font-size:12px;color:var(--accent)">FS-009</span>
+<span>"冷月葬花魂"——中秋联诗中最阴冷的谶语</span>
+<span style="color:var(--text3);font-size:12px;margin-left:auto">第76回 · 极有可能</span>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title">🔗 约束关系</div>
+
+<div class="constraint-item">
+<span style="font-size:16px">🔗</span>
+<span style="font-size:12px;color:var(--accent);font-weight:600">必然导致</span>
+<span>FS-002 还泪设定</span><span class="arrow">→</span>
+<span>CHAR-02 泪尽夭亡</span>
+<span style="font-size:11px;color:var(--green)">刚性</span>
+</div>
+
+<div class="constraint-item">
+<span style="font-size:16px">✅</span>
+<span style="font-size:12px;color:var(--accent);font-weight:600">支持</span>
+<span>FS-038 茗玉小姐</span><span class="arrow">→</span>
+<span>CHAR-02 病逝说</span>
+<span style="font-size:11px;color:var(--gold)">强</span>
+</div>
+
+<div class="constraint-item">
+<span style="font-size:16px">❌</span>
+<span style="font-size:12px;color:var(--accent);font-weight:600">矛盾/互斥</span>
+<span>FS-026 葬花吟(质本洁来还洁去)</span><span class="arrow">→</span>
+<span>焚稿断情说(含恨而死)</span>
+<span style="font-size:11px;color:var(--gold)">强</span>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title">⏱️ 命运节点</div>
+<div class="timeline-dot"><b>第3回</b> 黛玉初进荣国府。贾母疼爱，宝玉一见如故，赠字'颦颦'。</div>
+<div class="timeline-dot"><b>第23回</b> 黛玉入住潇湘馆。'潇湘妃子'之名暗含娥皇女英泣竹成斑的典故→泪尽。</div>
+<div class="timeline-dot"><b>第27回</b> 黛玉葬花。'花落人亡两不知'是其命运的最强自白。</div>
+<div class="timeline-dot"><b>第45回</b> 黛玉作《秋窗风雨夕》，病情加重。此回之后黛玉病势每况愈下。</div>
+<div class="timeline-dot"><b>第76回</b> 凹晶馆联诗：'冷月葬花魂'。阴冷至极的谶语。</div>
+<div class="timeline-dot"><b>第78回</b> 宝玉写《芙蓉诔》诔晴雯。脂批指出此文'实乃诔黛玉'——这是提前写给黛玉的悼亡之文。</div>
+<div class="timeline-dot"><b>第85回(推算)</b> 黛玉泪尽夭亡。此时宝玉正罹祸狱神庙。</div>
+</div>
+</div>
+</body>
+</html>

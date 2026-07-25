@@ -556,3 +556,192 @@ if __name__ == '__main__':
 
         print('\n' + '=' * 65)
         print('  引擎 v3.0 就绪。')
+
+
+# ============================================================
+# RACS 自动评分器（从合作者模板到学者权重）
+# ============================================================
+
+class RACSScorer:
+    """
+    红学来源权威性综合评分器 (Redology Authority Composite Score)。
+    加载 scoring_formula.json 中的评分规则，
+    接收合作者按 contributor_scholar_template.json 填写的学者信息，
+    自动计算 RACS 分数并更新 academic_bibliography.json。
+    """
+
+    def __init__(self, data_dir: str):
+        self.data_dir = data_dir
+        self.rubric = {}
+        self._load_formula()
+
+    def _load_formula(self):
+        path = os.path.join(self.data_dir, 'scoring_formula.json')
+        try:
+            with open(path, 'r', encoding='utf-8') as f:
+                formula = json.load(f)
+            dims = formula['scoring_formula']['dimensions']
+            self.rubric = dims
+            self.alphas = {d['symbol']: d['weight_alpha'] for d in dims.values()}
+        except FileNotFoundError:
+            self.alphas = {'I':0.2,'P':0.18,'C':0.15,'R':0.15,'A':0.1,'M':0.1,'Y':0.07,'O':0.05}
+            self.rubric = {}
+
+    def score_scholar(self, profile: dict) -> dict:
+        """输入合作者填写的学者模板，输出完整评分"""
+        dims = self._auto_compute(profile)
+        raw = sum(dims[k] * self.alphas[k] for k in self.alphas if k in dims)
+        normalized = min(100, round(raw * 10))
+
+        # 共识对齐惩罚：A<5 时自动下调约束强度标注
+        constraint_policy = 'full'
+        if dims.get('A', 10) < 5:
+            constraint_policy = 'downgrade'
+        # 方法论惩罚：M*0.1 作为有效权重倍率
+        meth_mult = dims.get('M', 10) / 10.0
+
+        return {
+            'scholar': profile.get('scholar_name', 'Unknown'),
+            'racs_raw': round(raw, 3),
+            'racs_normalized': normalized,
+            'dimension_scores': dims,
+            'constraint_policy': constraint_policy,
+            'methodology_multiplier': round(meth_mult, 2),
+            'effective_weight': round(normalized * meth_mult),
+            'recommended_tier': self._recommend_tier(normalized),
+        }
+
+    def _auto_compute(self, profile: dict) -> dict:
+        """从合作者模板中自动提取各维度分数"""
+        dims = {}
+        # I: 机构权威
+        dims['I'] = self._score_I(profile.get('institutional_affiliation', {}))
+        # P: 发表渠道
+        works = profile.get('works', [])
+        dims['P'] = self._score_P(works)
+        # C: 引用影响力（从 cited_by 列表长度和推荐者权威性预估）
+        pr = profile.get('peer_recognition', {})
+        dims['C'] = self._score_C(pr)
+        # R: 同行认可
+        dims['R'] = self._score_R(pr)
+        # A: 共识一致性
+        dims['A'] = self._score_A(profile.get('consensus_stance', {}))
+        # M: 方法论
+        dims['M'] = self._score_M(profile)
+        # Y: 时效性
+        dims['Y'] = self._score_Y(works)
+        # O: 原始文献获取
+        dims['O'] = self._score_O(profile.get('original_sources_accessed', []))
+        return dims
+
+    def _score_I(self, aff: dict) -> int:
+        current = aff.get('current', '')
+        roles = aff.get('roles', [])
+        hist = aff.get('historical', [])
+        all_affs = [current] + roles + hist
+        all_text = ' '.join(all_affs)
+        if any(k in all_text for k in ['红楼梦研究所','红研所','中国艺术研究院']): return 10
+        if any(k in all_text for k in ['红楼梦学会会长','红楼梦学会副会长','红楼梦学会秘书长']): return 9
+        if any(k in all_text for k in ['红楼梦学刊编委','社科院文学所']): return 8
+        if any(k in all_text for k in ['红楼梦学会理事','中文系教授']): return 7
+        if any(k in all_text for k in ['社科院','中文系副教授']): return 6
+        if any(k in all_text for k in ['讲师','博士','研究员','博物馆','图书馆']): return 5
+        if any(k in all_text for k in ['教授','海外大学']): return 4
+        if any(k in all_text for k in ['独立学者','作家']): return 3
+        if len(profile_files_or_works) > 0 or len(roles) > 0: return 2
+        return 1
+
+    def _score_P(self, works: list) -> int:
+        if not works: return 0
+        max_score = 0
+        for w in works:
+            pub = w.get('publisher_or_journal', '')
+            if any(k in pub for k in ['中华书局','商务印书馆','人民文学出版社','三联书店']): s = 10
+            elif any(k in pub for k in ['红楼梦学刊','中国社会科学院']): s = 9
+            elif any(k in pub for k in ['文学遗产','文艺研究']): s = 8
+            elif any(k in pub for k in ['省级人民出版社','古籍出版社']): s = 7
+            elif any(k in pub for k in ['大学学报','省级社科院']): s = 6
+            elif pub: s = 5
+            else: s = 3
+            max_score = max(max_score, s)
+        if len([w for w in works if w.get('type')=='专著']) >= 2:
+            max_score = min(10, max_score + 1)
+        return max_score
+
+    def _score_C(self, pr: dict) -> int:
+        cited = pr.get('cited_by', [])
+        endorsed = pr.get('endorsed_by', [])
+        total = len(cited) + len(endorsed)
+        if total >= 5: return 10
+        if total >= 3: return 8
+        if total >= 1: return 6
+        return 4  # Assume moderate impact as default
+
+    def _score_R(self, pr: dict) -> int:
+        positions = pr.get('official_positions', [])
+        awards = pr.get('awards', [])
+        pos_text = ' '.join(positions) + ' ' + ' '.join(awards)
+        if any(k in pos_text for k in ['会长','主编','所长']): return 10
+        if any(k in pos_text for k in ['副会长','副主编','副所长']): return 9
+        if any(k in pos_text for k in ['常务理事','编委','创刊编委']): return 8
+        if any(k in pos_text for k in ['理事','助理研究员','省部级']): return 7
+        if any(k in pos_text for k in ['会员','国家级学术奖']): return 6
+        if len(positions) > 0 or len(awards) > 0: return 5
+        if len(pr.get('endorsed_by', [])) > 0: return 4
+        return 2
+
+    def _score_A(self, stance: dict) -> int:
+        score = 10
+        hou40 = stance.get('on_hou40hui', '')
+        zhipi = stance.get('on_zhipi', '')
+        author = stance.get('on_authorship', '')
+        disputes = stance.get('major_disputed_views', [])
+        # Mainstream positions: 否认后40回 + 基本信任脂批 + 曹雪芹为唯一作者 = +0 penalty
+        if '基本肯定' in hou40 or '完全肯定' in hou40: score -= 2
+        if '否定' in zhipi or '伪造' in zhipi: score -= 3
+        if '怀疑' in zhipi: score -= 1
+        if '另有其人' in author: score -= 2
+        score -= min(3, len(disputes))
+        return max(0, score)
+
+    def _score_M(self, profile: dict) -> int:
+        desc = profile.get('methodology_description', '')
+        assessment = profile.get('our_assessment', {})
+        weak = assessment.get('weakness', '')
+        if not desc: return 5
+        keywords_strong = ['原文','文本','脂批','引证','对照','可复现','考辨','档案','严谨','系统','证据']
+        keywords_weak = ['推测','猜测','循环论证','选择性','缺乏','过度','主观','附会']
+        score = 5
+        for kw in keywords_strong:
+            if kw in desc: score += 0.5
+        for kw in keywords_weak:
+            if kw in weak: score -= 1
+        return max(0, min(10, round(score)))
+
+    def _score_Y(self, works: list) -> int:
+        if not works: return 5
+        years = [w.get('year', 2000) for w in works if w.get('year')]
+        if not years: return 5
+        latest = max(years)
+        if latest >= 2023: return 10
+        if latest >= 2015: return 8
+        if latest >= 2000: return 6
+        if latest >= 1980: return 4
+        if latest >= 1950: return 2
+        return 0
+
+    def _score_O(self, sources: list) -> int:
+        if not sources: return 2
+        src_text = ' '.join(sources)
+        if any(k in src_text for k in ['原本','影印本','原件']): return 10
+        if any(k in src_text for k in ['整理本','汇编','过录本']): return 8
+        if any(k in src_text for k in ['二手','依赖']): return 2
+        return 5
+
+    def _recommend_tier(self, score: int) -> str:
+        if score >= 85: return 'T1 (极高)'
+        if score >= 70: return 'T2 (高)'
+        if score >= 55: return 'T3 (中等)'
+        if score >= 40: return 'T4 (参考)'
+        if score >= 20: return 'T5 (存疑)'
+        return 'T6 (低)'

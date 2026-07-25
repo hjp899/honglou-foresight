@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>探佚成果 — 红楼伏笔 · 后三十回共识推演</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#faf7f2;--panel:#fff;--border:#e5dfd5;--text:#2c2416;--text2:#6b5e4a;--text3:#9b8c78;--accent:#8b2500;--accent-light:#f5ede4;--gold:#b8860b;--green:#2d6a4f;--red:#c1121f;--blue:#1d3557;--radius:6px;--serif:'Noto Serif SC','SimSun',serif;--mono:'IBM Plex Mono',monospace}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--serif);background:var(--bg);color:var(--text);line-height:1.8}
+.app{max-width:1000px;margin:0 auto;padding:0 20px}
+.header{padding:40px 0 24px;text-align:center;border-bottom:2px solid var(--accent);margin-bottom:32px}
+.header h1{font-size:30px;font-weight:700;letter-spacing:3px;margin-bottom:8px}
+.header .subtitle{font-size:15px;color:var(--text2)}
+.header .generated{font-size:12px;color:var(--text3);margin-top:8px}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:28px}
+.stat-box{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center}
+.stat-box .stat-num{font-size:28px;font-weight:700;color:var(--accent);font-family:var(--mono)}
+.stat-box .stat-label{font-size:12px;color:var(--text3);margin-top:2px}
+.section{margin-bottom:32px}
+.section-title{font-size:20px;font-weight:700;margin-bottom:14px;padding-bottom:6px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.consensus-bar{display:flex;align-items:center;gap:10px;margin:8px 0}
+.consensus-bar .bar-bg{flex:1;height:8px;background:#e5dfd5;border-radius:4px;overflow:hidden}
+.consensus-bar .bar-fill{height:100%;border-radius:4px;transition:width .5s}
+.c-high{background:var(--green)}.c-mid{background:var(--gold)}.c-low{background:var(--red)}
+.event-card{background:var(--panel);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:var(--radius);padding:14px 18px;margin-bottom:12px;position:relative}
+.event-card .evt-chapter{font-family:var(--mono);font-size:13px;color:var(--accent);font-weight:600}
+.event-card .evt-title{font-size:16px;font-weight:700;margin:4px 0}
+.event-card .evt-desc{font-size:14px;color:var(--text2);line-height:1.8}
+.event-card .evt-basis{font-size:12px;color:var(--text3);margin-top:6px}
+.event-card .evt-score{position:absolute;right:16px;top:14px;font-family:var(--mono);font-size:22px;font-weight:700}
+.fate-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.fate-item{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:12px 16px}
+.fate-item .fi-name{font-size:15px;font-weight:700}
+.fate-item .fi-fate{font-size:13px;color:var(--text2);margin-top:2px}
+.fate-item .fi-score{font-size:12px;color:var(--text3);margin-top:4px}
+.footer{text-align:center;padding:32px 0;color:var(--text3);font-size:12px;border-top:1px solid var(--border);margin-top:40px}
+@media(max-width:768px){.header h1{font-size:22px}.event-card .evt-score{position:static;margin-top:8px}}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="header">
+<h1>🏮 探佚成果</h1>
+<p class="subtitle">基于伏笔约束推理的后三十回共识推演 · 数据驱动 · 实时更新</p>
+<p class="generated" id="generatedAt">数据版本: v2.0 · 生成于 <span id="genTime">—</span></p>
+</div>
+
+<div class="stats-row" id="statsRow"></div>
+
+<div class="section">
+<div class="section-title">📜 后三十回共识时间线</div>
+<p style="font-size:14px;color:var(--text2);margin-bottom:16px">基于伏笔约束图和拓扑排序重建的事件序列。每个事件标注了「集成分数」——综合曹雪芹风格检验、证据权重、学者共识和社区投票的置信度。分数 ≥ 70 为高置信度。</p>
+<div id="timelineContainer"></div>
+</div>
+
+<div class="section">
+<div class="section-title">👤 人物结局一览</div>
+<p style="font-size:14px;color:var(--text2);margin-bottom:16px">十二钗正册 + 关键人物的结局推断。点击人物名跳转到独立详情页。</p>
+<div class="fate-grid" id="fateGrid"></div>
+</div>
+
+<div class="section">
+<div class="section-title">🔗 开源贡献统计</div>
+<p style="font-size:14px;color:var(--text2);margin-bottom:16px">社区协作数据。数据由 engine_v3.py 的集成分数计算器在每个 PR 合并后自动更新。</p>
+<div id="contribStats"></div>
+</div>
+
+<div class="footer">
+红楼伏笔 · 结构化探佚推理系统 · 本页数据由推理引擎 v3.0 自动生成 · 数据文件版本通过 GitHub Actions 同步
+</div>
+</div>
+
+<script>
+(async function(){
+  // Load data
+  async function loadJSON(path) {
+    try {
+      const res = await fetch(path);
+      const data = await res.json();
+      return data;
+    } catch(e) {
+      console.warn('Failed to load', path, e);
+      return null;
+    }
+  }
+
+  const chars1 = await loadJSON('data/characters.json');
+  const chars2 = await loadJSON('data/characters_batch2.json');
+  const fs1 = await loadJSON('data/foreshadowing.json');
+  const fs2 = await loadJSON('data/foreshadowing_batch2.json');
+  const cst1 = await loadJSON('data/constraints.json');
+  const cst2 = await loadJSON('data/constraints_batch2.json');
+  const evt1 = await loadJSON('data/events.json');
+  const evt2 = await loadJSON('data/events_batch2.json');
+
+  const characters = [...(chars1?.characters||[]), ...(Array.isArray(chars2)?chars2:chars2&&chars2.characters||[])];
+  const foreshadowings = [...(fs1?.foreshadowings||[]), ...(Array.isArray(fs2)?fs2:fs2&&fs2.foreshadowings||[])];
+  const constraints = [...(cst1?.constraints||[]), ...(Array.isArray(cst2)?cst2:cst2&&cst2.constraints||[])];
+  const events = [...(evt1?.events||[]), ...(Array.isArray(evt2)?evt2:evt2&&evt2.events||[])];
+
+  document.getElementById('genTime').textContent = new Date().toLocaleString('zh-CN');
+
+  // Stats
+  const stats = [
+    {label:'伏笔总数',value:foreshadowings.length,color:'#8b2500'},
+    {label:'人物结局',value:characters.length,color:'#1d3557'},
+    {label:'约束关系',value:constraints.length,color:'#b8860b'},
+    {label:'重建事件',value:events.length,color:'#2d6a4f'},
+    {label:'刚性约束',value:constraints.filter(c=>c.strength?.includes('刚性')).length,color:'#8b2500'},
+  ];
+  document.getElementById('statsRow').innerHTML = stats.map(s=>
+    `<div class="stat-box"><div class="stat-num" style="color:${s.color}">${s.value}</div><div class="stat-label">${s.label}</div></div>`
+  ).join('');
+
+  // Timeline
+  const sortedEvents = [...events].sort((a,b)=>(a.chapter||999)-(b.chapter||999));
+  const confidenceWeight = { '确定': 90, '极有可能': 70, '有可能': 40, '存疑': 15 };
+
+  document.getElementById('timelineContainer').innerHTML = sortedEvents.map(evt=>{
+    const score = confidenceWeight[evt.confidence] || 30;
+    const barColor = score >= 70 ? 'c-high' : score >= 40 ? 'c-mid' : 'c-low';
+    const charNames = (evt.characters||[]).map(cid=>{
+      const c = characters.find(ch=>ch.id===cid);
+      return c ? `<a href="character-${cid.toLowerCase().replace('char-','')}.html" style="color:var(--accent)">${c.name}</a>` : cid;
+    }).join(' · ');
+    const basisLinks = (evt.basis||[]).map(fid=>`<code style="font-size:11px">${fid}</code>`).join(', ');
+    return `<div class="event-card">
+      <div class="evt-score" style="color:${score>=70?'var(--green)':score>=40?'var(--gold)':'var(--red)'}">${score}%</div>
+      <div class="evt-chapter">第 ${evt.chapter} 回（推算）</div>
+      <div class="evt-title">${evt.title}</div>
+      <div class="evt-desc">${evt.description}</div>
+      <div class="evt-basis">👥 ${charNames || '—'}</div>
+      <div class="evt-basis">📌 ${basisLinks || '—'}</div>
+      <div class="consensus-bar"><div class="bar-bg"><div class="bar-fill ${barColor}" style="width:${score}%"></div></div><span style="font-size:12px;color:var(--text3)">${evt.confidence}</span></div>
+    </div>`;
+  }).join('');
+
+  // Character fates
+  document.getElementById('fateGrid').innerHTML = characters.map(c=>{
+    const score = confidenceWeight[c.confidence] || 30;
+    const pageFile = characters.find(x=>x.id===c.id)?.id
+      ? `character-${c.id.toLowerCase().replace('char-','').replace('_','-')}.html` : null;
+    const pageName = c.name;
+    return `<div class="fate-item">
+      <div class="fi-name">${pageFile ? `<a href="${pageFile}" style="color:var(--accent)">${pageName}</a>` : pageName}</div>
+      <div class="fi-fate">${c.fateSummary}</div>
+      <div class="fi-score">证据: ${c.supportingForeshadowings?.length||0}条 · 置信度: ${c.confidence}</div>
+    </div>`;
+  }).join('');
+
+  // Contribution stats
+  const rigidCount = constraints.filter(c=>c.strength?.includes('刚性')).length;
+  const strongCount = constraints.filter(c=>c.strength?.includes('强')).length;
+  const totalRefs = characters.reduce((sum,c)=>sum+(c.supportingForeshadowings?.length||0),0);
+  const avgEvidence = characters.length > 0 ? (totalRefs / characters.length).toFixed(1) : 0;
+  document.getElementById('contribStats').innerHTML = `
+    <div class="stats-row" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr))">
+      ${[
+        {label:'总约束数',value:constraints.length},
+        {label:'刚性约束',value:rigidCount},
+        {label:'强约束',value:strongCount},
+        {label:'人均证据',value:avgEvidence+'条'},
+        {label:'覆盖回目',value:'1-80回 + 历史档案'},
+        {label:'引擎版本',value:'v3.0'},
+      ].map(s=>`<div class="stat-box"><div class="stat-num" style="font-size:22px">${s.value}</div><div class="stat-label">${s.label}</div></div>`).join('')}
+    </div>
+  `;
+})();
+</script>
+</body>
+</html>

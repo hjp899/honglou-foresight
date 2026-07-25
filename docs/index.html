@@ -1,247 +1,309 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>红楼伏笔 — 结构化探佚推理系统</title>
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>红楼伏笔 · 探佚推理系统</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#faf7f2;--panel:#fff;--border:#e5dfd5;--text:#2c2416;--text2:#6b5e4a;--text3:#9b8c78;--accent:#8b2500;--accent-light:#f5ede4;--gold:#b8860b;--green:#2d6a4f;--red:#c1121f;--blue:#1d3557;--radius:6px;--serif:'Noto Serif SC','SimSun','STSong',serif;--mono:'IBM Plex Mono','Courier New',monospace}
+:root{--bg:#faf7f2;--panel:#fff;--border:#e5dfd5;--text:#2c2416;--t2:#6b5e4a;--t3:#9b8c78;--a:#8b2500;--al:#f5ede4;--g:#b8860b;--gn:#2d6a4f;--r:#c1121f;--b:#1d3557;--s:'Noto Serif SC','SimSun',serif;--m:'IBM Plex Mono',monospace}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--serif);background:var(--bg);color:var(--text);line-height:1.7}
-a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+body{font-family:var(--s);background:var(--bg);color:var(--text);line-height:1.7}
+a{color:var(--a);text-decoration:none}a:hover{text-decoration:underline}
 .app{max-width:1200px;margin:0 auto;padding:0 20px}
-.header{padding:48px 0 32px;text-align:center;border-bottom:2px solid var(--accent);margin-bottom:32px}
-.header h1{font-size:32px;font-weight:700;letter-spacing:2px;margin-bottom:8px}
-.header .subtitle{color:var(--text2);font-size:16px}
-.badge-row{margin-top:12px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-.badge{display:inline-block;padding:4px 12px;border:1px solid var(--border);border-radius:20px;font-size:12px;color:var(--text2);font-family:var(--mono)}
-.nav{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:24px;overflow-x:auto}
-.nav-btn{padding:10px 20px;border:none;background:none;font-family:var(--serif);font-size:15px;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s}
-.nav-btn:hover{color:var(--accent)}.nav-btn.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
+.header{padding:40px 0 24px;text-align:center;border-bottom:2px solid var(--a);margin-bottom:24px}
+.header h1{font-size:28px;font-weight:700;letter-spacing:2px}
+.header .sub{color:var(--t2);font-size:15px;margin:4px 0}
+.badges{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+.badge{display:inline-block;padding:3px 10px;border:1px solid var(--border);border-radius:20px;font-size:11px;color:var(--t2);font-family:var(--m)}
+.nav{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:20px;overflow-x:auto}
+.nav-btn{padding:10px 18px;border:none;background:none;font-family:var(--s);font-size:14px;color:var(--t2);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s}
+.nav-btn:hover{color:var(--a)}.nav-btn.active{color:var(--a);border-bottom-color:var(--a);font-weight:600}
 .panel{display:none}.panel.active{display:block}
-.card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px;transition:box-shadow .2s}
-.card:hover{box-shadow:0 2px 8px rgba(0,0,0,.06)}
-.card-title{font-size:17px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:8px}
-.card-body{font-size:15px}
-.fate-card{border-left:4px solid var(--accent);padding-left:16px}
-.confidence{display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:600}
-.c-确定{background:#d4edda;color:var(--green)}.c-极有可能{background:#fff3cd;color:#856404}
-.c-有可能{background:#e2e3e5;color:#383d41}.c-存疑{background:#f8d7da;color:var(--red)}
-.evidence-list{margin-top:12px}
-.evidence-item{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid #f0ebe0;font-size:14px}
-.evidence-item:last-child{border-bottom:none}
-.evidence-type{font-size:11px;padding:1px 6px;border-radius:2px;white-space:nowrap;font-family:var(--mono)}
-.et-脂批直接提示{background:#d4edda;color:var(--green)}.et-判词谶语{background:#e8d5f5;color:#6b2fa0}
-.et-文本伏笔{background:#cce5ff;color:var(--blue)}.et-其他{background:#e2e3e5;color:#383d41}
-.evidence-ref{color:var(--accent);font-family:var(--mono);font-size:12px;white-space:nowrap}
-.detail-toggle{cursor:pointer;color:var(--accent);font-size:13px;margin-top:8px;display:inline-block}
-.detail-content{display:none;margin-top:8px;padding:12px;background:var(--accent-light);border-radius:var(--radius);font-size:14px;line-height:1.8}
-.detail-content.open{display:block}
-.fs-card .fs-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
-.fs-card .fs-chapter{font-size:13px;color:var(--text3);font-family:var(--mono)}
-.fs-card .fs-content{font-size:15px;line-height:1.9;margin-bottom:8px;padding:8px 12px;background:var(--accent-light);border-radius:var(--radius)}
-.fs-card .fs-context{font-size:14px;color:var(--text2)}
-.timeline{position:relative;padding-left:30px}
-.timeline::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:2px;background:var(--border)}
-.timeline-item{position:relative;margin-bottom:28px}
-.timeline-item::before{content:'';position:absolute;left:-24px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--accent);border:2px solid var(--bg)}
-.timeline-item .tl-chapter{font-family:var(--mono);font-size:13px;color:var(--accent);font-weight:600}
-.timeline-item .tl-title{font-size:16px;font-weight:700}
-.timeline-item .tl-desc{font-size:14px;color:var(--text2);margin-top:4px;line-height:1.8}
-.constraint-item{display:flex;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid #f0ebe0;font-size:14px}
-.constraint-item .arrow{color:var(--gold);font-weight:700;white-space:nowrap}
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:24px}
-.stat-box{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center}
-.stat-box .stat-num{font-size:36px;font-weight:700;color:var(--accent);font-family:var(--mono)}
-.stat-box .stat-label{font-size:13px;color:var(--text3);margin-top:4px}
-.search-bar{margin-bottom:20px}
-.search-bar input{width:100%;padding:12px 16px;border:1px solid var(--border);border-radius:var(--radius);font-family:var(--serif);font-size:15px;background:var(--panel);color:var(--text);outline:none}
-.search-bar input:focus{border-color:var(--accent)}
-.filter-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
-.filter-chip{padding:6px 14px;border:1px solid var(--border);border-radius:20px;font-size:13px;cursor:pointer;transition:all .2s;background:var(--panel);color:var(--text2)}
-.filter-chip:hover{border-color:var(--accent);color:var(--accent)}
-.filter-chip.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-.footer{padding:40px 0 24px;text-align:center;color:var(--text3);font-size:13px;border-top:1px solid var(--border);margin-top:40px}
-@media(max-width:768px){.header h1{font-size:24px}.nav-btn{padding:8px 12px;font-size:13px}}
-</style>
-</head>
-<body>
-<div class="app">
-<div class="header">
-<h1>🏮 红楼伏笔</h1>
-<p class="subtitle">《红楼梦》结构化探佚推理系统 — 伏笔·脂批·约束·推理</p>
-<div class="badge-row">
-<span class="badge">60条伏笔</span><span class="badge">29个人物</span><span class="badge">40条约束</span><span class="badge">22个事件</span><span class="badge">15个页面</span><span class="badge">开源协作</span>
-</div>
-</div>
-
+.card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:16px 18px;margin-bottom:12px}
+.card-title{font-size:16px;font-weight:700;margin-bottom:6px}
+.card-body{font-size:14px}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:20px}
+.stat-box{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:14px;text-align:center}
+.stat-num{font-size:28px;font-weight:700;color:var(--a);font-family:var(--m)}
+.stat-label{font-size:12px;color:var(--t3);margin-top:2px}
+.conf{display:inline-block;padding:2px 6px;border-radius:3px;font-size:10px;font-weight:600}
+.c1{background:#d4edda;color:var(--gn)}.c2{background:#fff3cd;color:#856404}.c3{background:#e2e3e5;color:#383d41}.c4{background:#f8d7da;color:var(--r)}
+.er{display:flex;gap:6px;padding:5px 0;border-bottom:1px solid #f0ebe0;font-size:13px;align-items:flex-start}.er:last-child{border-bottom:none}
+.et{font-size:10px;padding:1px 5px;border-radius:2px;white-space:nowrap;font-family:var(--m)}
+.et1{background:#d4edda;color:var(--gn)}.et2{background:#e8d5f5;color:#6b2fa0}.et3{background:#cce5ff;color:var(--b)}.et4{background:#e2e3e5;color:#383d41}
+.fc{border-left:4px solid var(--a);padding-left:14px}
+.sb{display:inline-block;padding:1px 6px;border:1px solid var(--border);border-radius:3px;font-size:10px}
+.tl{position:relative;padding-left:24px}
+.tl::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:var(--border)}
+.ti{position:relative;margin-bottom:22px}
+.ti::before{content:'';position:absolute;left:-20px;top:5px;width:8px;height:8px;border-radius:50%;background:var(--a);border:2px solid var(--bg)}
+.ci{display:flex;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid #f0ebe0;font-size:13px}.ci .arrow{color:var(--g);font-weight:700}
+.srch{margin-bottom:16px}.srch input{width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:6px;font-family:var(--s);font-size:14px;background:var(--panel);outline:none}.srch input:focus{border-color:var(--a)}
+.flt{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.flt-chip{padding:5px 12px;border:1px solid var(--border);border-radius:20px;font-size:12px;cursor:pointer}.flt-chip.active{background:var(--a);color:#fff;border-color:var(--a)}
+.footer{text-align:center;padding:28px 0;color:var(--t3);font-size:11px;border-top:1px solid var(--border);margin-top:32px}
+@media(max-width:768px){.header h1{font-size:22px}.nav-btn{padding:8px 12px;font-size:12px}}
+</style></head><body><div class="app">
+<div class="header"><h1>🏮 红楼伏笔</h1><p class="sub">《红楼梦》结构化探佚推理系统 · 伏笔 · 脂批 · 约束 · 推理</p>
+<div class="badges"><span class="badge">60条伏笔</span><span class="badge">29人物</span><span class="badge">40约束</span><span class="badge">22事件</span><span class="badge">三版引擎</span><span class="badge">离线可用</span></div></div>
 <div class="nav" id="nav">
-<button class="nav-btn active" data-panel="overview">概览</button>
-<button class="nav-btn" data-panel="characters">人物结局</button>
-<button class="nav-btn" data-panel="foreshadowing">伏笔索引</button>
-<button class="nav-btn" data-panel="constraints">约束图</button>
-<button class="nav-btn" data-panel="timeline">事件时间线</button>
+<button class="nav-btn active" data-p="ov">概览</button>
+<button class="nav-btn" data-p="ch">人物结局</button>
+<button class="nav-btn" data-p="fs">伏笔索引</button>
+<button class="nav-btn" data-p="cs">约束图</button>
+<button class="nav-btn" data-p="tl">事件时间线</button>
 </div>
-
-<div class="panel active" id="panel-overview">
-<div class="stats-grid">
-<div class="stat-box"><div class="stat-num" id="stat-fs">60</div><div class="stat-label">结构化伏笔</div></div>
-<div class="stat-box"><div class="stat-num" id="stat-chars">29</div><div class="stat-label">人物结局</div></div>
-<div class="stat-box"><div class="stat-num" id="stat-cst">40</div><div class="stat-label">逻辑约束</div></div>
-<div class="stat-box"><div class="stat-num" id="stat-evt">22</div><div class="stat-label">重建事件</div></div>
-</div>
-
-<div class="card">
-<div class="card-title">关于这个项目</div>
-<div class="card-body">
-<p style="margin-bottom:12px"><b>开源的结构化探佚推理系统</b>。把曹雪芹在前80回中埋下的每一条伏笔、脂砚斋留下的每一条批语、红学家数十年的探佚成果转化为可计算、可验证、可追溯的数据。</p>
-<p style="margin-bottom:12px">核心假设：曹雪芹已写完《红楼梦》全书（110回），后30回因借阅者"迷失"而佚失。但大量伏笔和脂批提供了足够的约束条件——这些约束本质上定义了一个逻辑推理问题。</p>
-<p>与 MiroFish（多智能体社会仿真）和 OpenStory（角色沙盒演化）不同，本项目走证据链路线：逐条伏笔 → 约束图 → 逻辑传播 → 一致性验证。</p>
-</div>
-</div>
-
-<div class="card">
-<div class="card-title">🔬 核心方法</div>
-<div class="card-body">
-<ol style="padding-left:20px;line-height:2.2">
-<li><b>伏笔结构化</b> — 将前80回中的每一条伏笔与脂批按统一格式录入</li>
-<li><b>约束图构建</b> — 建立伏笔间的逻辑关系：必然导致、支持、矛盾/互斥、时间顺序、因果依赖</li>
-<li><b>约束传播</b> — 给定一条伏笔为真，自动传播其对其他伏笔/结局的影响</li>
-<li><b>一致性验证</b> — 检查一组结局假设是否与所有已知约束兼容</li>
-<li><b>拓扑排序</b> — 基于时间顺序约束对事件进行排序，重建后三十回的事件序列</li>
-</ol>
-</div>
-</div>
-
-<div class="card">
-<div class="card-title">📖 快速入口</div>
-<div class="card-body" style="line-height:2.2">
-<p>📊 <a href="results.html">探佚成果页</a> — 后三十回共识推演（实时更新）</p>
-<p>🕸️ <a href="relationship-graph.html">十二钗命运网络</a> — D3.js 力导向关系图谱</p>
-<p>👤 <a href="character-lin-daiyu.html">林黛玉 · 人物详页</a> — 精装版证据链展示（其余11人从顶部导航进入）</p>
-<p>📖 <a href="https://github.com/hjp899/honglou-meng-foreshadowing">GitHub 仓库</a> — 完整源码 + 数据文件</p>
-</div>
-</div>
-</div>
-
-<div class="panel" id="panel-characters">
-<div class="search-bar"><input type="text" id="charSearch" placeholder="搜索人物..."></div>
-<div class="filter-row" id="charFilters">
-<span class="filter-chip active" data-filter="all">全部</span>
-<span class="filter-chip" data-filter="核心">十二钗正册</span>
-<span class="filter-chip" data-filter="重要">副册/又副册</span>
-<span class="filter-chip" data-filter="次要">重要配角</span>
-</div>
-<div id="charList"></div>
-</div>
-
-<div class="panel" id="panel-foreshadowing">
-<div class="search-bar"><input type="text" id="fsSearch" placeholder="搜索伏笔内容或回目..."></div>
-<div class="filter-row" id="fsFilters">
-<span class="filter-chip active" data-filter="all">全部</span>
-<span class="filter-chip" data-filter="确定">确定</span>
-<span class="filter-chip" data-filter="极有可能">极有可能</span>
-<span class="filter-chip" data-filter="脂批直接提示">脂批直接提示</span>
-</div>
-<div id="fsList"></div>
-</div>
-
-<div class="panel" id="panel-constraints">
-<div class="card"><div class="card-title">五种约束类型</div>
-<div class="card-body" style="font-size:14px;line-height:2">
-<p>🔗 <b>必然导致</b> · ✅ <b>支持</b> · ❌ <b>矛盾/互斥</b> · ⏱️ <b>时间顺序</b> · 🔀 <b>因果依赖</b></p>
-</div></div>
-<div id="cstList"></div>
-</div>
-
-<div class="panel" id="panel-timeline">
-<div class="card"><div class="card-title">后三十回事件时间线（基于约束推导）</div>
-<div class="card-body" style="font-size:14px;color:var(--text2)">基于时间顺序约束和因果依赖关系的拓扑排序结果。回目数字为探佚推算，仅供参考排序。</div></div>
-<div class="timeline" id="tlList"></div>
-</div>
-
-<div class="footer">
-红楼伏笔 · 开源结构化探佚推理系统 · 数据基于前80回原文 + 脂砚斋批语 + 红学探佚学研究成果 · 欢迎参与贡献
-</div>
-</div>
-
+<div class="panel active" id="p-ov"><div class="stats-grid" id="stats"></div>
+<div class="card"><div class="card-title">关于这个项目</div><div class="card-body"><p style="margin-bottom:10px"><b>开源的结构化探佚推理系统</b>。把曹雪芹在前80回中埋下的每一条伏笔、脂砚斋留下的每一条批语、红学家数十年的探佚成果转化为可计算、可验证、可追溯的数据。</p><p style="margin-bottom:10px">核心假设：曹雪芹已写完《红楼梦》全书（110回），后30回因借阅者"迷失"而佚失。大量伏笔和脂批提供了足够的约束条件——这些约束本质上定义了一个逻辑推理问题。</p><p>与 MiroFish（多智能体仿真）和 OpenStory（角色沙盒演化）不同，本项目走证据链路线：逐条伏笔 → 约束图 → 逻辑传播 → 一致性验证。</p></div></div>
+<div class="card"><div class="card-title">📖 快速入口</div><div class="card-body" style="line-height:2.2"><p>👤 <a href="#" onclick="showCharacter('CHAR-02')">林黛玉 · 人物详页</a> — 三种死法对比 + 完整证据链</p><p>👤 <a href="#" onclick="showCharacter('CHAR-01')">贾宝玉 · 结局推断</a></p><p>👤 <a href="#" onclick="showCharacter('CHAR-10')">王熙凤 · 失势惨死</a></p><p>👤 <a href="#" onclick="showCharacter('CHAR-05')">贾探春 · 远嫁海外</a></p><p>📜 <a href="https://github.com/hjp899/honglou-meng-foreshadowing">GitHub 仓库</a> — 完整源码 + 数据文件</p></div></div></div>
+<div class="panel" id="p-ch"><div class="srch"><input type="text" id="chSearch" placeholder="搜索人物..."></div><div class="flt" id="chFilters"><span class="flt-chip active" data-f="all">全部</span><span class="flt-chip" data-f="核心">十二钗正册</span><span class="flt-chip" data-f="重要">副册/又副册</span><span class="flt-chip" data-f="次要">重要配角</span></div><div id="chList"></div></div>
+<div class="panel" id="p-fs"><div class="srch"><input type="text" id="fsSearch" placeholder="搜索伏笔内容或回目..."></div><div class="flt" id="fsFilters"><span class="flt-chip active" data-f="all">全部</span><span class="flt-chip" data-f="确定">确定</span><span class="flt-chip" data-f="极有可能">极有可能</span><span class="flt-chip" data-f="脂批直接提示">脂批直接提示</span></div><div id="fsList"></div></div>
+<div class="panel" id="p-cs"><div class="card"><div class="card-title">五种约束类型</div><div class="card-body" style="line-height:2">🔗 <b>必然导致</b> · ✅ <b>支持</b> · ❌ <b>矛盾/互斥</b> · ⏱️ <b>时间顺序</b> · 🔀 <b>因果依赖</b></div></div><div id="csList"></div></div>
+<div class="panel" id="p-tl"><div class="tl" id="tlList"></div></div>
+<div class="footer">红楼伏笔 · 单文件离线版 · 数据内嵌 · 零依赖 · 双击可用 · 开源协作</div></div>
 <script>
-let characters=[],foreshadowings=[],constraints=[],events=[];
-async function loadData(){
-  try{
-    const bs='data/';
-    const[cR,fR,csR,eR]=await Promise.all([fetch(bs+'characters.json'),fetch(bs+'foreshadowing.json'),fetch(bs+'constraints.json'),fetch(bs+'events.json')]);
-    const cD=await cR.json(),fD=await fR.json(),csD=await csR.json(),eD=await eR.json();
-    characters=cD.characters||[];foreshadowings=fD.foreshadowings||[];constraints=csD.constraints||[];events=eD.events||[];
-    try{const c2=await fetch(bs+'characters_batch2.json');characters=characters.concat(await c2.json());}catch(_){}
-    try{const f2=await fetch(bs+'foreshadowing_batch2.json');foreshadowings=foreshadowings.concat(await f2.json());}catch(_){}
-    try{const cs2=await fetch(bs+'constraints_batch2.json');constraints=constraints.concat(await cs2.json());}catch(_){}
-    try{const e2=await fetch(bs+'events_batch2.json');events=events.concat(await e2.json());}catch(_){}
-    document.getElementById('stat-fs').textContent=foreshadowings.length;
-    document.getElementById('stat-chars').textContent=characters.length;
-    document.getElementById('stat-cst').textContent=constraints.length;
-    document.getElementById('stat-evt').textContent=events.length;
-    renderAll();
-  }catch(e){console.error(e);document.querySelectorAll('.panel').forEach(p=>p.innerHTML='<div style="padding:40px;text-align:center;color:#9b8c78">数据加载中...请确保通过 GitHub Pages 或本地服务器打开此页面。</div>');}
-}
-document.getElementById('nav').addEventListener('click',e=>{
-  const btn=e.target.closest('.nav-btn');if(!btn)return;
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.getElementById('panel-'+btn.dataset.panel).classList.add('active');
-});
+// ====== ALL DATA EMBEDDED ======
+const R={确定:"c1",极有可能:"c2",有可能:"c3",存疑:"c4"};
+const ETC={脂批直接提示:"et1",判词谶语:"et1","判词/谶语":"et2","前80回文本伏笔":"et3",文本伏笔:"et3","人物性格逻辑":"et4",其他:"et4"};
+const SIG={核心:"十二钗正册",重要:"副册/又副册",次要:"重要配角",边缘:"边缘人物"};
+
+const CHARACTERS=[
+{id:"CHAR-01",name:"贾宝玉",alias:["怡红公子","绛洞花主","富贵闲人"],significance:"核心",fateSummary:"罹难狱神庙，经甄宝玉送玉而'梦醒'，最终悬崖撒手出家为僧",fateDetail:"黛玉死后宝玉被迫娶宝钗，婚后'空对着山中高士晶莹雪，终不忘世外仙姝寂寞林'。贾府事败被抄，宝玉与凤姐等曾羁押于狱神庙，茜雪小红等前往探慰。后经甄宝玉送还通灵玉，宝玉经历'甄''假'之辨后彻悟出家。脂批称其'悬崖撒手'。",confidence:"确定",supporting:["FS-001","FS-005","FS-018","FS-024","FS-029"],contradicting:[],quote:"看破的，遁入空门；痴迷的，枉送了性命。",alt:[]},
+{id:"CHAR-02",name:"林黛玉",alias:["颦颦","潇湘妃子","颦儿"],significance:"核心",fateSummary:"'泪尽夭亡'——因宝玉罹难急痛忧忿加速泪尽，十七岁春末病逝",fateDetail:"绛珠仙草下世即为'还泪'——泪尽即归天。主流探佚学认为黛玉系'泪尽夭亡'而非程高本'焚稿断情'。关键脂批揭示：绛珠之泪'不因离恨而落，为惜其石而落'、'至死不干，万苦不怨'。黛玉之死无怨恨，而是深情的终极完成。",confidence:"极有可能",supporting:["FS-002","FS-003","FS-009","FS-013","FS-026"],contradicting:[],quote:"质本洁来还洁去，强于污淖陷渠沟。",alt:[{theory:"沉湖说",proponent:"周汝昌、俞平伯",confidence:"有可能",description:"黛玉践行'质本洁来还洁去'，于月夜投水身亡。'冷月葬花魂'为最直接的诗谶。但缺乏脂批直接支持。"},{theory:"焚稿断情说（程高本）",proponent:"程高本后四十回",confidence:"存疑",description:"黛玉在宝玉被骗娶宝钗的同一时刻焚毁诗稿，含恨而死。与脂批'万苦不怨'直接矛盾。"}]},
+{id:"CHAR-03",name:"薛宝钗",alias:["蘅芜君","宝姐姐"],significance:"核心",fateSummary:"嫁宝玉后'借词含讽谏'致使婚姻破裂，最终'金簪雪里埋'独守空闺",fateDetail:"贾母先黛玉而死、王夫人独揽大权后，宝钗嫁入贾府。婚后发现宝玉'空对着山中高士晶莹雪'，宝钗多次讽谏仕途经济引发冲突（脂批回目提示'薛宝钗借词含讽谏'），最终婚姻破裂。",confidence:"极有可能",supporting:["FS-007","FS-027","FS-030"],contradicting:[],quote:"好风凭借力，送我上青云。",alt:[]},
+{id:"CHAR-04",name:"贾元春",alias:["元妃","大小姐"],significance:"核心",fateSummary:"如杨贵妃般被赐死（非病逝），'虎兕相逢大梦归'",fateDetail:"第十八回元春点戏《乞巧》，脂批明确标注'《长生殿》伏元妃之死'——暗示元春如杨玉环死于政治斗争。判词'虎兕相逢大梦归'也指向政治冲突。元春失宠罢官，贾府失去最大政治靠山。",confidence:"确定",supporting:["FS-008","FS-017"],contradicting:[],quote:"虎兕相逢大梦归。",alt:[]},
+{id:"CHAR-05",name:"贾探春",alias:["蕉下客","三姑娘","玫瑰花"],significance:"核心",fateSummary:"远嫁海外为王妃，'千里东风一梦遥'",fateDetail:"探春在抄检大观园时预言'从家里自杀自灭起来才能一败涂地'，展现政治远见。判词配画（大海、大船、掩面女子）、风筝谜'游丝一断浑无力'、抽花签'必得贵婿'均指向远嫁海外。",confidence:"极有可能",supporting:["FS-006","FS-021"],contradicting:[],quote:"才自精明志自高，生于末世运偏消。",alt:[]},
+{id:"CHAR-06",name:"史湘云",alias:["枕霞旧友","云儿"],significance:"核心",fateSummary:"嫁卫若兰后丈夫死难，流落江湖，'湘江水逝楚云飞'",fateDetail:"脂批指明后数十回若兰在射圃所佩之金麒麟正是湘云所拾之物，证实湘云嫁卫若兰。但'白首双星'暗示夫妻分离。",confidence:"极有可能",supporting:["FS-020","FS-028"],contradicting:[],quote:"湘江水逝楚云飞。",alt:[{theory:"湘云嫁宝玉",proponent:"周汝昌、梁归智",confidence:"有可能",description:"金麒麟双配暗示宝玉湘云最终结为夫妻"}]},
+{id:"CHAR-07",name:"妙玉",alias:["槛外人"],significance:"核心",fateSummary:"'终陷淖泥中'——可能被强盗掳走或被迫还俗屈从权贵",fateDetail:"判词'可怜金玉质，终陷淖泥中'直接预示妙玉最终玷污。靖藏本脂批提到妙玉'流落瓜洲渡口，红颜屈从枯骨'。",confidence:"极有可能",supporting:[],contradicting:[],quote:"可怜金玉质，终陷淖泥中。",alt:[]},
+{id:"CHAR-08",name:"贾迎春",alias:["菱洲","二木头"],significance:"核心",fateSummary:"嫁中山狼孙绍祖，一年内被虐待致死",fateDetail:"前80回已写到迎春出嫁及回门哭诉孙绍祖'一味好色，好赌酗酒'。判词'一载赴黄粱'明确提示婚后一年即死。",confidence:"确定",supporting:["FS-019"],contradicting:[],quote:"金闺花柳质，一载赴黄粱。",alt:[]},
+{id:"CHAR-09",name:"贾惜春",alias:["藕榭","四姑娘"],significance:"核心",fateSummary:"勘破三春结局后出家为尼，'独卧青灯古佛旁'",fateDetail:"惜春自幼有出家倾向（第七回即说'剃了头当姑子去'，脂批称'闲闲一笔，却将后半部线索提动'）。目睹三个姐姐悲剧后看破红尘。",confidence:"确定",supporting:["FS-010"],contradicting:[],quote:"勘破三春景不长，缁衣顿改昔年妆。",alt:[]},
+{id:"CHAR-10",name:"王熙凤",alias:["凤辣子","凤哥","琏二奶奶"],significance:"核心",fateSummary:"'哭向金陵事更哀'——失势被休，沦为仆役扫雪，最终'雌凤'陨落惨死",fateDetail:"凤姐的命运转折极为剧烈：贾母死后失去庇护→被休→从管家奶奶沦为最下等仆役（'扫雪拾玉'暗示）→身患血崩症→死于雪地。",confidence:"极有可能",supporting:["FS-012","FS-016","FS-022"],contradicting:[],quote:"机关算尽太聪明，反算了卿卿性命。",alt:[]},
+{id:"CHAR-11",name:"巧姐",alias:["大姐儿"],significance:"核心",fateSummary:"被'狠舅奸兄'卖入妓院，经刘姥姥搭救赎出，嫁板儿为农家妇",fateDetail:"贾府败落后巧姐被卖入烟花巷。刘姥姥践行凤姐当年托付，倾家荡产将其赎出。最终嫁板儿为农妇，正应'偶因济刘氏，巧得遇恩人'。",confidence:"确定",supporting:["FS-004","FS-014","FS-015"],contradicting:[],quote:"偶因济刘氏，巧得遇恩人。",alt:[]},
+{id:"CHAR-12",name:"李纨",alias:["稻香老农","珠大嫂子"],significance:"核心",fateSummary:"贾兰科举成名、爵禄高登，但李纨自己'昏惨惨黄泉路近'不久即死",fateDetail:"判词'桃李春风结子完'暗示李纨在贾兰功成名就之际去世。她一生守寡抚孤，最终'枉与他人作笑谈'——儿子的成功自己无福享受。",confidence:"极有可能",supporting:[],contradicting:[],quote:"如冰水好空相妒，枉与他人作笑谈。",alt:[]},
+{id:"CHAR-13",name:"秦可卿",alias:["蓉大奶奶","兼美"],significance:"重要",fateSummary:"原稿'淫丧天香楼'，脂砚斋命删改为'死封龙禁尉'（病逝）",fateDetail:"脂批明确透露：原稿第十三回回目为'秦可卿淫丧天香楼'，作者用史笔。因可卿临终托梦有功于贾府，脂砚命芹溪删去。",confidence:"确定",supporting:["FS-011"],contradicting:[],quote:"情天情海幻情身，情既相逢必主淫。",alt:[]},
+{id:"CHAR-14",name:"香菱",alias:["甄英莲","秋菱"],significance:"重要",fateSummary:"被夏金桂折磨致死，'自从两地生孤木，致使香魂返故乡'",fateDetail:"判词中'两地生孤木'合为'桂'字，明确提示香菱死于夏金桂之手。",confidence:"确定",supporting:["FS-023"],contradicting:[],quote:"根并荷花一茎香，平生遭际实堪伤。",alt:[]},
+{id:"CHAR-15",name:"晴雯",alias:["勇晴雯"],significance:"重要",fateSummary:"被王夫人逐出大观园后抱屈夭亡（前80回已完成）",fateDetail:"晴雯之死在前80回内已完成（第七十七回）。宝玉写《芙蓉诔》'虽诔晴雯，实乃诔黛玉'（脂批提示）——她是黛玉悲剧的预演。",confidence:"确定",supporting:["FS-025"],contradicting:[],quote:"霁月难逢，彩云易散。心比天高，身为下贱。",alt:[]},
+{id:"CHAR-16",name:"袭人",alias:["花珍珠","花袭人"],significance:"重要",fateSummary:"嫁蒋玉菡，'堪羡优伶有福，谁知公子无缘'",fateDetail:"判词已明确袭人最终嫁给蒋玉菡（琪官）。第二十八回宝玉与蒋玉菡互换汗巾，又通过宝玉之手系在袭人腰间——伏千里姻缘。",confidence:"确定",supporting:[],contradicting:[],quote:"枉自温柔和顺，空云似桂如兰。",alt:[]},
+{id:"CHAR-17",name:"刘姥姥",alias:["刘老老"],significance:"次要",fateSummary:"三进荣国府时倾家荡产搭救巧姐，成为'遇难成祥'的恩人",fateDetail:"刘姥姥是全书的结构性人物——一进求告、二进游览、三进时贾府已败，她散尽家财赎回巧姐。",confidence:"确定",supporting:["FS-014","FS-015"],contradicting:[],quote:"得意浓时易接济，受恩深处胜亲朋。",alt:[]},
+{id:"CHAR-18",name:"柳湘莲",alias:["冷二郎","冷面郎君"],significance:"次要",fateSummary:"因尤三姐自刎看破红尘，可能'作强梁'（沦为强盗）",fateDetail:"柳湘莲在尤三姐死后被道士点破出家。但第一回《好了歌》注中提到'训有方，保不定日后作强梁'——甲戌本脂批明确批注'柳湘莲一干人'。",confidence:"极有可能",supporting:[],contradicting:[],quote:"训有方，保不定日后作强梁。",alt:[]},
+{id:"CHAR-19",name:"鸳鸯",alias:["金鸳鸯"],significance:"重要",fateSummary:"贾母死后失去庇护，为抗拒贾赦霸占而自尽——'殉主'或殉己",fateDetail:"贾母一死，贾赦必然报复。以鸳鸯的刚烈性格，不会屈从。死亡方式：上吊自杀（最可能的'殉主'方式）。",confidence:"极有可能",supporting:["FS-036","FS-049"],contradicting:[],quote:"我是横了心的，当着众人在这里，我这一辈子莫说是'宝玉'，便是'宝金''宝银''宝天王''宝皇帝'，横竖不嫁人就完了！",alt:[]},
+{id:"CHAR-20",name:"平儿",alias:["平姑娘"],significance:"重要",fateSummary:"凤姐死后被贾琏扶正——从通房丫鬟变成正妻",fateDetail:"凤姐被休/死后，贾琏极有可能将平儿扶正——平儿是凤姐的陪房丫鬟，本身是贾琏的通房。",confidence:"有可能",supporting:[],contradicting:[],alt:[]},
+{id:"CHAR-21",name:"紫鹃",alias:["鹦哥"],significance:"重要",fateSummary:"黛玉死后，紫鹃的结局悬而未决——可能随惜春出家或留在贾府继续伺候",fateDetail:"黛玉死后紫鹃失去了存在意义。'鹃'即杜鹃——'杜鹃啼血'——紫鹃的命运可能比主人更凄惨。",confidence:"存疑",supporting:[],contradicting:[],alt:[]},
+{id:"CHAR-22",name:"麝月",alias:[],significance:"次要",fateSummary:"袭人嫁蒋玉菡后，麝月成为宝玉身边最后一个旧人——'开到荼蘼花事了'",fateDetail:"麝月在第63回抽到的荼蘼花签'开到荼蘼花事了'极具谶言性质。荼蘼是春天最后的花，此后只有荆棘。",confidence:"极有可能",supporting:["FS-033"],contradicting:[],alt:[]},
+{id:"CHAR-23",name:"茜雪",alias:[],significance:"次要",fateSummary:"至狱神庙'方呈正文'——在宝玉最落难时不计前嫌探慰旧主",fateDetail:"茜雪在前80回仅因'枫露茶'事件被撵出场（第八回），此后无名。但在后三十回中她将作为'狱神庙'回的主角之一重新出现。",confidence:"确定",supporting:["FS-040"],contradicting:[],alt:[]},
+{id:"CHAR-24",name:"小红",alias:["林红玉"],significance:"次要",fateSummary:"与贾芸结为夫妻，在狱神庙回中与茜雪一同探望并营救旧主",fateDetail:"小红在第24-27回写了与贾芸的'遗帕惹相思'。脂批揭示她将在后三十回的'狱神庙'回中与茜雪一起出现——探慰并设法营救落难的宝玉和凤姐。",confidence:"确定",supporting:["FS-041"],contradicting:[],alt:[]},
+{id:"CHAR-25",name:"贾芸",alias:["芸二爷"],significance:"次要",fateSummary:"荣府事败后'必有一番作为'——与小红联手营救落难的宝玉和凤姐",fateDetail:"贾芸是贾府的远亲，认宝玉为'父'。脂批明确他后文'必有一番作为'——通过醉金刚倪二的人脉关系在狱中打点，设法营救宝玉凤姐。",confidence:"确定",supporting:["FS-041"],contradicting:[],alt:[]},
+{id:"CHAR-26",name:"尤三姐",alias:[],significance:"次要",fateSummary:"柳湘莲退婚后自刎而死——'情小妹耻情归地府'",fateDetail:"尤三姐的结局在前80回内已完成。其刚烈之死是大观园中'烈性女子'悲剧的预演。",confidence:"确定",supporting:[],contradicting:[],alt:[]},
+{id:"CHAR-27",name:"尤二姐",alias:["尤二姨"],significance:"次要",fateSummary:"被凤姐设计折磨，吞金自尽——'觉大限吞生金自逝'",fateDetail:"尤二姐之死在前80回已完成（第六十九回）。她的死是凤姐在阴司的一大罪状（间接杀人），也是贾琏与凤姐彻底决裂的导火索之一。",confidence:"确定",supporting:[],contradicting:[],alt:[]},
+{id:"CHAR-28",name:"贾雨村",alias:["贾时飞","号雨村"],significance:"次要",fateSummary:"'因嫌纱帽小，致使锁枷扛'——因贪恋权位获罪入狱",fateDetail:"贾雨村是全书中最大的'白眼狼'——贾府对他有知遇之恩（贾政举荐），但他后来恩将仇报。",confidence:"极有可能",supporting:["FS-032"],contradicting:[],alt:[]},
+{id:"CHAR-29",name:"邢岫烟",alias:[],significance:"次要",fateSummary:"可能嫁薛蝌（'浓淡由他冰雪中'——独立人格的孤独归宿）",fateDetail:"邢岫烟是大观园'外来女儿'中最独特的一个。家境贫寒但'浓淡由他冰雪中'的心态令人钦佩。",confidence:"存疑",supporting:[],contradicting:[],alt:[]}
+];
+
+const FORESHADOWINGS=[
+{id:"FS-001",chapter:1,type:"文本伏笔",content:"因空见色，由色生情，传情入色，自色悟空",context:"开卷第一回即点明宝玉一生轨迹：空空→见色→生情→悟空。十六字总纲预示宝玉最终'悬崖撒手'出家。",evidenceType:"前80回文本伏笔",confidence:"确定",relatedCharacters:[{id:"CHAR-01",name:"贾宝玉"}],relatedEvents:[{id:"EVT-001",name:"宝玉出家"}],source:"甲戌本第一回"},
+{id:"FS-002",chapter:1,type:"文本伏笔",content:"绛珠仙草：'他既下世为人，我也去下世为人，但把我一生所有的眼泪还他，也偿还得过他了。'",context:"木石前盟的神话框架。黛玉下世即为'还泪'——当泪尽之时便是归天之日。",evidenceType:"前80回文本伏笔",confidence:"确定",relatedCharacters:[{id:"CHAR-02",name:"林黛玉"},{id:"CHAR-01",name:"贾宝玉"}],relatedEvents:[{id:"EVT-002",name:"黛玉泪尽夭亡"}],source:"甲戌本第一回"},
+{id:"FS-003",chapter:5,type:"谶语判词",content:"黛玉判词：'玉带林中挂'；判曲《枉凝眉》：'若说没奇缘，今生偏又遇着他；若说有奇缘，如何心事终虚化？'",context:"判词和判曲明确预示宝黛爱情以悲剧告终。'心事终虚化'——一切情感最终成空。",evidenceType:"判词/谶语",confidence:"确定",relatedCharacters:[{id:"CHAR-02",name:"林黛玉"},{id:"CHAR-01",name:"贾宝玉"}],relatedEvents:[{id:"EVT-002",name:"黛玉泪尽夭亡"}],source:"第五回"},
+{id:"FS-004",chapter:5,type:"谶语判词",content:"巧姐判词：'偶因济刘氏，巧得遇恩人。'配画：一座荒村野店，有一美人在那里纺绩。",context:"判词明确：贾府败落后巧姐落难，因凤姐当年接济刘姥姥的善缘，被刘氏救出，嫁为农妇。",evidenceType:"判词/谶语",confidence:"确定",relatedCharacters:[{id:"CHAR-11",name:"巧姐"},{id:"CHAR-17",name:"刘姥姥"}],relatedEvents:[{id:"EVT-004",name:"刘姥姥救巧姐"}],source:"第五回"},
+{id:"FS-005",chapter:5,type:"谶语判词",content:"宝玉判曲《终身误》：'都道是金玉良姻，俺只念木石前盟。空对着，山中高士晶莹雪；终不忘，世外仙姝寂寞林。'",context:"明确宝玉婚后状态：已经娶了宝钗（'空对着'），但心中始终不忘黛玉。",evidenceType:"判词/谶语",confidence:"确定",relatedCharacters:[{id:"CHAR-01",name:"贾宝玉"},{id:"CHAR-03",name:"薛宝钗"},{id:"CHAR-02",name:"林黛玉"}],relatedEvents:[],source:"第五回"},
+{id:"FS-006",chapter:5,type:"谶语判词",content:"探春判词：'清明涕送江边望，千里东风一梦遥。'配画：两人放风筝，一片大海，一只大船。",context:"配画细节指向探春远嫁海外。风筝喻意'游丝一断浑无力'——断了线的风筝再也回不来。",evidenceType:"判词/谶语",confidence:"确定",relatedCharacters:[{id:"CHAR-05",name:"贾探春"}],relatedEvents:[{id:"EVT-006",name:"探春远嫁海外"}],source:"第五回"},
+{id:"FS-007",chapter:5,type:"谶语判词",content:"宝钗判词：'金簪雪里埋'。判曲《终身误》中称其'山中高士晶莹雪'。",context:"'金簪雪里埋'暗示宝钗最终埋没/死于雪中，与'山中高士'的高洁孤独形象一致。",evidenceType:"判词/谶语",confidence:"确定",relatedCharacters:[{id:"CHAR-03",name:"薛宝钗"}],relatedEvents:[],source:"第五回"},
+{id:"FS-008",chapter:5,type:"谶语判词",content:"元春判词：'虎兕相逢大梦归'。配画'一张弓，弓上挂一香橼'——弓为兵器，香橼谐'元'。",context:"'虎兕相逢'是两强猛兽相遇，暗示元春死于残酷的政治斗争而非善终。",evidenceType:"判词/谶语",confidence:"确定",relatedCharacters:[{id:"CHAR-04",name:"贾元春"}],relatedEvents:[{id:"EVT-007",name:"元春被赐死"}],source:"第五回"},
+{id:"FS-009",chapter:76,type:"文本伏笔",content:"黛玉与湘云在凹晶馆联诗，黛玉出'冷月葬花魂'",context:"此句是全书最为阴冷的谶语之一。中秋圆月之下，黛玉脱口而出'死'字（'葬'即埋葬）。如果'花魂'是对的，则直接预言黛玉葬身水中。",evidenceType:"前80回文本伏笔",confidence:"极有可能",relatedCharacters:[{id:"CHAR-02",name:"林黛玉"}],relatedEvents:[{id:"EVT-002",name:"黛玉泪尽夭亡"}],source:"第七十六回"},
+{id:"FS-010",chapter:7,type:"文本伏笔",content:"惜春笑道：'我这里正和智能儿说，我明儿也剃了头同他作姑子去呢。'脂批：'闲闲一笔，却将后半部线索提动。'",context:"惜春幼年一句玩笑话成为日后出家的谶语。脂批确认此为后文伏线。",evidenceType:"脂批直接提示",confidence:"确定",relatedCharacters:[{id:"CHAR-09",name:"贾惜春"}],relatedEvents:[{id:"EVT-008",name:"惜春出家为尼"}],source:"第七回，甲戌本脂批"},
+{id:"FS-011",chapter:13,type:"脂批批语",content:"甲戌本回前总批：'秦可卿淫丧天香楼，作者用史笔也。'回末批：'此回只十页，因删去天香楼一节，少却四五页也。'",context:"脂砚斋明确说原稿中秦可卿不是病死而是'淫丧'——在天香楼自缢而死。因可卿临终托梦有功，脂砚命作者删去。",evidenceType:"脂批直接提示",confidence:"确定",relatedCharacters:[{id:"CHAR-13",name:"秦可卿"}],relatedEvents:[],source:"第十三回，甲戌本脂批"},
+{id:"FS-012",chapter:23,type:"脂批批语",content:"脂批：'……凤姐扫雪拾玉……'",context:"此条脂批揭示凤姐在后文中沦落到在雪地中扫雪，并发现了宝玉丢失的玉。凤姐从管家奶奶沦为最低等的仆役。",evidenceType:"脂批直接提示",confidence:"极有可能",relatedCharacters:[{id:"CHAR-10",name:"王熙凤"}],relatedEvents:[],source:"第二十三回脂批"},
+{id:"FS-013",chapter:78,type:"脂批批语",content:"脂批在《芙蓉女儿诔》处批：'虽诔晴雯，实乃诔黛玉也。'",context:"这条脂批是最重要的伏笔之一——宝玉悼晴雯的《芙蓉诔》，在深层结构上是预先为黛玉写的悼文。",evidenceType:"脂批直接提示",confidence:"确定",relatedCharacters:[{id:"CHAR-02",name:"林黛玉"},{id:"CHAR-15",name:"晴雯"}],relatedEvents:[{id:"EVT-002",name:"黛玉泪尽夭亡"}],source:"第七十八回，脂批"},
+{id:"FS-014",chapter:6,type:"脂批批语",content:"脂批：'略有些瓜葛，是数十回后之正脉也。'",context:"刘姥姥初进贾府时脂批就点明：眼前这微小的'瓜葛'，却是后文的'正脉'——即刘姥姥与贾府命运最深的关联。",evidenceType:"脂批直接提示",confidence:"确定",relatedCharacters:[{id:"CHAR-17",name:"刘姥姥"},{id:"CHAR-11",name:"巧姐"}],relatedEvents:[{id:"EVT-004",name:"刘姥姥救巧姐"}],source:"第六回，甲戌本脂批"},
+{id:"FS-015",chapter:41,type:"文本伏笔",content:"板儿与巧姐互换佛手与柚子。脂批称：'小儿常情，遂成千里伏线。'又批：'佛手者，正指迷津者也。'",context:"两个小孩交换玩具——佛手（指引迷津者）与柚子（团圆的缘）——在脂砚斋看来不是闲笔，而是巧姐与板儿日后姻缘的最早暗示。",evidenceType:"脂批直接提示",confidence:"确定",relatedCharacters:[{id:"CHAR-11",name:"巧姐"}],relatedEvents:[{id:"EVT-004",name:"刘姥姥救巧姐"}],source:"第四十一回，庚辰本脂批"},
+{id:"FS-016",chapter:5,type:"谶语判词",content:"凤姐判词：'一从二令三人木，哭向金陵事更哀。'配画：一片冰山，上面有一只雌凤。",context:"'一从二令三人木'中'三人木'拆字为'休'，暗示凤姐先顺从、后发号施令、最终被贾琏休弃。冰山消融则雌凤坠水。",evidenceType:"判词/谶语",confidence:"极有可能",relatedCharacters:[{id:"CHAR-10",name:"王熙凤"}],relatedEvents:[],source:"第五回"},
+{id:"FS-017",chapter:18,type:"脂批批语",content:"元妃点四出戏。第一出《豪宴》（脂批：'《一捧雪》伏贾家之败'），第二出《乞巧》（脂批：'《长生殿》伏元妃之死'），第三出《仙缘》（脂批：'《邯郸梦》伏甄宝玉送玉'），第四出《离魂》（脂批：'《牡丹亭》伏黛玉死'）",context:"这是脂批中最系统、最重要的四条戏谶。四出戏依次预告了贾府的四大核心事件：家败→元妃死→甄宝玉送玉→黛玉死。",evidenceType:"脂批直接提示",confidence:"确定",relatedCharacters:[{id:"CHAR-04",name:"贾元春"},{id:"CHAR-02",name:"林黛玉"},{id:"CHAR-01",name:"贾宝玉"}],relatedEvents:[{id:"EVT-007",name:"元春被赐死"},{id:"EVT-002",name:"黛玉泪尽夭亡"},{id:"EVT-013",name:"贾府被抄"}],source:"第十八回，庚辰本脂批"},
+{id:"FS-018",chapter:30,type:"对话暗示",content:"黛玉道：'你死了，我做和尚。'宝玉道：'你死了，我做和尚去。'",context:"宝玉反复说自己会'做和尚'——这看似情侣间的日常对话，实为全书最重大的谶语之一。",evidenceType:"前80回文本伏笔",confidence:"确定",relatedCharacters:[{id:"CHAR-01",name:"贾宝玉"},{id:"CHAR-02",name:"林黛玉"}],relatedEvents:[{id:"EVT-001",name:"宝玉出家"}],source:"第三十回"},
+{id:"FS-019",chapter:5,type:"谶语判词",content:"迎春判词：'子系中山狼，得志便猖狂。金闺花柳质，一载赴黄粱。'",context:"'子系'合为孙（孫），指孙绍祖。'一载赴黄粱'——嫁后一年即死。",evidenceType:"判词/谶语",confidence:"确定",relatedCharacters:[{id:"CHAR-08",name:"贾迎春"}],relatedEvents:[],source:"第五回"},
+{id:"FS-020",chapter:31,type:"文本伏笔",content:"湘云与丫鬟翠缕论阴阳时，在蔷薇架下捡到一个金麒麟。回目本身即为'因麒麟伏白首双星'。",context:"回目中'伏白首双星'是关键——金麒麟配对伏下白首姻缘。脂批透露后文中卫若兰在射圃佩戴此麒麟。",evidenceType:"前80回文本伏笔",confidence:"极有可能",relatedCharacters:[{id:"CHAR-06",name:"史湘云"}],relatedEvents:[],source:"第三十一回"},
+{id:"FS-021",chapter:22,type:"谶语判词",content:"探春所作风筝灯谜：'游丝一断浑无力，莫向东风怨别离。'庚辰本批：此探春远适之谶也。",context:"断线的风筝即远嫁海外、永不归来的探春。",evidenceType:"脂批直接提示",confidence:"确定",relatedCharacters:[{id:"CHAR-05",name:"贾探春"}],relatedEvents:[{id:"EVT-006",name:"探春远嫁海外"}],source:"第二十二回，庚辰本批语"},
+{id:"FS-022",chapter:43,type:"文本伏笔",content:"尤氏对凤姐说：'你瞧瞧，把他幸的这个样儿！我劝你收着些儿好，太满了就泼出来了。'",context:"这一句看似随口的警告，暗合全书'月满则亏，水满则溢'的哲理。",evidenceType:"前80回文本伏笔",confidence:"有可能",relatedCharacters:[{id:"CHAR-10",name:"王熙凤"}],relatedEvents:[],source:"第四十三回"},
+{id:"FS-023",chapter:5,type:"谶语判词",content:"香菱判词：'自从两地生孤木，致使香魂返故乡。'",context:"'两地'为两个'土'字，'孤木'为一个'木'字——合为'桂'。夏金桂的出现导致香菱之死。",evidenceType:"判词/谶语",confidence:"确定",relatedCharacters:[{id:"CHAR-14",name:"香菱"}],relatedEvents:[{id:"EVT-017",name:"香菱被夏金桂折磨致死"}],source:"第五回"},
+{id:"FS-024",chapter:21,type:"脂批批语",content:"庚辰本回前总批提到后文回目：'薛宝钗借词含讽谏，王熙凤知命强英雄'",context:"这条脂批提供了后三十回的两个关键回目，证实宝钗婚后劝谏宝玉导致婚姻破裂，以及凤姐失势后的挣扎。",evidenceType:"脂批直接提示",confidence:"确定",relatedCharacters:[{id:"CHAR-03",name:"薛宝钗"},{id:"CHAR-10",name:"王熙凤"}],relatedEvents:[],source:"第二十一回，庚辰本回前总批"},
+{id:"FS-025",chapter:5,type:"谶语判词",content:"晴雯判词：'霁月难逢，彩云易散。心比天高，身为下贱。'",context:"晴雯判词已完全揭示其在前80回内的结局——被王夫人以谣言毁谤逐出后夭亡。她的死是'千红一哭'的预演。",evidenceType:"判词/谶语",confidence:"确定",relatedCharacters:[{id:"CHAR-15",name:"晴雯"},{id:"CHAR-02",name:"林黛玉"}],relatedEvents:[],source:"第五回"},
+{id:"FS-026",chapter:27,type:"文本伏笔",content:"《葬花吟》：'一年三百六十日，风刀霜剑严相逼。……质本洁来还洁去，强于污淖陷渠沟。……花落人亡两不知！'",context:"整首葬花吟就是黛玉对自己命运的讖言。'花落人亡两不知'——到死都不知道。",evidenceType:"前80回文本伏笔",confidence:"极有可能",relatedCharacters:[{id:"CHAR-02",name:"林黛玉"}],relatedEvents:[{id:"EVT-002",name:"黛玉泪尽夭亡"}],source:"第二十七回"},
+{id:"FS-027",chapter:63,type:"谶语判词",content:"宝钗抽牡丹花签：'任是无情也动人'，签注'此为群芳之冠'",context:"花签游戏中宝钗抽得'群芳之冠'牡丹——她确实做了宝玉的正妻，是名义上的'冠'。但'任是无情也动人'暗示她虽完美却无情。",evidenceType:"前80回文本伏笔",confidence:"极有可能",relatedCharacters:[{id:"CHAR-03",name:"薛宝钗"}],relatedEvents:[],source:"第六十三回"},
+{id:"FS-028",chapter:63,type:"谶语判词",content:"湘云抽海棠花签：'只恐夜深花睡去'。暗合第六十二回湘云醉卧芍药裀（石上入睡）。",context:"海棠花签预示春睡易醒——美好时光短暂，与湘云的短暂婚姻形成呼应。",evidenceType:"前80回文本伏笔",confidence:"有可能",relatedCharacters:[{id:"CHAR-06",name:"史湘云"}],relatedEvents:[],source:"第六十三回"},
+{id:"FS-029",chapter:25,type:"文本伏笔",content:"癞头和尚持通灵宝玉说道：'青埂峰一别，展眼已过十三载矣！人世光阴，如此迅速，尘缘满日，若似弹指！'",context:"'尘缘满日，若似弹指'——暗示通灵玉在凡间的期限，也是宝玉在人世的期限。玉最终被送回青埂峰。",evidenceType:"前80回文本伏笔",confidence:"极有可能",relatedCharacters:[{id:"CHAR-01",name:"贾宝玉"}],relatedEvents:[{id:"EVT-001",name:"宝玉出家"}],source:"第二十五回"},
+{id:"FS-030",chapter:22,type:"谶语判词",content:"宝钗所作灯谜：'梧桐叶落分离别，恩爱夫妻不到冬。'庚辰本批：此宝钗之谶也。",context:"'恩爱夫妻不到冬'——宝钗与宝玉的婚姻极其短暂，不到一年即分离。",evidenceType:"脂批直接提示",confidence:"确定",relatedCharacters:[{id:"CHAR-03",name:"薛宝钗"},{id:"CHAR-01",name:"贾宝玉"}],relatedEvents:[],source:"第二十二回，庚辰本批语"},
+{id:"FS-031",chapter:5,type:"谶语判词",content:"《飞鸟各投林》：'好一似食尽鸟投林，落了片白茫茫大地真干净！'",context:"全书谶语的总归纳。否定了一切'沐皇恩''兰桂齐芳'的好结局——全书必须以绝对悲剧收场。",evidenceType:"判词/谶语",confidence:"确定",relatedCharacters:[{id:"CHAR-01",name:"贾宝玉"},{id:"CHAR-09",name:"贾惜春"},{id:"CHAR-10",name:"王熙凤"}],relatedEvents:[{id:"EVT-001",name:"宝玉出家"},{id:"EVT-013",name:"贾府被抄"}],source:"第五回"},
+{id:"FS-032",chapter:1,type:"文本伏笔",content:"甄士隐解《好了歌》：'因嫌纱帽小，致使锁枷扛'",context:"直接预言贾雨村等人因贪恋权位入狱。",evidenceType:"前80回文本伏笔",confidence:"确定",relatedCharacters:[{id:"CHAR-01",name:"贾宝玉"}],relatedEvents:[{id:"EVT-001",name:"宝玉出家"},{id:"EVT-013",name:"贾府被抄"}],source:"第一回"},
+{id:"FS-033",chapter:63,type:"谶语判词",content:"麝月抽到荼蘼花签：'开到荼蘼花事了'，签注'在席各饮三杯送春'。宝玉看了皱眉头，藏了起来。",context:"荼蘼是春天最后一种花，'开到荼蘼花事了'意味着大观园的繁华到此终结。麝月是怡红院最后一个丫鬟。",evidenceType:"前80回文本伏笔",confidence:"极有可能",relatedCharacters:[{id:"CHAR-15",name:"晴雯"}],relatedEvents:[],source:"第六十三回"},
+{id:"FS-034",chapter:8,type:"文本伏笔",content:"宝钗的金锁上錾着'不离不弃，芳龄永继'八个字，与宝玉的通灵玉'莫失莫忘，仙寿恒昌'恰成一对。",context:"'金玉良缘'的神话框架。金锁的'芳龄永继'——永继即永远继续，暗示宝钗会活得比宝玉久、孤独终老。",evidenceType:"前80回文本伏笔",confidence:"极有可能",relatedCharacters:[{id:"CHAR-03",name:"薛宝钗"},{id:"CHAR-01",name:"贾宝玉"}],relatedEvents:[],source:"第八回"},
+{id:"FS-035",chapter:5,type:"谶语判词",content:"袭人判词：'枉自温柔和顺，空云似桂如兰。堪羡优伶有福，谁知公子无缘。'",context:"袭人最终未能如愿嫁给宝玉，而是嫁给了蒋玉菡。'公子无缘'直白至极。",evidenceType:"判词/谶语",confidence:"确定",relatedCharacters:[{id:"CHAR-16",name:"袭人"}],relatedEvents:[],source:"第五回"},
+{id:"FS-036",chapter:46,type:"人物性格逻辑",content:"贾赦要鸳鸯为妾，鸳鸯剪发誓绝。贾赦威胁：'凭他嫁到谁家去，也难出我的手心。'",context:"鸳鸯在贾母死后的处境十分危险。贾母一死，贾赦必定报复。按人物性格逻辑——鸳鸯的刚烈决定了她不会屈服于贾赦。",evidenceType:"人物性格逻辑",confidence:"极有可能",relatedCharacters:[],relatedEvents:[],source:"第四十六回 + 人物性格推理"},
+{id:"FS-038",chapter:39,type:"文本伏笔",content:"刘姥姥讲了一个'雪地里抽柴草'的故事：有个十七八岁的极标致的小姑娘叫茗玉，父亲无子，老两口视如珍宝。茗玉长到十七岁一病死了。",context:"'茗玉'就是'黛玉'的翻版——都是若玉/黛玉，都'十七岁一病死了'。蔡义江解读为曹雪芹暗示黛玉的真正结局——十七岁病逝。",evidenceType:"文本伏笔",confidence:"极有可能",relatedCharacters:[{id:"CHAR-02",name:"林黛玉"},{id:"CHAR-17",name:"刘姥姥"}],relatedEvents:[{id:"EVT-002",name:"黛玉泪尽夭亡"}],source:"第三十九回 + 蔡义江解读"},
+{id:"FS-039",chapter:77,type:"文本伏笔",content:"王夫人抄检怡红院，逐出晴雯、四儿、芳官等。宝玉不敢言。",context:"这次清洗是贾府内部'自杀自灭'的预演。晴雯之死=小规模悲剧预演，抄检大观园=规模扩大，贾府被抄=最终灾难。",evidenceType:"前80回文本伏笔",confidence:"极有可能",relatedCharacters:[{id:"CHAR-15",name:"晴雯"},{id:"CHAR-01",name:"贾宝玉"},{id:"CHAR-05",name:"贾探春"}],relatedEvents:[{id:"EVT-013",name:"贾府被抄"}],source:"第七十七回"},
+{id:"FS-040",chapter:8,type:"脂批批语",content:"脂批：'茜雪至狱神庙方呈正文。'畸笏批：'狱神庙回有茜雪、红玉一大回文字。'",context:"茜雪在前八十回中只是一个因'枫露茶'被撵的无名丫鬟。但脂砚斋暗示她的'正文'不在前80回——而在狱神庙。",evidenceType:"脂批直接提示",confidence:"确定",relatedCharacters:[{id:"CHAR-01",name:"贾宝玉"}],relatedEvents:[],source:"第八回脂批+畸笏批"},
+{id:"FS-041",chapter:24,type:"脂批批语",content:"脂批：'此人（贾芸）后来荣府事败，必有一番作为。'",context:"贾芸将在后文仗义援手。与小红结婚后，通过醉金刚倪二的人脉关系在狱中打点，设法营救宝玉凤姐。",evidenceType:"脂批直接提示",confidence:"确定",relatedCharacters:[{id:"CHAR-10",name:"王熙凤"},{id:"CHAR-01",name:"贾宝玉"}],relatedEvents:[],source:"第二十四回脂批+畸笏批"},
+{id:"FS-043",chapter:49,type:"文本伏笔",content:"贾母见了薛宝琴，'喜欢的无可不可'，立即逼着王夫人认作干女儿。又细问宝琴的年庚八字。",context:"贾母对宝琴的极度偏爱间接说明贾母从未考虑过宝钗——否定了'贾母支持金玉良缘'的通俗说法。",evidenceType:"前80回文本伏笔",confidence:"极有可能",relatedCharacters:[{id:"CHAR-03",name:"薛宝钗"},{id:"CHAR-02",name:"林黛玉"}],relatedEvents:[],source:"第四十九回+第五十回"},
+{id:"FS-044",chapter:40,type:"文本伏笔",content:"贾母向薛姨妈等人展示'软烟罗'：'如今上用的府纱也没有这样软厚轻密的了。'",context:"软烟罗这种'比上用还好'的织物暗示贾府鼎盛时期曾拥有超越皇家的奢华——这本身就是取祸之道（'僭越'是清代的重罪）。",evidenceType:"前80回文本伏笔",confidence:"极有可能",relatedCharacters:[{id:"CHAR-10",name:"王熙凤"}],relatedEvents:[{id:"EVT-013",name:"贾府被抄"}],source:"第四十回"},
+{id:"FS-045",chapter:75,type:"文本伏笔",content:"贾珍等人在宁国府宴饮赌博，忽闻贾府祠堂那边墙下有人长叹之声。众人毛发倒竖，但继续玩乐。",context:"祖灵长叹是全书中阴气最重的场景之一——贾府的祖宗已经'看不下去'了。'长叹'而非'怒吼'——祖宗已经放弃了。",evidenceType:"前80回文本伏笔",confidence:"极有可能",relatedCharacters:[],relatedEvents:[{id:"EVT-013",name:"贾府被抄"}],source:"第七十五回"},
+{id:"FS-046",chapter:74,type:"文本伏笔",content:"探春：'你们别忙，自然连你们抄的日子有呢！……可知这样大族人家，若从外头杀来，一时是杀不死的……必须先从家里自杀自灭起来，才能一败涂地！'",context:"探春的这段慷慨陈词是全书中政治眼光最高的言论。她看到了本质——贾府之败不是外力击倒，而是内部先烂。",evidenceType:"前80回文本伏笔",confidence:"确定",relatedCharacters:[{id:"CHAR-05",name:"贾探春"}],relatedEvents:[{id:"EVT-013",name:"贾府被抄"}],source:"第七十四回"},
+{id:"FS-047",chapter:5,type:"谶语判词",content:"李纨判词后段：'气昂昂头戴簪缨，光灿灿胸悬金印，威赫赫爵禄高登——昏惨惨黄泉路近！'",context:"这些词描写的是一位'爵禄高登'者——就是贾兰。他科举成功、做官显赫。但'昏惨惨黄泉路近'——成功之后立即死亡。",evidenceType:"判词/谶语",confidence:"确定",relatedCharacters:[{id:"CHAR-12",name:"李纨"}],relatedEvents:[],source:"第五回"},
+{id:"FS-048",chapter:28,type:"脂批批语",content:"宝玉与蒋玉菡互换汗巾。晚上宝玉将大红汗巾系在袭人腰间。脂批：此物伏袭人后文嫁与蒋玉菡。",context:"汗巾交换伏下袭人嫁给蒋玉菡——宝玉的两条汗巾做了'媒'。",evidenceType:"脂批直接提示",confidence:"确定",relatedCharacters:[{id:"CHAR-16",name:"袭人"},{id:"CHAR-01",name:"贾宝玉"}],relatedEvents:[],source:"第二十八回+脂批"},
+{id:"FS-049",chapter:46,type:"人物性格逻辑",content:"鸳鸯发誓宁可剪头发做姑子或自尽，绝不从贾赦。贾母死后贾赦必然报复。",context:"鸳鸯前80回未死，但按照人物性格逻辑（刚烈不折），贾母死后她必然以某种方式自尽。",evidenceType:"人物性格逻辑",confidence:"极有可能",relatedCharacters:[],relatedEvents:[],source:"第四十六回+人物性格推理"},
+{id:"FS-051",chapter:71,type:"文本伏笔",content:"邢夫人当着众人面向凤姐'求情'放了两个被扣的老婆子，凤姐羞得脸紫胀。贾母的庇护使凤姐暂时稳住。",context:"这是凤姐权威第一次受到公开挑战。贾母死后邢夫人的报复只会更猛烈。",evidenceType:"前80回文本伏笔",confidence:"极有可能",relatedCharacters:[{id:"CHAR-10",name:"王熙凤"}],relatedEvents:[],source:"第七十一回"},
+{id:"FS-052",chapter:2,type:"文本伏笔",content:"冷子兴：'如今外面的架子虽未甚倒，内囊却也尽上来了。……如今的儿孙，竟一代不如一代了！'",context:"冷子兴在全书第二回已给出了贾府的诊断：1)财政亏空。2)人才凋零。两把刀同时砍向贾府。",evidenceType:"前80回文本伏笔",confidence:"确定",relatedCharacters:[],relatedEvents:[{id:"EVT-013",name:"贾府被抄"}],source:"第二回"},
+{id:"FS-054",chapter:66,type:"文本伏笔",content:"尤三姐在柳湘莲退婚后自刎。柳湘莲被跛足道人点破，'将万根烦恼丝一挥而尽'，随之出家而去。",context:"柳湘莲的出家方式——'冷入空门'——是对宝玉出家的明确预演。",evidenceType:"前80回文本伏笔",confidence:"极有可能",relatedCharacters:[{id:"CHAR-01",name:"贾宝玉"},{id:"CHAR-18",name:"柳湘莲"}],relatedEvents:[{id:"EVT-001",name:"宝玉出家"}],source:"第六十六回"},
+{id:"FS-055",chapter:13,type:"文本伏笔",content:"秦可卿托梦凤姐：'常言月满则亏，水满则溢。……但如今能于荣时筹画下将来衰时的世业，亦可谓常保永全了。'建议在祖茔附近多置田庄。",context:"可卿托梦是全书中最重要的'如果有人听了，结局会怎样'的假设。凤姐醒来后并未照办——这暗示凤姐的致命弱点：她不善于长远规划。",evidenceType:"前80回文本伏笔",confidence:"确定",relatedCharacters:[{id:"CHAR-13",name:"秦可卿"},{id:"CHAR-10",name:"王熙凤"}],relatedEvents:[{id:"EVT-013",name:"贾府被抄"}],source:"第十三回"},
+{id:"FS-056",chapter:7,type:"文本伏笔",content:"焦大醉骂：'每日偷狗戏鸡，爬灰的爬灰，养小叔子的养小叔子，我什么不知道？'",context:"'爬灰'指公公与儿媳乱伦——公认指贾珍与秦可卿。焦大是宁国府的老人——他的骂揭露了贾府道德崩溃的根底。",evidenceType:"前80回文本伏笔",confidence:"确定",relatedCharacters:[{id:"CHAR-13",name:"秦可卿"}],relatedEvents:[],source:"第七回"},
+{id:"FS-057",chapter:5,type:"谶语判词",content:"妙玉判曲《世难容》：'到头来依旧是风尘肮脏违心愿。好一似无瑕白玉遭泥陷，又何须王孙公子叹无缘。'",context:"妙玉判曲的核心是'风尘肮脏违心愿'——从至洁堕入至污。靖藏本脂批提到妙玉'流落瓜洲渡口，红颜屈从枯骨'。",evidenceType:"判词/谶语",confidence:"确定",relatedCharacters:[{id:"CHAR-07",name:"妙玉"}],relatedEvents:[],source:"第五回"},
+{id:"FS-058",chapter:5,type:"谶语判词",content:"凤姐判曲《聪明累》：'机关算尽太聪明，反算了卿卿性命。……忽喇喇如大厦倾，昏惨惨似灯将尽。'",context:"整首判曲是对凤姐一生最完整的预言。'忽喇喇如大厦倾'——贾府之败的瞬间性和彻底性。",evidenceType:"判词/谶语",confidence:"确定",relatedCharacters:[{id:"CHAR-10",name:"王熙凤"}],relatedEvents:[{id:"EVT-013",name:"贾府被抄"}],source:"第五回"},
+{id:"FS-059",chapter:62,type:"文本伏笔",content:"湘云吃醉了酒，在山子后头一块青石板凳上睡着了，'四面芍药花飞了一身，满头脸衣襟上皆是红香散乱'。",context:"'醉眠'是湘云命运的隐喻——美好的事物注定短暂。'芍药'在古典文学中寓意为'别离'。花瓣覆盖了她的全身——暗示湘云将被'埋葬'在某种象征性的死亡中。",evidenceType:"前80回文本伏笔",confidence:"极有可能",relatedCharacters:[{id:"CHAR-06",name:"史湘云"}],relatedEvents:[],source:"第六十二回"},
+{id:"FS-060",chapter:79,type:"文本伏笔",content:"夏金桂嫁入薛家后立即开始折磨香菱，给她改名为'秋菱'。香菱'自前儿又病了二十多天，血分中有病'。",context:"香菱的悲剧在前80回末尾已经全面开启。'秋菱'谐音'秋零'——秋天的凋零。薛家的崩溃是四大家族中第一个完成的。",evidenceType:"前80回文本伏笔",confidence:"确定",relatedCharacters:[{id:"CHAR-14",name:"香菱"}],relatedEvents:[{id:"EVT-017",name:"香菱被夏金桂折磨致死"}],source:"第七十九回-第八十回"}
+];
+
+const CONSTRAINTS=[
+{id:"CST-0001",type:"必然导致",sourceForeshadowing:"FS-002",targetForeshadowingOrFate:"CHAR-02",rationale:"绛珠仙草'还泪'的神话设定直接决定了黛玉的结局只能是'泪尽夭亡'——泪尽即死，这在逻辑上没有其他可能。",strength:"刚性（逻辑必然）"},
+{id:"CST-0002",type:"必然导致",sourceForeshadowing:"FS-001",targetForeshadowingOrFate:"CHAR-01",rationale:"第一回十六字纲领已完整画出宝玉的人生弧线，最终必须回到'悟空'即出家。",strength:"刚性（逻辑必然）"},
+{id:"CST-0003",type:"时间顺序约束",sourceForeshadowing:"FS-017",targetForeshadowingOrFate:"FS-017",rationale:"四出戏谶隐含时间顺序：《一捧雪》(贾府败)→《乞巧》(元妃死)→《仙缘》(送玉)→《离魂》(黛玉死)。",strength:"刚性（逻辑必然）"},
+{id:"CST-0004",type:"因果依赖",sourceForeshadowing:"FS-008",targetForeshadowingOrFate:"FS-017",rationale:"元妃被赐死是贾府失去政治保护伞的直接原因，这进一步导致了贾府被抄。",strength:"强（极可能）"},
+{id:"CST-0005",type:"因果依赖",sourceForeshadowing:"FS-013",targetForeshadowingOrFate:"CHAR-02",rationale:"脂批'虽诔晴雯，实乃诔黛玉'建立了晴雯之死与黛玉之死的镜像关系。",strength:"强（极可能）"},
+{id:"CST-0007",type:"支持",sourceForeshadowing:"FS-004",targetForeshadowingOrFate:"FS-015",rationale:"巧姐判词与佛手柚子互换互为支撑——判词揭示了'谁救'，佛手柚子暗示了'救之后的归宿'。",strength:"强（极可能）"},
+{id:"CST-0008",type:"矛盾/互斥",sourceForeshadowing:"FS-005",targetForeshadowingOrFate:"EVT-003",rationale:"判曲《终身误》说明宝玉'空对着'宝钗、'终不忘'黛玉——这与程高本'调包计'在精神气质上矛盾。",strength:"强（极可能）"},
+{id:"CST-0009",type:"支持",sourceForeshadowing:"FS-024",targetForeshadowingOrFate:"CHAR-03",rationale:"脂批回目提示'薛宝钗借词含讽谏'直接证实婚后宝钗劝谏导致婚姻破裂。",strength:"刚性（逻辑必然）"},
+{id:"CST-0012",type:"支持",sourceForeshadowing:"FS-030",targetForeshadowingOrFate:"EVT-005",rationale:"宝钗灯谜谶'恩爱夫妻不到冬'揭示二宝婚姻极为短暂。",strength:"刚性（逻辑必然）"},
+{id:"CST-0014",type:"支持",sourceForeshadowing:"FS-014",targetForeshadowingOrFate:"CHAR-17",rationale:"脂批'略有些瓜葛是数十回后之正脉'将刘姥姥一进荣国府的微小关联升格为后文最重要的情节线。",strength:"刚性（逻辑必然）"},
+{id:"CST-0015",type:"支持",sourceForeshadowing:"FS-018",targetForeshadowingOrFate:"CHAR-01",rationale:"宝玉反复说'你死了我做和尚'是全书最明确的谶语之一。",strength:"刚性（逻辑必然）"},
+{id:"CST-0016",type:"矛盾/互斥",sourceForeshadowing:"FS-026",targetForeshadowingOrFate:"EVT-002",rationale:"《葬花吟》'质本洁来还洁去'——黛玉自况宁死也不愿陷入污浊。这与高鹗续书焚稿含恨而死的精神矛盾。",strength:"强（极可能）"},
+{id:"CST-0017",type:"因果依赖",sourceForeshadowing:"FS-010",targetForeshadowingOrFate:"CHAR-09",rationale:"惜春'剃了头当姑子去'的童言需要在目睹三位姐姐的悲剧之后才会'勘破'并践行。",strength:"强（极可能）"},
+{id:"CST-0021",type:"必然导致",sourceForeshadowing:"FS-031",targetForeshadowingOrFate:"EVT-013",rationale:"《飞鸟各投林》以'落了片白茫茫大地真干净'作为全书最后一句——任何'沐皇恩''兰桂齐芳'的结局都与这句话绝对矛盾。",strength:"刚性（逻辑必然）"},
+{id:"CST-0023",type:"时间顺序约束",sourceForeshadowing:"FS-036",targetForeshadowingOrFate:"FS-049",rationale:"鸳鸯的命运完全系于贾母生死：贾母在世时贾赦动不得→贾母一死鸳鸯立即失去庇护→自尽是大概率结局。",strength:"刚性（逻辑必然）"},
+{id:"CST-0024",type:"必然导致",sourceForeshadowing:"FS-035",targetForeshadowingOrFate:"CHAR-16",rationale:"袭人判词'堪羡优伶有福，谁知公子无缘'——这是所有人物结局中最确定的一个。",strength:"刚性（逻辑必然）"},
+{id:"CST-0028",type:"必然导致",sourceForeshadowing:"FS-056",targetForeshadowingOrFate:"CHAR-13",rationale:"焦大'爬灰'直接揭露贾珍与秦可卿的乱伦关系。脂批确认'秦可卿淫丧天香楼'。",strength:"刚性（逻辑必然）"},
+{id:"CST-0031",type:"必然导致",sourceForeshadowing:"FS-057",targetForeshadowingOrFate:"CHAR-07",rationale:"妙玉判曲'风尘肮脏违心愿'直接定义了她的结局——从至洁堕入至污。",strength:"刚性（逻辑必然）"},
+{id:"CST-0037",type:"支持",sourceForeshadowing:"FS-043",targetForeshadowingOrFate:"EVT-005",rationale:"贾母对宝琴的偏爱间接说明贾母从未考虑过宝钗——二宝婚姻只能在贾母死后才可能发生。",strength:"强（极可能）"}
+];
+
+const EVENTS=[
+{id:"EVT-001",chapter:105,title:"宝玉悬崖撒手出家",description:"宝玉在经历了黛玉之死、贾府被抄、狱神庙之难，并经甄宝玉送还通灵玉后，彻底看破红尘，'悬崖撒手'出家为僧。通灵玉回到青埂峰，石头故事终章。",characters:["CHAR-01"],basis:["FS-001","FS-005","FS-018","FS-024","FS-029"],confidence:"确定"},
+{id:"EVT-002",chapter:85,title:"黛玉泪尽夭亡",description:"宝玉罹祸狱神庙期间，黛玉急痛忧忿加速泪尽，十七岁春末病逝。死因是'泪尽'而非程高本的'焚稿断情'式激愤而亡。",characters:["CHAR-02","CHAR-01"],basis:["FS-002","FS-003","FS-009","FS-013","FS-017","FS-026"],confidence:"极有可能"},
+{id:"EVT-003",chapter:83,title:"宝黛爱情悲剧",description:"黛玉先于贾母而亡。宝黛生死相隔，'一个枉自嗟呀，一个空劳牵挂'。",characters:["CHAR-01","CHAR-02"],basis:["FS-003","FS-005","FS-013","FS-026"],confidence:"确定"},
+{id:"EVT-004",chapter:100,title:"刘姥姥赎救巧姐",description:"贾府败落后巧姐被'狠舅奸兄'卖入妓院。刘姥姥得知后倾家荡产将巧姐赎回，践行凤姐当年托付。",characters:["CHAR-11","CHAR-17","CHAR-10"],basis:["FS-004","FS-014","FS-015"],confidence:"确定"},
+{id:"EVT-005",chapter:88,title:"二宝婚姻悲剧",description:"宝玉娶宝钗后'空对着山中高士晶莹雪'。宝钗'借词含讽谏'劝宝玉仕途经济导致冲突加剧。婚姻极为短暂。",characters:["CHAR-01","CHAR-03"],basis:["FS-005","FS-007","FS-024","FS-027","FS-030"],confidence:"极有可能"},
+{id:"EVT-006",chapter:90,title:"探春远嫁海外和番",description:"探春作为政治和亲的棋子远嫁海外为王妃。'清明涕送江边望，千里东风一梦遥'——她如断线风筝，再未能归来。",characters:["CHAR-05"],basis:["FS-006","FS-021"],confidence:"确定"},
+{id:"EVT-007",chapter:83,title:"元春被赐死于政治斗争",description:"元春如杨贵妃因政治祸乱被赐死。虎兕(两强猛兽)象征朝中两派政治势力死斗，元春作为牺牲品。",characters:["CHAR-04"],basis:["FS-008","FS-017"],confidence:"确定"},
+{id:"EVT-008",chapter:95,title:"惜春出家为尼",description:"惜春目睹三位姐姐的悲惨结局后'勘破三春景不长'，践行幼年戏言，'缁衣顿改昔年妆'。",characters:["CHAR-09"],basis:["FS-010"],confidence:"确定"},
+{id:"EVT-009",chapter:13,title:"秦可卿淫丧天香楼（被删改）",description:"原稿中秦可卿非病死，而是因与贾珍的乱伦关系暴露，在天香楼自缢而死。脂砚斋因可卿托梦有功，命删改为病死。",characters:["CHAR-13"],basis:["FS-011"],confidence:"确定"},
+{id:"EVT-010",chapter:92,title:"凤姐失势沦为扫雪仆役",description:"冰山融化，雌凤坠地。凤姐贾母死后失去庇护，被贾琏休弃，从管家奶奶沦落到雪地里扫雪的最下等仆役。",characters:["CHAR-10"],basis:["FS-012","FS-016"],confidence:"极有可能"},
+{id:"EVT-011",chapter:102,title:"巧姐嫁板儿为农家妇",description:"被刘姥姥赎出的巧姐嫁给了板儿，从此'纺绩于荒村野店'。从公侯千金变为农妇，一个巨大的阶级坠落。",characters:["CHAR-11","CHAR-17"],basis:["FS-004","FS-015"],confidence:"极有可能"},
+{id:"EVT-012",chapter:96,title:"凤姐被休后惨死",description:"凤姐经历了'一从二令三人木'——从顺从、到执掌大权、到最终被贾琏休弃。在被休返回金陵的途中悲惨死去。",characters:["CHAR-10"],basis:["FS-016","FS-022","FS-024"],confidence:"极有可能"},
+{id:"EVT-013",chapter:91,title:"贾府被抄家败落",description:"在元春死后贾府失去政治庇护，加之凤姐放贷事发、贾赦贾珍等多行不义，最终'树倒猢狲散'。",characters:["CHAR-01","CHAR-03","CHAR-10"],basis:["FS-017","FS-008"],confidence:"确定"},
+{id:"EVT-014",chapter:104,title:"甄宝玉送还通灵玉",description:"脂批提示《邯郸梦》'伏甄宝玉送玉'。这一事件可能是促使宝玉最终彻悟的关键——'真'与'假'的终极碰撞。",characters:["CHAR-01"],basis:["FS-017"],confidence:"确定"},
+{id:"EVT-015",chapter:82,title:"迎春被孙绍祖虐死",description:"迎春嫁孙绍祖后不到一年被虐待致死（'一载赴黄粱'）。她的死是十二钗中最早完成的悲剧。",characters:["CHAR-08"],basis:["FS-019"],confidence:"确定"},
+{id:"EVT-016",chapter:89,title:"湘云嫁卫若兰后丈夫死难",description:"湘云婚后不久卫若兰即死于战事或流放。'白首双星'暗示夫妻两隔。",characters:["CHAR-06"],basis:["FS-020","FS-028"],confidence:"极有可能"},
+{id:"EVT-017",chapter:88,title:"香菱被夏金桂折磨致死",description:"'自从两地生孤木，致使香魂返故乡'。夏金桂将香菱折磨至死。",characters:["CHAR-14"],basis:["FS-023"],confidence:"确定"},
+{id:"EVT-018",chapter:93,title:"狱神庙——茜雪小红探慰宝玉",description:"贾府被抄后宝玉与凤姐等羁押于狱神庙。茜雪（第八回因枫露茶被撵的丫鬟）不计前嫌前来探慰。贾芸小红设法营救。",characters:["CHAR-01","CHAR-10","CHAR-23","CHAR-24","CHAR-25"],basis:["FS-040","FS-041"],confidence:"确定"},
+{id:"EVT-019",chapter:84,title:"贾母病逝——鸳鸯殉主",description:"贾母在全书前期是贾府的定海神针。她的死亡引发了连锁反应：鸳鸯失去保护被贾赦逼迫至自尽、凤姐失去庇护迅速失势。",characters:["CHAR-19"],basis:["FS-036","FS-049"],confidence:"极有可能"},
+{id:"EVT-020",chapter:97,title:"贾兰中举封官——旋即身亡",description:"贾兰在极其艰难的条件下科举成功，封官授职——李纨一生的苦守终于有了回报。但'昏惨惨黄泉路近'——成功之后立即暴毙。",characters:["CHAR-12"],basis:["FS-047"],confidence:"极有可能"},
+{id:"EVT-021",chapter:86,title:"贾雨村落井下石——自食其果",description:"贾府被抄后贾雨村不但不援手，反而为向新贵邀功而进一步构陷贾府。但'因嫌纱帽小致使锁枷扛'——最终也锒铛入狱。",characters:["CHAR-28"],basis:["FS-032"],confidence:"极有可能"},
+{id:"EVT-022",chapter:94,title:"妙玉流落瓜洲——被迫还俗",description:"贾府败落后大观园被查抄，栊翠庵不复存在。妙玉失去庇护后被权贵逼迫还俗。靖藏本脂批提到妙玉'流落瓜洲渡口，红颜屈从枯骨'。",characters:["CHAR-07"],basis:["FS-057"],confidence:"极有可能"}
+];
+
+// ====== RENDER ======
+const charMap={};CHARACTERS.forEach(c=>charMap[c.id]=c);
+const fsMap={};FORESHADOWINGS.forEach(f=>fsMap[f.id]=f);
+let activePanel='ov';
+
+function $(id){return document.getElementById(id);}
+function showCharacter(cid){activePanel='ch';updatePanels();setTimeout(()=>{$('chSearch').value=charMap[cid]?.name||'';renderCharacters('all',charMap[cid]?.name||'');},100);}
+function updatePanels(){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));$('p-'+activePanel).classList.add('active');document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));document.querySelector(`.nav-btn[data-p="${activePanel}"]`)?.classList.add('active');}
+
+document.getElementById('nav').addEventListener('click',e=>{const btn=e.target.closest('.nav-btn');if(!btn)return;activePanel=btn.dataset.p;updatePanels();renderCurrent();});
+
+function renderCurrent(){if(activePanel==='ch')renderCharacters();else if(activePanel==='fs')renderForeshadowings();else if(activePanel==='cs')renderConstraints();else if(activePanel==='tl')renderTimeline();}
+
+function renderStats(){$('stats').innerHTML=`<div class="stat-box"><div class="stat-num">${FORESHADOWINGS.length}</div><div class="stat-label">结构化伏笔</div></div><div class="stat-box"><div class="stat-num">${CHARACTERS.length}</div><div class="stat-label">人物结局</div></div><div class="stat-box"><div class="stat-num">${CONSTRAINTS.length}</div><div class="stat-label">逻辑约束</div></div><div class="stat-box"><div class="stat-num">${EVENTS.length}</div><div class="stat-label">重建事件</div></div>`;}
 
 function renderCharacters(filter='all',search=''){
-  const c=document.getElementById('charList');let f=characters;
-  if(filter!=='all')f=f.filter(c=>c.significance===filter);
-  if(search){const s=search.toLowerCase();f=f.filter(c=>c.name.includes(s)||c.alias.some(a=>a.includes(s))||c.fateSummary.includes(s));}
-  if(!f.length){c.innerHTML='<div style="padding:40px;text-align:center;color:#9b8c78">没有找到匹配的人物</div>';return;}
-  c.innerHTML=f.map(ch=>{
-    const sig={'核心':'十二钗正册','重要':'副册/又副册','次要':'重要配角','边缘':'边缘人物'};
-    let html='<div class="card fate-card"><div class="card-title">'+ch.name+' <span style="font-size:12px;color:var(--text3);font-weight:400">'+(ch.alias||[]).slice(0,2).join(' / ')+'</span> <span class="confidence c-'+ch.confidence+'">'+ch.confidence+'</span> <span style="font-size:11px;color:var(--text3)">'+(sig[ch.significance]||ch.significance)+'</span></div><div class="card-body"><p style="font-weight:600;margin-bottom:4px">'+ch.fateSummary+'</p><p style="font-size:14px;color:var(--text2)">'+(ch.fateDetail||'')+'</p>';
-    if(ch.supportingForeshadowings&&ch.supportingForeshadowings.length){
-      html+='<div class="evidence-list"><div style="font-size:14px;font-weight:600;margin-top:8px;color:var(--text2)">支持证据</div>';
-      for(const fid of ch.supportingForeshadowings.slice(0,4)){const fs=foreshadowings.find(f=>f.id===fid);if(fs)html+='<div class="evidence-item"><span class="evidence-type et-'+fs.evidenceType+'">'+fs.evidenceType+'</span><span class="evidence-ref">'+fs.id+'</span><span>'+(fs.content.length>60?fs.content.slice(0,60)+'...':fs.content)+'</span></div>';}
-      html+='</div>';
+  let f=CHARACTERS;if(filter!=='all')f=f.filter(c=>c.significance===filter);if(search){const s=search.toLowerCase();f=f.filter(c=>c.name.includes(s)||c.alias.some(a=>a.includes(s))||c.fateSummary.includes(s));}
+  if(!f.length){$('chList').innerHTML='<div style="padding:40px;text-align:center;color:var(--t3)">没有找到匹配的人物</div>';return;}
+  $('chList').innerHTML=f.map(c=>{
+    let h='<div class="card fc"><div class="card-title">'+c.name+' <span style="font-size:11px;color:var(--t3);font-weight:400">'+(c.alias||[]).slice(0,2).join(' / ')+'</span> <span class="conf '+R[c.confidence]+'">'+c.confidence+'</span> <span style="font-size:10px;color:var(--t3)">'+(SIG[c.significance]||c.significance)+'</span></div><div class="card-body"><p style="font-weight:600">'+c.fateSummary+'</p><p style="font-size:13px;color:var(--t2);margin:4px 0">'+c.fateDetail+'</p>';
+    if(c.quote)h+='<p style="font-size:13px;color:var(--g);font-style:italic">「'+c.quote+'」</p>';
+    if(c.supporting&&c.supporting.length){h+='<div style="margin-top:8px;font-size:12px;font-weight:600;color:var(--t2)">支持证据</div>';
+      c.supporting.slice(0,5).forEach(fid=>{const fs=fsMap[fid];if(fs)h+='<div class="er"><span class="et '+(ETC[fs.evidenceType]||'et4')+'">'+fs.evidenceType+'</span><span style="font-family:var(--m);font-size:11px;color:var(--a)">'+fs.id+'</span><span>第'+fs.chapter+'回 · '+(fs.content.length>50?fs.content.slice(0,50)+'...':fs.content)+'</span></div>';});
     }
-    return html+'</div></div>';
+    if(c.alt&&c.alt.length){h+='<div style="margin-top:8px"><span style="cursor:pointer;color:var(--a);font-size:12px" onclick="this.nextElementSibling.classList.toggle(\'open\')">🔍 查看替代学说 ('+c.alt.length+')</span><div style="display:none;margin-top:6px;padding:8px 10px;background:var(--al);border-radius:4px;font-size:13px">';
+      c.alt.forEach(a=>{h+='<p style="margin-bottom:6px"><b>'+a.theory+'</b> <span class="conf '+R[a.confidence]+'">'+a.confidence+'</span><br>提出者：'+a.proponent+'<br>'+a.description+'</p>';});
+      h+='</div></div>';}
+    return h+'</div></div>';
   }).join('');
 }
-document.getElementById('charSearch').addEventListener('input',e=>{const af=document.querySelector('#charFilters .filter-chip.active')?.dataset.filter||'all';renderCharacters(af,e.target.value);});
-document.getElementById('charFilters').addEventListener('click',e=>{const chip=e.target.closest('.filter-chip');if(!chip)return;document.querySelectorAll('#charFilters .filter-chip').forEach(c=>c.classList.remove('active'));chip.classList.add('active');renderCharacters(chip.dataset.filter,document.getElementById('charSearch').value);});
+$('chSearch').addEventListener('input',e=>{const af=document.querySelector('#chFilters .flt-chip.active')?.dataset.f||'all';renderCharacters(af,e.target.value);});
+$('chFilters').addEventListener('click',e=>{const chip=e.target.closest('.flt-chip');if(!chip)return;document.querySelectorAll('#chFilters .flt-chip').forEach(c=>c.classList.remove('active'));chip.classList.add('active');renderCharacters(chip.dataset.f,$('chSearch').value);});
 
-function renderForeshadowing(filter='all',search=''){
-  const c=document.getElementById('fsList');let f=foreshadowings;
-  if(filter!=='all'){if(['确定','极有可能','有可能','存疑'].includes(filter))f=f.filter(fs=>fs.confidence===filter);else f=f.filter(fs=>fs.evidenceType===filter);}
+function renderForeshadowings(filter='all',search=''){
+  let f=FORESHADOWINGS;if(filter!=='all'){if(['确定','极有可能','有可能','存疑'].includes(filter))f=f.filter(fs=>fs.confidence===filter);else f=f.filter(fs=>fs.evidenceType===filter);}
   if(search){const s=search.toLowerCase();f=f.filter(fs=>fs.content.includes(s)||fs.context.includes(s)||fs.id.includes(s.toUpperCase())||String(fs.chapter).includes(s));}
-  if(!f.length){c.innerHTML='<div style="padding:40px;text-align:center;color:#9b8c78">没有找到匹配的伏笔</div>';return;}
+  if(!f.length){$('fsList').innerHTML='<div style="padding:40px;text-align:center;color:var(--t3)">没有找到匹配的伏笔</div>';return;}
   f.sort((a,b)=>a.chapter-b.chapter);
-  c.innerHTML=f.map(fs=>'<div class="card fs-card"><div class="fs-header"><div style="display:flex;gap:8px;align-items:center"><span class="fs-chapter">第'+fs.chapter+'回</span><span class="confidence c-'+fs.confidence+'">'+fs.confidence+'</span></div><span class="evidence-ref">'+fs.id+'</span></div><div class="fs-content">「'+fs.content+'」</div><div class="fs-context">'+fs.context+'</div><div style="margin-top:8px;font-size:12px;color:var(--text3)">来源：'+(fs.source||'—')+' | 关联人物：'+(fs.relatedCharacters||[]).map(c=>c.name).join('、')+' | 关联事件：'+(fs.relatedEvents||[]).map(e=>e.name).join('、')+'</div></div>').join('');
+  $('fsList').innerHTML=f.map(fs=>'<div class="card"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px"><div style="display:flex;gap:6px;align-items:center"><span class="sb">第'+fs.chapter+'回</span><span class="conf '+R[fs.confidence]+'">'+fs.confidence+'</span></div><span style="font-family:var(--m);font-size:11px;color:var(--a)">'+fs.id+'</span></div><div style="font-size:14px;padding:6px 10px;background:var(--al);border-radius:4px;margin-bottom:6px">「'+fs.content+'」</div><div style="font-size:13px;color:var(--t2)">'+fs.context+'</div><div style="margin-top:6px;font-size:11px;color:var(--t3)">来源：'+(fs.source||'—')+' | 关联人物：'+(fs.relatedCharacters||[]).map(c=>c.name).join('、')+'</div></div>').join('');
 }
-document.getElementById('fsSearch').addEventListener('input',e=>{const af=document.querySelector('#fsFilters .filter-chip.active')?.dataset.filter||'all';renderForeshadowing(af,e.target.value);});
-document.getElementById('fsFilters').addEventListener('click',e=>{const chip=e.target.closest('.filter-chip');if(!chip)return;document.querySelectorAll('#fsFilters .filter-chip').forEach(c=>c.classList.remove('active'));chip.classList.add('active');renderForeshadowing(chip.dataset.filter,document.getElementById('fsSearch').value);});
+$('fsSearch').addEventListener('input',e=>{const af=document.querySelector('#fsFilters .flt-chip.active')?.dataset.f||'all';renderForeshadowings(af,e.target.value);});
+$('fsFilters').addEventListener('click',e=>{const chip=e.target.closest('.flt-chip');if(!chip)return;document.querySelectorAll('#fsFilters .flt-chip').forEach(c=>c.classList.remove('active'));chip.classList.add('active');renderForeshadowings(chip.dataset.f,$('fsSearch').value);});
 
 function renderConstraints(){
-  const c=document.getElementById('cstList');if(!constraints.length){c.innerHTML='<div style="padding:40px;text-align:center;color:#9b8c78">暂无约束数据</div>';return;}
+  if(!CONSTRAINTS.length){$('csList').innerHTML='<div style="padding:40px;text-align:center;color:var(--t3)">暂无约束数据</div>';return;}
   const tm={'必然导致':'🔗','支持':'✅','矛盾/互斥':'❌','时间顺序约束':'⏱️','因果依赖':'🔀'};
-  c.innerHTML=constraints.map(cst=>{
-    const fsSource=foreshadowings.find(f=>f.id===cst.sourceForeshadowing);
-    return '<div class="constraint-item"><span style="font-size:18px">'+(tm[cst.type]||'?')+'</span><span style="font-weight:600;font-size:12px;color:var(--accent);white-space:nowrap">'+cst.type+'</span><span style="font-size:13px">'+(fsSource?fsSource.content.slice(0,30)+'...':cst.sourceForeshadowing)+'</span><span class="arrow">→</span><span style="font-size:13px;color:var(--blue)">'+cst.targetForeshadowingOrFate+'</span><span style="font-size:11px;padding:2px 6px;background:#f0ebe0;border-radius:3px">'+(cst.strength||'')+'</span><span style="font-size:12px;color:var(--text3);flex:1">'+cst.rationale.slice(0,80)+'</span></div>';
-  }).join('');
+  $('csList').innerHTML=CONSTRAINTS.map(c=>{const fsS=fsMap[c.sourceForeshadowing];return'<div class="ci"><span style="font-size:16px">'+(tm[c.type]||'?')+'</span><span style="font-weight:600;font-size:11px;color:var(--a);white-space:nowrap">'+c.type+'</span><span style="font-size:12px">'+(fsS?fsS.content.slice(0,25)+'...':c.sourceForeshadowing)+'</span><span class="arrow">→</span><span style="font-size:12px;color:var(--b)">'+c.targetForeshadowingOrFate+'</span><span style="font-size:10px;padding:1px 5px;background:#f0ebe0;border-radius:2px">'+c.strength+'</span><span style="font-size:11px;color:var(--t3);flex:1">'+c.rationale.slice(0,60)+'</span></div>';}).join('');
 }
 
 function renderTimeline(){
-  const c=document.getElementById('tlList');if(!events.length){c.innerHTML='<div style="padding:40px;text-align:center;color:#9b8c78">暂无事件数据</div>';return;}
-  const sorted=[...events].sort((a,b)=>(a.chapter||999)-(b.chapter||999));
-  c.innerHTML=sorted.map(evt=>{
-    const charNames=(evt.characters||[]).map(cid=>{const ch=characters.find(c=>c.id===cid);return ch?ch.name:cid;}).join(' · ');
-    return '<div class="timeline-item"><div class="tl-header"><span class="tl-chapter">第'+evt.chapter+'回</span><span class="tl-title">'+evt.title+'</span><span class="confidence c-'+evt.confidence+'">'+evt.confidence+'</span></div><div class="tl-desc">'+evt.description+'</div><div style="font-size:12px;color:var(--text3);margin-top:4px">👥 '+(charNames||'—')+'</div></div>';
+  if(!EVENTS.length){$('tlList').innerHTML='<div style="padding:40px;text-align:center;color:var(--t3)">暂无事件数据</div>';return;}
+  const sorted=[...EVENTS].sort((a,b)=>(a.chapter||999)-(b.chapter||999));
+  $('tlList').innerHTML=sorted.map(e=>{
+    const cn=(e.characters||[]).map(cid=>{const c=charMap[cid];return c?c.name:cid;}).join(' · ');
+    return'<div class="ti"><div style="font-family:var(--m);font-size:12px;color:var(--a);font-weight:600">第'+e.chapter+'回（推算）</div><div style="font-size:15px;font-weight:700;margin:2px 0">'+e.title+' <span class="conf '+R[e.confidence]+'">'+e.confidence+'</span></div><div style="font-size:13px;color:var(--t2);line-height:1.7">'+e.description+'</div><div style="font-size:11px;color:var(--t3);margin-top:3px">👥 '+(cn||'—')+'</div></div>';
   }).join('');
 }
 
-function renderAll(){renderCharacters();renderForeshadowing();renderConstraints();renderTimeline();}
-loadData();
-</script>
-</body>
-</html>
+// ====== LIVE DATA SYNC ======
+const GH_BASE='https://raw.githubusercontent.com/hjp899/honglou-meng-foreshadowing/main/data/';
+const FALLBACK_BASE='./data/';
+let DATA_LOADED=false;
+
+async function fetchJSON(path){
+  try{const r=await fetch(GH_BASE+path);if(r.ok)return await r.json();}catch(e){}
+  try{const r=await fetch(FALLBACK_BASE+path);if(r.ok)return await r.json();}catch(e){}
+  return null;
+}
+
+async function loadLiveData(){
+  const now=Date.now();
+  const c1=await fetchJSON('characters.json');
+  const c2=await fetchJSON('characters_batch2.json');
+  const f1=await fetchJSON('foreshadowing.json');
+  const f2=await fetchJSON('foreshadowing_batch2.json');
+  const cs1=await fetchJSON('constraints.json');
+  const cs2=await fetchJSON('constraints_batch2.json');
+  const e1=await fetchJSON('events.json');
+  const e2=await fetchJSON('events_batch2.json');
+
+  if(c1) CHARACTERS.splice(0,CHARACTERS.length,...(c1.characters||[]));
+  if(c2) CHARACTERS.push(...(Array.isArray(c2)?c2:(c2?.characters||[])));
+  if(f1) FORESHADOWINGS.splice(0,FORESHADOWINGS.length,...(f1.foreshadowings||[]));
+  if(f2) FORESHADOWINGS.push(...(Array.isArray(f2)?f2:(f2?.foreshadowings||[])));
+  if(cs1) CONSTRAINTS.splice(0,CONSTRAINTS.length,...(cs1.constraints||[]));
+  if(cs2) CONSTRAINTS.push(...(Array.isArray(cs2)?cs2:(cs2?.constraints||[])));
+  if(e1) EVENTS.splice(0,EVENTS.length,...(e1.events||[]));
+  if(e2) EVENTS.push(...(Array.isArray(e2)?e2:(e2?.events||[])));
+
+  CHARACTERS.forEach(c=>charMap[c.id]=c);
+  FORESHADOWINGS.forEach(f=>fsMap[f.id]=f);
+  DATA_LOADED=true;
+  refreshAll();
+  console.log(`[${new Date().toISOString()}] 数据已从 GitHub 同步 (${Date.now()-now}ms) · ${CHARACTERS.length}人物 · ${FORESHADOWINGS.length}伏笔 · ${CONSTRAINTS.length}约束 · ${EVENTS.length}事件`);
+}
+
+function refreshAll(){
+  renderStats();
+  renderCurrent();
+  document.querySelector('.header .badges').innerHTML=`<span class="badge">${FORESHADOWINGS.length}条伏笔</span><span class="badge">${CHARACTERS.length}人物</span><span class="badge">${CONSTRAINTS.length}约束</span><span class="badge">${EVENTS.length}事件</span><span class="badge">实时同步</span><span class="badge">双击可用</span>`;
+}
+
+// INIT with live fetch, fallback to embedded
+loadLiveData().catch(()=>{renderStats();renderCharacters();});
+</script></body></html>
+</script></body></html>

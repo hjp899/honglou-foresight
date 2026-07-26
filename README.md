@@ -48,7 +48,7 @@
 
 ### 🔮 探佚成果页（实时更新）
 
-**[📊 查看最新探佚结果](https://hjp899.github.io/honglou-meng-foreshadowing/results.html)**
+**[📊 查看最新探佚结果](https://honglou-foresight.hjp18059.workers.dev/results.html)**
 
 社区每次合并新数据，探佚成果页自动刷新：
 - 后三十回共识时间线（22 个重建事件，每个事件标注集成置信度分数）
@@ -57,7 +57,7 @@
 
 ### 🕸️ 十二钗命运关系图谱
 
-**[📊 查看人物关系图](https://hjp899.github.io/honglou-meng-foreshadowing/relationship-graph.html)**
+**[📊 查看人物关系图](https://honglou-foresight.hjp18059.workers.dev/relationship-graph.html)**
 
 D3.js 力导向图，19 个节点 × 25 条关系边。正册/副册分色标注，按置信度（确定/极有可能/存疑）区分大小。悬停查看结局摘要，点击跳转到独立人物详页。
 
@@ -113,10 +113,10 @@ D3.js 力导向图，19 个节点 × 25 条关系边。正册/副册分色标注
 
 不需要安装任何东西：
 
-- 🏠 [主目录](https://hjp899.github.io/honglou-meng-foreshadowing/) — 六面板（概览/人物/伏笔/约束/时间线/贡献）
-- 📊 [探佚成果](https://hjp899.github.io/honglou-meng-foreshadowing/results.html) — 后三十回共识推演（实时更新）
-- 🕸️ [关系图谱](https://hjp899.github.io/honglou-meng-foreshadowing/relationship-graph.html) — 十二钗命运网络
-- 👤 [黛玉详页](https://hjp899.github.io/honglou-meng-foreshadowing/character-lin-daiyu.html) — 精装版独立人物页
+- 🏠 [主目录](https://honglou-foresight.hjp18059.workers.dev/) — 六面板（概览/人物/伏笔/约束/时间线/贡献）
+- 📊 [探佚成果](https://honglou-foresight.hjp18059.workers.dev/results.html) — 后三十回共识推演（实时更新）
+- 🕸️ [关系图谱](https://honglou-foresight.hjp18059.workers.dev/relationship-graph.html) — 十二钗命运网络
+- 👤 [黛玉详页](https://honglou-foresight.hjp18059.workers.dev/character-lin-daiyu.html) — 精装版独立人物页
 
 ### 本地运行
 

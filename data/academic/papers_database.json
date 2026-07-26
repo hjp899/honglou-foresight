@@ -1,0 +1,351 @@
+{
+  "meta": {
+    "version": "3.0.0",
+    "title": "红学学术论文数据库——分级引用与评分体系",
+    "description": "收录红学核心论文与专著，按引用量、权威性、与原文契合度三维排序。每条记录包含详细的维度评分和总分。总分公式见 scoring_protocol。"
+  },
+
+  "scoring_protocol": {
+    "version": "3.0",
+    "total_formula": "S = w₁·R₁(citation) + w₂·R₂(authority) + w₃·R₃(alignment) + w₄·R₄(methodology) + w₅·R₅(recency) + w₆·R₆(depth)",
+    "weights": {
+      "R₁_citation_impact": {"weight": 0.18, "description": "引用影响力——知网/Google Scholar被引次数、学术著作参考文献出现频率"},
+      "R₂_authority_level": {"weight": 0.20, "description": "机构与发表渠道权威性——发表期刊级别、出版社级别"},
+      "R₃_original_alignment": {"weight": 0.25, "description": "与原文/脂批契合度——该论文结论与原文、脂批的直接证据吻合程度（最高权重）"},
+      "R₄_methodological_rigor": {"weight": 0.15, "description": "方法论严谨性——证据链完整度、推测与事实区分度"},
+      "R₅_temporal_relevance": {"weight": 0.10, "description": "时效性与学术更新——是否吸收了最新文献辨伪成果"},
+      "R₆_analytical_depth": {"weight": 0.12, "description": "分析深度——是否超出表面文本、提出可检验的假说"}
+    },
+    "dimension_breakdown": {
+      "R₁_citation_impact": {
+        "sub_dimensions": [
+          {"name": "知网被引量", "sub_weight_within_R1": 0.50, "rubric": ">500次=10, 200-500=8, 50-200=6, 10-50=4, <10=2, 0=0"},
+          {"name": "学术专书引用率", "sub_weight_within_R1": 0.30, "rubric": "被5部以上专著引用=10, 3-5部=7, 1-2部=4, 无=0"},
+          {"name": "国际引用", "sub_weight_within_R1": 0.20, "rubric": "有英/日/韩等外文引用=8-10, 仅中文引用=5, 无=0"}
+        ]
+      },
+      "R₂_authority_level": {
+        "sub_dimensions": [
+          {"name": "发表期刊", "sub_weight_within_R2": 0.40, "rubric": "《红楼梦学刊》CSSCI=10, 其他CSSCI=8, 北大核心=6, 普刊=4, 非学术=0"},
+          {"name": "出版社", "sub_weight_within_R2": 0.30, "rubric": "中华书局/人民文学/商务=10, 三联/社科院=9, 省级人民=7, 其他=4"},
+          {"name": "作者机构", "sub_weight_within_R2": 0.30, "rubric": "红研所=10, 社科院=9, 双一流高校=8, 省级社科院=6, 其他=4"}
+        ]
+      },
+      "R₃_original_alignment": {
+        "sub_dimensions": [
+          {"name": "脂批引用准确率", "sub_weight_within_R3": 0.40, "rubric": "脂批引用无误且与结论直接相关=10, 引用无误但相关度低=7, 有误=0"},
+          {"name": "原文证据充分性", "sub_weight_within_R3": 0.35, "rubric": "每条结论均有原文出处=10, 多数有出处=7, 推测为主=4, 无出处=0"},
+          {"name": "反证讨论", "sub_weight_within_R3": 0.25, "rubric": "系统讨论反证=10, 提及但未深入=6, 完全不提=3"}
+        ]
+      },
+      "R₄_methodological_rigor": {
+        "sub_dimensions": [
+          {"name": "推理链条完整性", "sub_weight_within_R4": 0.40, "rubric": "完整可追溯=10, 基本完整=7, 有跳跃=4, 循环论证=0"},
+          {"name": "推测标识", "sub_weight_within_R4": 0.30, "rubric": "明确区分事实与推测=10, 有时混淆=5, 从不区分=0"},
+          {"name": "跨学科方法", "sub_weight_within_R4": 0.30, "rubric": "数字人文/档案实证/文献对勘=8-10, 传统文献学=6, 纯文本解读=4"}
+        ]
+      },
+      "R₅_temporal_relevance": {
+        "sub_dimensions": [
+          {"name": "出版时间", "sub_weight_within_R5": 0.50, "rubric": "2023-2026=10, 2015-2022=8, 2000-2014=6, 1980-1999=5, 1980前=3"},
+          {"name": "最新成果吸收", "sub_weight_within_R5": 0.50, "rubric": "吸收2024靖藏本辨伪及近年成果=10, 部分吸收=7, 完全未吸收=3"}
+        ]
+      },
+      "R₆_analytical_depth": {
+        "sub_dimensions": [
+          {"name": "理论框架", "sub_weight_within_R6": 0.40, "rubric": "有创新性理论框架=10, 沿用现有框架有发展=7, 完全沿用=4"},
+          {"name": "可检验假说", "sub_weight_within_R6": 0.30, "rubric": "提出可检验的假说=10, 提出不可直接检验的假说=6, 无假说=2"},
+          {"name": "跨文本参照", "sub_weight_within_R6": 0.30, "rubric": "涉及多种版本/文献对勘=10, 单一版本为主=6, 完全未涉及=2"}
+        ]
+      }
+    }
+  },
+
+  "papers": [
+    {
+      "id": "PAPER-001",
+      "title": "《红楼梦靖藏本辨伪》",
+      "author": "高树伟",
+      "type": "专著",
+      "publisher": "中华书局",
+      "year": 2024,
+      "field": "版本辨伪·文献学",
+      "impact": "2024年最重要的红学成果之一。系统论证靖藏本150条批语为毛国瑶伪造，基于古典文献学的'连结性讹误'方法。这一结论迫使红学界重新评估所有涉及靖批的推论。",
+      "citations": "新书（2024年），已在学界引起重大反响，预计将产生长期影响。",
+      "R₁_citation_impact": 6.5,
+      "R₂_authority_level": 9.2,
+      "R₃_original_alignment": 9.8,
+      "R₄_methodological_rigor": 9.5,
+      "R₅_temporal_relevance": 9.8,
+      "R₆_analytical_depth": 9.0,
+      "total_score": null,
+      "recommended": "本项目据此移除所有靖藏本独家引文。脂砚斋=曹頫说被本项目采纳为约束推理的基准假设。"
+    },
+    {
+      "id": "PAPER-002",
+      "title": "《曹雪芹家世新考》",
+      "author": "冯其庸",
+      "type": "专著",
+      "publisher": "上海古籍出版社",
+      "year": 1980,
+      "field": "曹学·家世考证",
+      "impact": "红学史上曹雪芹家世考证最权威的专著。系统整理了曹玺、曹寅、曹頫、曹颙的世系，利用故宫档案和江宁织造文献，奠定了红学'曹学'分支的文献基础。",
+      "citations": "极高，被几乎所有曹学论文引用。",
+      "R₁_citation_impact": 9.5,
+      "R₂_authority_level": 9.8,
+      "R₃_original_alignment": 9.0,
+      "R₄_methodological_rigor": 9.2,
+      "R₅_temporal_relevance": 5.0,
+      "R₆_analytical_depth": 8.5,
+      "total_score": null,
+      "recommended": "曹家家世部分的权威来源。本项目historical_context.json的主要参考。"
+    },
+    {
+      "id": "PAPER-003",
+      "title": "《论红楼梦佚稿》",
+      "author": "蔡义江",
+      "type": "专著",
+      "publisher": "浙江古籍出版社",
+      "year": 1989,
+      "field": "探佚学",
+      "impact": "探佚学最重要的著作之一。系统梳理前80回伏笔与脂批，推断后三十回的事件框架。蔡义江对黛玉之死、元春之死、宝玉出家的判断是红学探佚的主流立场。",
+      "citations": "极高。",
+      "R₁_citation_impact": 9.0,
+      "R₂_authority_level": 9.0,
+      "R₃_original_alignment": 9.2,
+      "R₄_methodological_rigor": 8.8,
+      "R₅_temporal_relevance": 5.5,
+      "R₆_analytical_depth": 8.5,
+      "total_score": null,
+      "recommended": "本项目22个重建事件的核心参考。黛玉泪尽夭亡、元春被赐死等判断直接采用。"
+    },
+    {
+      "id": "PAPER-004",
+      "title": "《红楼梦诗词曲赋鉴赏》",
+      "author": "蔡义江",
+      "type": "专著",
+      "publisher": "中华书局",
+      "year": 2001,
+      "field": "诗词解读",
+      "impact": "第五回判词、判曲以及全书所有诗词的权威解读。对'千红一哭，万艳同悲''白茫茫大地真干净'等核心谶语的解释是学界公论。",
+      "citations": "极高，诗词解读领域被引最多的著作。",
+      "R₁_citation_impact": 9.5,
+      "R₂_authority_level": 9.5,
+      "R₃_original_alignment": 9.5,
+      "R₄_methodological_rigor": 9.0,
+      "R₅_temporal_relevance": 5.8,
+      "R₆_analytical_depth": 8.0,
+      "total_score": null,
+      "recommended": "本项目'谶语判词'类伏笔的解读以此书为首要参考。"
+    },
+    {
+      "id": "PAPER-005",
+      "title": "《石头记探佚》",
+      "author": "梁归智",
+      "type": "专著",
+      "publisher": "山西人民出版社",
+      "year": 1983,
+      "field": "探佚学",
+      "impact": "首部探佚学专著，系统提出'探佚学'学科概念。推断后三十回/后二十八回的基本框架。继承周汝昌的'湘云嫁宝玉'说，但整体探佚框架被广泛引用。",
+      "citations": "高。",
+      "R₁_citation_impact": 8.0,
+      "R₂_authority_level": 7.5,
+      "R₃_original_alignment": 7.5,
+      "R₄_methodological_rigor": 7.0,
+      "R₅_temporal_relevance": 4.5,
+      "R₆_analytical_depth": 7.5,
+      "total_score": null,
+      "recommended": "探佚方法论的重要参考。'湘云嫁宝玉'说存疑，在本项目中标注为存疑。"
+    },
+    {
+      "id": "PAPER-006",
+      "title": "《红楼探佚——曹雪芹原续后30回是怎样的》",
+      "author": "丁维忠",
+      "type": "专著",
+      "publisher": "京华出版社",
+      "year": 2006,
+      "field": "探佚学·情榜研究",
+      "impact": "情榜体系最系统的研究。丁维忠提出完整的正册、副册、又副册、三副册、四副册人物名单，以及各人在情榜上的评语。",
+      "citations": "中等偏高。",
+      "R₁_citation_impact": 7.0,
+      "R₂_authority_level": 7.5,
+      "R₃_original_alignment": 7.8,
+      "R₄_methodological_rigor": 7.5,
+      "R₅_temporal_relevance": 5.0,
+      "R₆_analytical_depth": 8.0,
+      "total_score": null,
+      "recommended": "情榜体系的参考来源。"
+    },
+    {
+      "id": "PAPER-007",
+      "title": "《红楼梦新证》",
+      "author": "周汝昌",
+      "type": "专著",
+      "publisher": "棠棣出版社",
+      "year": 1953,
+      "field": "曹学·综合考证",
+      "impact": "周汝昌最著名的著作，系统考证书中人物与曹家的对应关系。贡献巨大，但部分结论（如脂砚斋即史湘云原型）争议极大。",
+      "citations": "极高。",
+      "R₁_citation_impact": 9.5,
+      "R₂_authority_level": 9.0,
+      "R₃_original_alignment": 6.5,
+      "R₄_methodological_rigor": 5.5,
+      "R₅_temporal_relevance": 3.5,
+      "R₆_analytical_depth": 7.5,
+      "total_score": null,
+      "recommended": "曹家家世部分高权威，推理性结论低权威。本项目标注为'存疑'。"
+    },
+    {
+      "id": "PAPER-008",
+      "title": "《释'白首双星'——关于史湘云的结局》",
+      "author": "朱彤",
+      "type": "期刊论文",
+      "journal": "《红楼梦学刊》创刊号",
+      "year": 1979,
+      "field": "探佚学·人物结局",
+      "impact": "新时期探佚研究最有影响的论文之一。系统解读'因麒麟伏白首双星'，为湘云嫁卫若兰说提供了最强证据。",
+      "citations": "高。",
+      "R₁_citation_impact": 8.5,
+      "R₂_authority_level": 9.5,
+      "R₃_original_alignment": 8.5,
+      "R₄_methodological_rigor": 8.0,
+      "R₅_temporal_relevance": 4.0,
+      "R₆_analytical_depth": 7.5,
+      "total_score": null,
+      "recommended": "关于'白首双星'解读的权威论文。"
+    },
+    {
+      "id": "PAPER-009",
+      "title": "《脂砚斋重评石头记汇校》",
+      "author": "冯其庸主编",
+      "type": "著作",
+      "publisher": "文化艺术出版社",
+      "year": 1987,
+      "field": "版本学·脂批汇编",
+      "impact": "汇集各主要抄本脂批，进行对勘。红学脂批研究的工具书基础。",
+      "citations": "极高。",
+      "R₁_citation_impact": 9.0,
+      "R₂_authority_level": 9.8,
+      "R₃_original_alignment": 10.0,
+      "R₄_methodological_rigor": 9.5,
+      "R₅_temporal_relevance": 5.5,
+      "R₆_analytical_depth": 8.0,
+      "total_score": null,
+      "recommended": "本项目脂批引文的版本对勘依据。"
+    },
+    {
+      "id": "PAPER-010",
+      "title": "《大观红楼》系列",
+      "author": "欧丽娟",
+      "type": "专著",
+      "publisher": "台湾大学出版中心",
+      "year": 2014-2018,
+      "field": "文学批评",
+      "impact": "从空间政治学、女性主义、叙事学等角度系统解读大观园。提出了'有情之天/无情之天'的理论框架。",
+      "citations": "中等偏高。",
+      "R₁_citation_impact": 6.5,
+      "R₂_authority_level": 6.5,
+      "R₃_original_alignment": 7.5,
+      "R₄_methodological_rigor": 8.0,
+      "R₅_temporal_relevance": 7.5,
+      "R₆_analytical_depth": 8.5,
+      "total_score": null,
+      "recommended": "人物关系空间分析的方法论参考。非传统红学体制内学者但方法论有价值。"
+    },
+    {
+      "id": "PAPER-011",
+      "title": "《脂砚斋和畸笏叟身份研究的回顾与再思考》",
+      "author": "李鹏飞",
+      "type": "期刊论文",
+      "journal": "《曹雪芹研究》2024年第2期",
+      "year": 2024,
+      "field": "脂批研究",
+      "impact": "系统回顾脂砚斋和畸笏叟的身份研究，梳理各家观点。与高树伟《靖藏本辨伪》同期发表，形成2024年红学文献辨伪浪潮。",
+      "citations": "2024年新发表，已在红学共同体中产生影响。",
+      "R₁_citation_impact": 4.5,
+      "R₂_authority_level": 8.0,
+      "R₃_original_alignment": 8.5,
+      "R₄_methodological_rigor": 8.5,
+      "R₅_temporal_relevance": 9.8,
+      "R₆_analytical_depth": 7.5,
+      "total_score": null,
+      "recommended": "脂砚斋/畸笏叟身份研究的最新综述。"
+    },
+    {
+      "id": "PAPER-012",
+      "title": "《论庚辰本》",
+      "author": "冯其庸",
+      "type": "专著",
+      "publisher": "上海文艺出版社",
+      "year": 1978,
+      "field": "版本学",
+      "impact": "对庚辰本的系统研究，确立了庚辰本在红学版本中的重要地位。",
+      "citations": "高。",
+      "R₁_citation_impact": 8.0,
+      "R₂_authority_level": 9.5,
+      "R₃_original_alignment": 9.0,
+      "R₄_methodological_rigor": 9.0,
+      "R₅_temporal_relevance": 4.5,
+      "R₆_analytical_depth": 7.5,
+      "total_score": null,
+      "recommended": "版本对勘的基本参考。"
+    },
+    {
+      "id": "PAPER-013",
+      "title": "《红楼梦》新校注本",
+      "author": "中国艺术研究院红楼梦研究所（冯其庸、李希凡主持）",
+      "type": "校注本",
+      "publisher": "人民文学出版社",
+      "year": 1982,
+      "field": "文本校勘",
+      "impact": "发行量超过一千万册，是目前最普及、影响最深远的通行本。以庚辰本为底本。",
+      "citations": "极高。",
+      "R₁_citation_impact": 10.0,
+      "R₂_authority_level": 10.0,
+      "R₃_original_alignment": 10.0,
+      "R₄_methodological_rigor": 9.5,
+      "R₅_temporal_relevance": 5.8,
+      "R₆_analytical_depth": 8.5,
+      "total_score": null,
+      "recommended": "本项目前80回原文引用的基准文本。"
+    },
+    {
+      "id": "PAPER-014",
+      "title": "《红楼梦大辞典》",
+      "author": "中国艺术研究院红楼梦研究所（冯其庸、李希凡主编）",
+      "type": "辞书",
+      "publisher": "文化艺术出版社",
+      "year": 1990,
+      "field": "工具书",
+      "impact": "红学史上第一部综合类辞书。人物信息、版本信息、红学术语定义的权威来源。",
+      "citations": "极高。",
+      "R₁_citation_impact": 9.5,
+      "R₂_authority_level": 10.0,
+      "R₃_original_alignment": 9.5,
+      "R₄_methodological_rigor": 9.0,
+      "R₅_temporal_relevance": 5.0,
+      "R₆_analytical_depth": 7.0,
+      "total_score": null,
+      "recommended": "辞书类参考，工具书性质。"
+    },
+    {
+      "id": "PAPER-015",
+      "title": "《启功给你讲红楼》",
+      "author": "启功",
+      "type": "专著",
+      "publisher": "中华书局",
+      "year": 2006,
+      "field": "清代礼俗·文物制度",
+      "impact": "启功从清代满族礼俗、文物制度、服饰饮食等角度解读《红楼梦》，提供了小说物质细节的历史依据。",
+      "citations": "高。",
+      "R₁_citation_impact": 7.5,
+      "R₂_authority_level": 9.0,
+      "R₃_original_alignment": 8.5,
+      "R₄_methodological_rigor": 9.0,
+      "R₅_temporal_relevance": 6.0,
+      "R₆_analytical_depth": 7.5,
+      "total_score": null,
+      "recommended": "清代礼俗与小说细节对照的权威来源。元妃省亲等场景的历史背景参考。"
+    }
+  ]
+}

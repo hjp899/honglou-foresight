@@ -103,7 +103,11 @@ D3.js 力导向图，19 个节点 × 25 条关系边。正册/副册分色标注
 | 推理引擎 | **3 版**（v1.0 → v2.0 → v3.0） |
 | 学者评分 | **12 人**（6 层梯队） |
 | 学术背书 | **4 个机构 + 13 部著作** |
-| 前端页面 | **15 个** |
+| 前端页面 | **16 个** |
+| 学术论文库 | **40 篇**（15学术+25历史，6维评分） |
+| 脂批抄本 | **6 种**（甲戌·庚辰·己卯·戚序·列藏·靖藏[伪]） |
+| 作者研究 | 曹雪芹档案 + 7条作者约束 |
+| 评分体系 | **v3.0 RWCI**（6主维×18子维，精度0.01） |
 
 ---
 
@@ -113,10 +117,10 @@ D3.js 力导向图，19 个节点 × 25 条关系边。正册/副册分色标注
 
 不需要安装任何东西：
 
-- 🏠 [主目录](https://honglou-foresight.hjp18059.workers.dev/) — 六面板（概览/人物/伏笔/约束/时间线/贡献）
+- 🏠 [主目录](https://honglou-foresight.hjp18059.workers.dev/) — 8面板（概览/人物/伏笔/约束/时间线/论文/作者/历史）
 - 📊 [探佚成果](https://honglou-foresight.hjp18059.workers.dev/results.html) — 后三十回共识推演（实时更新）
-- 🕸️ [关系图谱](https://honglou-foresight.hjp18059.workers.dev/relationship-graph.html) — 十二钗命运网络
 - 👤 [黛玉详页](https://honglou-foresight.hjp18059.workers.dev/character-lin-daiyu.html) — 精装版独立人物页
+- 🏛️ [历史考源](https://honglou-foresight.hjp18059.workers.dev/history.html) — 曹雪芹·原型·脂砚斋·文风
 
 ### 本地运行
 
@@ -194,16 +198,18 @@ cd src/core && python3 engine_v3.py --demo
 
 ```
 honglou-meng-foreshadowing/
-├── data/                         ← 核心资产层（15 个 JSON）
-│   ├── foreshadowing.json + batch2    ← 60 条伏笔
-│   ├── characters.json + batch2       ← 29 个人物结局
-│   ├── constraints.json + batch2      ← 40 条逻辑约束
-│   ├── events.json + batch2           ← 22 个重建事件
+├── data/                         ← 核心资产层（15 个 JSON + academic/子目录）
+│   ├── academic/                      ← 学术论文数据库
+│   │   ├── papers_database.json       ← 15 篇核心论文（6维评分）
+│   │   ├── history_papers.json        ← 25 篇历史研究论文（6维评分）
+│   │   └── zhipi_authentication.json  ← 脂批谱系与伪批判定经验库
 │   ├── caoxueqin_profile.json         ← 曹雪芹个人档案 + 作者推理模型
+│   ├── cao_xueqin_dossier.json        ← 曹雪芹本人考据档案（新增）
+│   ├── historical_prototypes.json     ← 历史原型数据库（新增）
 │   ├── scholar_credibility.json       ← 学者权威性评级体系
 │   ├── academic_bibliography.json     ← 学术文献背书（13 部核心著作）
 │   ├── historical_context.json        ← 曹家历史与小说对照
-│   ├── scoring_formula.json           ← RACS 多维评分通式（8 维 10 级）
+│   ├── scoring_formula.json           ← RACS v3.0（6主维×18子维）
 │   ├── contributor_scholar_template.json ← 合作者模板
 │   └── schema.json                    ← 数据模型定义
 ├── src/core/
@@ -211,9 +217,9 @@ honglou-meng-foreshadowing/
 │   ├── engine_v2.py                   ← v2.0：加权 + 曹氏检验
 │   └── engine_v3.py                   ← v3.0：贝叶斯 + MLN + 文本解析 + RACS
 ├── public/                            ← 15 个 HTML 前端页面
-│   ├── index.html                     ← 主目录（六面板）
+│   ├── index.html                     ← 主目录（8面板含作者/历史/论文研究）
 │   ├── results.html                   ← 探佚成果页（实时更新）
-│   ├── relationship-graph.html        ← D3.js 人物关系图谱
+│   ├── history.html                   ← 历史考源页（曹雪芹·原型·脂砚斋·文风）
 │   └── character-*.html × 13          ← 独立人物详页
 ├── .github/workflows/                 ← CI/CD 自动验证 + 自动部署
 ├── README.md                          ← 本文件

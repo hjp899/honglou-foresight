@@ -49,6 +49,8 @@ a{color:var(--a);text-decoration:none}a:hover{text-decoration:underline}
 <button class="nav-btn" data-p="cs">约束图</button>
 <button class="nav-btn" data-p="tl">事件时间线</button>
 <button class="nav-btn" data-p="ac">学术论文</button>
+<button class="nav-btn" data-p="au">作者研究</button>
+<button class="nav-btn" data-p="his">历史研究</button>
 </div>
 <div class="panel active" id="p-ov"><div class="stats-grid" id="stats"></div>
 <div class="card"><div class="card-title">关于这个项目</div><div class="card-body"><p style="margin-bottom:10px"><b>开源的结构化探佚推理系统</b>。把曹雪芹在前80回中埋下的每一条伏笔、脂砚斋留下的每一条批语、红学家数十年的探佚成果转化为可计算、可验证、可追溯的数据。</p><p style="margin-bottom:10px">核心假设：曹雪芹已写完《红楼梦》全书（110回），后30回因借阅者"迷失"而佚失。大量伏笔和脂批提供了足够的约束条件——这些约束本质上定义了一个逻辑推理问题。</p><p>与 MiroFish（多智能体仿真）和 OpenStory（角色沙盒演化）不同，本项目走证据链路线：逐条伏笔 → 约束图 → 逻辑传播 → 一致性验证。</p></div></div>
@@ -57,7 +59,17 @@ a{color:var(--a);text-decoration:none}a:hover{text-decoration:underline}
 <div class="panel" id="p-fs"><div class="srch"><input type="text" id="fsSearch" placeholder="搜索伏笔内容或回目..."></div><div class="flt" id="fsFilters"><span class="flt-chip active" data-f="all">全部</span><span class="flt-chip" data-f="确定">确定</span><span class="flt-chip" data-f="极有可能">极有可能</span><span class="flt-chip" data-f="脂批直接提示">脂批直接提示</span></div><div id="fsList"></div></div>
 <div class="panel" id="p-cs"><div class="card"><div class="card-title">五种约束类型</div><div class="card-body" style="line-height:2">🔗 <b>必然导致</b> · ✅ <b>支持</b> · ❌ <b>矛盾/互斥</b> · ⏱️ <b>时间顺序</b> · 🔀 <b>因果依赖</b></div></div><div id="csList"></div></div>
 <div class="panel" id="p-tl"><div class="tl" id="tlList"></div></div>
-<div class="panel" id="p-ac"><div id="paperList"></div></div>
+<div class="panel" id="p-ac"><div id="paperList"></div><div class="card"><div class="card-title">🖋️ 脂批真伪鉴别规则</div><div class="card-body"><p style="font-size:13px;line-height:1.9">已知抄本：甲戌本(1754)｜庚辰本(1760)｜己卯本(1759)｜戚序本｜列藏本｜靖藏本(已证伪·高树伟2024)</p><p style="font-size:13px;line-height:1.9;margin-top:6px"><b>可靠性排序</b>：后文提示(最高)＞创作过程＞人物评价＞文本赏析＞情感抒发＞靖藏本独家批语(零可靠)</p><p style="font-size:13px;line-height:1.9;margin-top:6px"><b>伪批检测</b>：连结性讹误｜独家来源无佐证｜语言风格不符｜缺乏交互逻辑</p><p style="font-size:13px;line-height:1.9;margin-top:6px">详见 <a href="https://honglou-foresight.hjp18059.workers.dev/history.html" style="color:var(--a)">历史考源</a> · <a href="https://honglou-foresight.hjp18059.workers.dev/data/academic/zhipi_authentication.json" style="color:var(--a)">脂批鉴定库</a></p></div></div></div>
+<div class="panel" id="p-au"><div class="card"><div class="card-title">👤 曹雪芹·作者档案</div><div class="card-body" style="line-height:1.9;font-size:14px">
+<p style="margin-bottom:6px"><b>曹霑（雪芹）</b> 约1715-1763年。满洲正白旗包衣世家，三代四人任江宁织造。亲历曹家从'烈火烹油'到'家亡人散'的全过程。</p>
+<p style="margin-bottom:6px"><b>友人</b>：敦敏、敦诚（宗室诗人，留下'不如著书黄叶村''爱君诗笔有奇气'等关键记载）、张宜泉（邻居，证实曹雪芹拒绝过皇家征召）</p>
+<p style="margin-bottom:6px"><b>文风</b>：敦诚评'直追昌谷（李贺）'——奇诡跳跃。但小说中克制为含蓄的白描。叙事手法：草蛇灰线｜悲喜交加｜不写之写｜以小见大｜一击两鸣｜背面敷粉｜烟云模糊</p>
+<p style="margin-bottom:6px"><b>创作心理</b>：'燕市哭歌悲遇合，秦淮残梦忆繁华'——敦敏。曹雪芹写《红楼梦》的根本动力不是控诉，而是追忆和'悼'（悼红轩）。</p>
+<p style="margin-bottom:6px"><b>哲学</b>：儒释道融合。'因空见色→由色生情→传情入色→自色悟空'——全书总纲，也是曹雪芹自己的精神结构。</p>
+<p style="font-size:12px;color:var(--t3);margin-top:6px">完整档案见 <a href="history.html" style="color:var(--a)">历史考源·曹雪芹</a> | <a href="data/cao_xueqin_dossier.json" style="color:var(--a)">cao_xueqin_dossier.json</a></p></div></div>
+<div class="card"><div class="card-title">📋 作者模型约束规则</div><div class="card-body" style="font-size:13px;line-height:1.9">
+<p>R1 情感必须是复杂的——悲喜交加，不做纯粹情感</p><p>R2 人物不能简单定义为好人或坏人</p><p>R3 关键场景可以'不写'或侧面写——不要直白正面描写</p><p>R4 梦境和现实不是二分的——'假作真时真亦假'</p><p>R5 大观园必然从内部烂掉——不是外力，是渗透侵蚀</p><p>R6 结局是'白茫茫大地真干净'——不是所有人死，是一切消散</p><p>R7 诗词曲赋是人物命运的密码——不是装饰</p></div></div></div>
+<div class="panel" id="p-his"><div id="hisList"></div></div>
 <div class="footer">红楼伏笔 · 含学术数据库 · 数据内嵌 · 双击可用 · 开源协作</div></div>
 <script>
 // ====== ALL DATA EMBEDDED ======
@@ -214,7 +226,7 @@ function updatePanels(){document.querySelectorAll('.panel').forEach(p=>p.classLi
 
 document.getElementById('nav').addEventListener('click',e=>{const btn=e.target.closest('.nav-btn');if(!btn)return;activePanel=btn.dataset.p;updatePanels();renderCurrent();});
 
-function renderCurrent(){if(activePanel==='ch')renderCharacters();else if(activePanel==='fs')renderForeshadowings();else if(activePanel==='cs')renderConstraints();else if(activePanel==='tl')renderTimeline();}
+function renderCurrent(){if(activePanel==='ch')renderCharacters();else if(activePanel==='fs')renderForeshadowings();else if(activePanel==='cs')renderConstraints();else if(activePanel==='tl')renderTimeline();else if(activePanel==='ac')renderPapers();else if(activePanel==='his')renderHistory();}
 
 function renderStats(){$('stats').innerHTML=`<div class="stat-box"><div class="stat-num">${FORESHADOWINGS.length}</div><div class="stat-label">结构化伏笔</div></div><div class="stat-box"><div class="stat-num">${CHARACTERS.length}</div><div class="stat-label">人物结局</div></div><div class="stat-box"><div class="stat-num">${CONSTRAINTS.length}</div><div class="stat-label">逻辑约束</div></div><div class="stat-box"><div class="stat-num">${EVENTS.length}</div><div class="stat-label">重建事件</div></div>`;}
 
@@ -260,6 +272,17 @@ function renderTimeline(){
     return'<div class="ti"><div style="font-family:var(--m);font-size:12px;color:var(--a);font-weight:600">第'+e.chapter+'回（推算）</div><div style="font-size:15px;font-weight:700;margin:2px 0">'+e.title+' <span class="conf '+R[e.confidence]+'">'+e.confidence+'</span></div><div style="font-size:13px;color:var(--t2);line-height:1.7">'+e.description+'</div><div style="font-size:11px;color:var(--t3);margin-top:3px">👥 '+(cn||'—')+'</div></div>';
   }).join('');
 }
+
+}
+
+function renderPapers(){var papers=[{id:"PAPER-001",t:"红楼梦靖藏本辨伪",a:"高树伟",y:2024,s:91},{id:"PAPER-002",t:"曹雪芹家世新考",a:"冯其庸",y:1980,s:88},{id:"PAPER-003",t:"论红楼梦佚稿",a:"蔡义江",y:1989,s:86},{id:"PAPER-004",t:"红楼梦诗词曲赋鉴赏",a:"蔡义江",y:2001,s:88},{id:"PAPER-005",t:"石头记探佚",a:"梁归智",y:1983,s:74},{id:"PAPER-006",t:"红楼探佚",a:"丁维忠",y:2006,s:73},{id:"PAPER-007",t:"红楼梦新证",a:"周汝昌",y:1953,s:72},{id:"PAPER-008",t:"释'白首双星'",a:"朱彤",y:1979,s:77},{id:"PAPER-009",t:"脂砚斋重评石头记汇校",a:"冯其庸",y:1987,s:88},{id:"PAPER-010",t:"大观红楼系列",a:"欧丽娟",y:2018,s:72},{id:"PAPER-011",t:"脂砚斋身份再思考",a:"李鹏飞",y:2024,s:79},{id:"PAPER-012",t:"论庚辰本",a:"冯其庸",y:1978,s:81},{id:"PAPER-013",t:"红楼梦新校注本",a:"红研所",y:1982,s:89},{id:"PAPER-014",t:"红楼梦大辞典",a:"红研所",y:1990,s:82},{id:"PAPER-015",t:"启功给你讲红楼",a:"启功",y:2006,s:80}];var html='<div class="card"><div class="card-title">📚 学术论文（共 15 篇）</div><div class="card-body" style="line-height:1.8;font-size:13px"><p><b>评分公式</b>：RWCI = 6维加权·D2(证据质量)权重0.28最高·分数归一化至0-100</p><p style="margin-top:4px">高亮：高树伟(2024)91分｜红研所校注本89分｜冯其庸88分·蔡义江88分</p></div></div>';
+papers.forEach(function(p,i){var c=p.s>=85?'#2d6a4f':p.s>=75?'#b8860b':'#9b8c78';html+='<div class="card"><div class="card-title">'+p.t+' <span style="font-size:11px;color:var(--t3);font-weight:400">'+p.a+' ('+p.y+')</span> <span style="float:right;font-family:var(--m);font-size:14px;font-weight:700;color:'+c+'">'+p.s+'</span></div></div>';});
+html+='<div class="card"><div class="card-title">🖋️ 脂批真伪鉴别</div><div class="card-body"><p style="font-size:13px;line-height:1.9">甲戌本(1754)｜庚辰本(1760)｜己卯本(1759)｜戚序本｜列藏本｜靖藏本(已证伪)</p><p style="font-size:13px;margin-top:4px">可靠性：后文提示>创作过程>人物评价>文本赏析>情感抒发>靖藏本(零)</p><p style="font-size:13px;margin-top:4px">检测：连结性讹误｜独家无佐证｜语言不符｜缺交互逻辑</p></div></div>';
+$('paperList').innerHTML=html;}
+
+function renderHistory(){$('hisList').innerHTML='<div class="card"><div class="card-title">📜 历史研究（共 25 篇论文）</div><div class="card-body" style="line-height:1.8;font-size:13px"><p><b>评分公式</b>：RWCI = 6维加权，D2(证据质量)权重0.28最高。D1来源权威性0.22｜D3方法论0.18｜D4引用影响0.12｜D5时效性0.08｜D6共识一致0.12。</p><p style="margin-top:6px">已收录 冯其庸·高树伟·史景迁·故宫档案馆·李鹏飞·余英时·吴世昌·蒋和森 等作者。</p><p style="margin-top:6px"><b>覆盖领域</b>：曹学·版本辨伪·清史·制度史·政治史·档案学·文化史·社会史·叙事学·医学史</p></div></div>';
+var hp=[{id:"HP-001",t:"曹雪芹家世新考",a:"冯其庸",y:1980,f:"曹学·家世",s:9.1},{id:"HP-002",t:"红楼梦靖藏本辨伪",a:"高树伟",y:2024,f:"版本辨伪",s:9.1},{id:"HP-004",t:"曹寅与康熙",a:"史景迁",y:1966,f:"清史·曹学",s:8.3},{id:"HP-016",t:"红楼梦的两个世界",a:"余英时",y:1978,f:"文学批评",s:8.5},{id:"HP-012",t:"脂砚斋和畸笏叟身份研究",a:"李鹏飞",y:2024,f:"脂批研究",s:7.8},{id:"HP-007",t:"清代包衣制度与曹雪芹",a:"—",y:2015,f:"制度史",s:7.3},{id:"HP-003",t:"雍正夺嫡与曹雪芹家族",a:"—",y:2020,f:"历史背景",s:7.5},{id:"HP-021",t:"康雍乾三朝制度变迁",a:"—",y:2018,f:"制度史",s:7.0},{id:"HP-005",t:"江宁织造曹家档案史料",a:"故宫档案馆编",y:1975,f:"档案学",s:8.5},{id:"HP-023",t:"清代满洲世家与汉人精英",a:"—",y:2011,f:"社会史",s:7.0}];
+hp.forEach(function(p,i){var s=p.s.toFixed(1);var c=s>=8.5?'#2d6a4f':s>=7?'#b8860b':'#9b8c78';$('hisList').innerHTML+='<div class="card"><div class="card-title">'+p.t+' <span style="font-size:11px;color:var(--t3);font-weight:400">'+p.a+' ('+p.y+')</span> <span style="float:right;font-family:var(--m);font-size:14px;font-weight:700;color:'+c+'">'+s+'</span></div><div class="card-body" style="font-size:13px;color:var(--t2)">领域：'+p.f+'</div></div>';});}
 
 // ====== LIVE DATA SYNC ======
 const GH_BASE='https://raw.githubusercontent.com/hjp899/honglou-meng-foreshadowing/main/data/';

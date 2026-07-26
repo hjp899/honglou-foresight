@@ -88,7 +88,7 @@ function showPanel(p){
   for(var j=0;j<btns.length;j++){btns[j].classList.remove('active');}
   var ab=document.querySelector('.nav-btn[data-p="'+p+'"]');if(ab)ab.classList.add('active');
   if(p==='ch')renderCharacters(); else if(p==='fs')renderForeshadowings(); else if(p==='cs')renderConstraints();
-  else if(p==='tl')renderTimeline(); else if(p==='ac')renderPapers(); else if(p==='his')renderHistory();
+  else if(p==='tl')renderTimeline(); else if(p==='ac')renderPapers(); else if(p==='au')renderAuthor(); else if(p==='his')renderHistory();
 }
 
 document.addEventListener('DOMContentLoaded',function(){
@@ -100,8 +100,147 @@ document.addEventListener('DOMContentLoaded',function(){
       t=t.parentNode;
     }
   });
-  renderStats(); renderCharacters(); renderForeshadowings(); renderConstraints();renderTimeline();renderPapers();renderHistory();
+  renderStats(); renderCharacters(); renderForeshadowings(); renderConstraints();renderTimeline();renderPapers();renderAuthor();renderHistory();
 });
+
+function renderAuthor(){
+  var h='';
+  // ===== 生平概览 =====
+  h+='<div class="card"><div class="card-title">👤 曹雪芹生平</div><div class="card-body">';
+  h+='<p style="margin-bottom:6px"><b>曹霑</b>，字梦阮，号雪芹、芹溪、芹圃。约1715年生，1763年（乾隆壬午除夕）或1764年除夕逝世，享年约48岁。</p>';
+  h+='<div style="background:var(--al);padding:10px 14px;border-radius:4px;margin:8px 0;font-size:13px;line-height:2">';
+  h+='<b>📅 生平大事记</b><br>';
+  h+='约1715 · 生于江宁织造府（今南京），满洲正白旗包衣世家<br>';
+  h+='1727   · <b style="color:var(--r)">曹家被雍正抄家</b>，12-13岁的曹雪芹从锦衣纨袴坠入茅椽蓬牖<br>';
+  h+='1728   · 随家迁至北京崇文门外蒜市口十七间半安置<br>';
+  h+='约1740s · 可能在右翼宗学任职，结识敦诚敦敏兄弟<br>';
+  h+='约1745 · 迁居西山，\'不如著书黄叶村\'，全力写作《红楼梦》<br>';
+  h+='约1754 · 脂砚斋开始抄阅再评《石头记》，初稿已基本完成<br>';
+  h+='1763   · 幼子夭折，感伤成疾，除夕病逝。脂批：\'书未成，芹为泪尽而逝\'</div>';
+  h+='<p style="font-size:13px;color:var(--t2);margin-top:4px">来源：敦诚《四松堂集》、敦敏《懋斋诗钞》、脂批、冯其庸《曹雪芹家世新考》等</p></div></div>';
+
+  // ===== 曹雪芹的"其他作品" =====
+  h+='<div class="card"><div class="card-title">📜 曹雪芹的其他传世作品</div><div class="card-body">';
+  h+='<p style="margin-bottom:8px">曹雪芹除《红楼梦》外，诗文作品传世极少——因为他晚年贫困，作品散佚严重。已知可考的仅有两句存诗和有限的友朋记载。</p>';
+
+  h+='<div style="background:var(--al);padding:12px 14px;border-radius:6px;margin-bottom:10px">';
+  h+='<div style="font-weight:700;font-size:15px;margin-bottom:4px">🖌️ 题敦诚《琵琶行传奇》残句</div>';
+  h+='<div style="font-size:16px;font-style:italic;color:var(--accent);padding:6px 0;text-align:center">"白傅诗灵应喜甚，定教蛮素鬼排场"</div>';
+  h+='<p style="font-size:13px;color:var(--t2);margin-top:4px"><b>背景：</b>敦诚作《琵琶行传奇》一折后，曹雪芹为之题诗。此诗仅存最后两句，是敦诚在《四松堂诗钞》中记录的。这是曹雪芹除《红楼梦》外唯一传世的文学作品。</p>';
+  h+='<p style="font-size:13px;color:var(--t2);margin-top:4px"><b>解读：</b>周汝昌称此句"奇气逼人"。诗句化用白居易《琵琶行》典故——"白傅"即白居易，"蛮素"即白居易的家妓小蛮和樊素。曹雪芹说白居易看到这出戏会"喜甚"并命家妓排演——这是曹氏特有的<strong>跌宕戏谑之笔</strong>，与《红楼梦》中"假作真时真亦假"的幽默一脉相承。</p></div>';
+
+  h+='<div style="background:var(--al);padding:12px 14px;border-radius:6px;margin-bottom:10px">';
+  h+='<div style="font-weight:700;font-size:15px;margin-bottom:4px">🖌️ 自题画石诗</div>';
+  h+='<div style="font-size:16px;font-style:italic;color:var(--accent);padding:6px 0;text-align:center">"爱此一拳石，玲珑出自然。<br>溯源应太古，堕世又何年。<br>有志归完璞，无才去补天。<br>不求邀众赏，潇洒做顽仙。"</div>';
+  h+='<p style="font-size:13px;color:var(--t2);margin-top:4px"><b>背景：</b>此诗据传出自敦敏《懋斋诗钞》所附曹雪芹遗诗，但真伪存在争议。吴恩裕最早提出此诗系曹雪芹所作，也有学者认为是后人伪托。</p>';
+  h+='<p style="font-size:13px;color:var(--t2);margin-top:4px"><b>解读：</b>"有志归完璞，无才去补天"——与《红楼梦》第一回"无材可去补苍天"的石头自述如出一辙。<strong>如果此诗为真</strong>，则"顽仙"二字已经点明了宝玉的最终归宿（潇洒活着的"野狐禅"而非青灯古佛的枯寂）。周汝昌认为："此诗是曹雪芹全部人格和文学理想的浓缩。"</p></div>';
+
+  h+='<div style="background:var(--al);padding:12px 14px;border-radius:6px;margin-bottom:8px">';
+  h+='<div style="font-weight:700;font-size:15px;margin-bottom:4px">🎨 绘画作品</div>';
+  h+='<p style="font-size:13px;line-height:1.8;color:var(--t2)">敦敏《题芹圃画石》中写道"醉余奋扫如椽笔，写出胸中磈礧时"——证明曹雪芹擅长画石，以石之嶙峋表达胸中不平之气。张宜泉也称"门外山川供绘画"。遗憾的是，曹雪芹画作全部失传，无一存世。</p>';
+  h+='<p style="font-size:13px;color:var(--t2);margin-top:4px"><b>文学史评价：</b>曹雪芹的诗风被敦诚评为"有奇气，直追昌谷（李贺）"。这意味着他的诗风是奇诡、跳跃、瑰丽的——与《红楼梦》中代人物所作诗词的含蓄典雅不同。这说明曹雪芹在小说中<strong>刻意克制了自己的诗风</strong>，以符合人物性格，这是极高的创作自觉。</p></div>';
+
+  h+='<p style="font-size:12px;color:var(--t3)">注：自题画石诗真伪存疑。周汝昌、吴恩裕持真，部分学者持伪。本项目标记为"存疑"。</p></div></div>';
+
+  // ===== 红学名家分析 =====
+  h+='<div class="card"><div class="card-title">🏛️ 古今名家论曹雪芹</div><div class="card-body">';
+
+  // 胡适
+  h+='<div style="border-bottom:1px solid var(--border);padding:10px 0">';
+  h+='<div style="display:flex;gap:8px;align-items:center;margin-bottom:4px"><span class="conf c-high">胡适 (1891-1962)</span><span style="font-size:11px;color:var(--t3)">新红学奠基人</span></div>';
+  h+='<p style="font-size:13px;color:var(--t2);padding:4px 10px;background:var(--al);border-radius:4px;font-style:italic">"《红楼梦》是曹雪芹将真事隐去的自叙，贾政即是曹頫，贾宝玉即是曹雪芹。"</p>';
+  h+='<p style="font-size:12px;color:var(--t3);margin-top:4px"><b>贡献：</b>1921年发表《红楼梦考证》，确立"自叙传"说，以考证方法取代索隐派。考证了曹雪芹家世和作者身份。局限：将小说等同于自传，忽略了小说的虚构性和文学性。</p></div>';
+
+  // 周汝昌
+  h+='<div style="border-bottom:1px solid var(--border);padding:10px 0">';
+  h+='<div style="display:flex;gap:8px;align-items:center;margin-bottom:4px"><span class="conf c-mid">周汝昌 (1918-2012)</span><span style="font-size:11px;color:var(--t3)">考证派集大成者</span></div>';
+  h+='<p style="font-size:13px;color:var(--t2);padding:4px 10px;background:var(--al);border-radius:4px;font-style:italic">"曹雪芹是中华文化的托命人，他的《红楼梦》蕴含了中华文明的一切精华。"</p>';
+  h+='<p style="font-size:12px;color:var(--t3);margin-top:4px"><b>贡献：</b>代表作《红楼梦新证》（1953），将曹学推到极致。考证了曹家家世、脂批体系。提出史湘云嫁宝玉说、曹雪芹卒年癸未说。局限：部分观点争议较大，对程高本的否定过于极端。</p></div>';
+
+  // 俞平伯
+  h+='<div style="border-bottom:1px solid var(--border);padding:10px 0">';
+  h+='<div style="display:flex;gap:8px;align-items:center;margin-bottom:4px"><span class="conf c-high">俞平伯 (1900-1990)</span><span style="font-size:11px;color:var(--t3)">文本批评派先驱</span></div>';
+  h+='<p style="font-size:13px;color:var(--t2);padding:4px 10px;background:var(--al);border-radius:4px;font-style:italic">"《红楼梦》是作者通过家庭兴衰写出的「色空」观念，非自传也非政治小说。"</p>';
+  h+='<p style="font-size:12px;color:var(--t3);margin-top:4px"><b>贡献：</b>代表作《红楼梦辨》（1922），首次系统研究后四十回真伪。提出"钗黛合一"说。晚年承认"胡适、周汝昌的考证比我重要，但我的文学分析比他们强"。与胡适分歧在于：他认为小说是文学作品，不能等同于自传。</p></div>';
+
+  // 余英时
+  h+='<div style="border-bottom:1px solid var(--border);padding:10px 0">';
+  h+='<div style="display:flex;gap:8px;align-items:center;margin-bottom:4px"><span class="conf c-mid">余英时 (b.1930)</span><span style="font-size:11px;color:var(--t3)">海外红学泰斗</span></div>';
+  h+='<p style="font-size:13px;color:var(--t2);padding:4px 10px;background:var(--al);border-radius:4px;font-style:italic">"曹雪芹创造了一个理想世界（大观园），又亲手将它粉碎——这才是《红楼梦》的真正悲剧。"</p>';
+  h+='<p style="font-size:12px;color:var(--t3);margin-top:4px"><b>贡献：</b>代表作《红楼梦的两个世界》（1974），提出"大观园是理想世界、贾府是现实世界"的二元结构。将红学从烦琐考证提升到哲学思辨的高度。他认为曹雪芹的伟大不在于忠实地记录了家世，而在于创造了一个与现实对抗的"乌托邦"。</p></div>';
+
+  // 欧丽娟
+  h+='<div style="border-bottom:1px solid var(--border);padding:10px 0">';
+  h+='<div style="display:flex;gap:8px;align-items:center;margin-bottom:4px"><span class="conf c-mid">欧丽娟 (b.1963)</span><span style="font-size:11px;color:var(--t3)">当代红学诠释学</span></div>';
+  h+='<p style="font-size:13px;color:var(--t2);padding:4px 10px;background:var(--al);border-radius:4px;font-style:italic">"曹雪芹的悲剧观是「有情之天被无情之天毁灭」——大观园是有情的象征，贾府是无情的象征。"</p>';
+  h+='<p style="font-size:12px;color:var(--t3);margin-top:4px"><b>贡献：</b>代表作《大观红楼》系列。以西方文学理论（叙事学、神话原型批评、女性主义）重新审视《红楼梦》。矫正了"以情反理"的简单解读，强调曹雪芹世界观的复杂性——他既批判儒家礼教又认同家族责任，既赞美女儿又写其局限性。</p></div>';
+
+  // 海外学者
+  h+='<div style="border-bottom:1px solid var(--border);padding:10px 0">';
+  h+='<div style="display:flex;gap:8px;align-items:center;margin-bottom:4px"><span class="conf c-mid">史景迁 (Jonathan Spence, b.1936)</span><span style="font-size:11px;color:var(--t3)">海外汉学大家</span></div>';
+  h+='<p style="font-size:13px;color:var(--t2);padding:4px 10px;background:var(--al);border-radius:4px;font-style:italic">"曹寅（曹雪芹祖父）的文化世界——刻《全唐诗》、结交江南文人、四次接驾——是《红楼梦》中那个贵族世界的真实底色。"</p>';
+  h+='<p style="font-size:12px;color:var(--t3);margin-top:4px"><b>贡献：</b>代表作《曹寅与康熙》。以西方历史学方法研究曹家与清皇室的关系，证实了曹家从盛到衰的微观政治史。史景迁的结论：曹家的兴衰是清代"包衣政治"的缩影。</p></div>';
+
+  // 鲁迅
+  h+='<div style="padding:10px 0">';
+  h+='<div style="display:flex;gap:8px;align-items:center;margin-bottom:4px"><span class="conf c-high">鲁迅 (1881-1936)</span><span style="font-size:11px;color:var(--t3)">现代文学奠基人</span></div>';
+  h+='<p style="font-size:13px;color:var(--t2);padding:4px 10px;background:var(--al);border-radius:4px;font-style:italic">"自有《红楼梦》出来以后，传统的思想和写法都打破了。"</p>';
+  h+='<p style="font-size:12px;color:var(--t3);margin-top:4px"><b>史识：</b>鲁迅是最早从"文学史"高度评价《红楼梦》的人。他指出传统小说"好人完全是好，坏人完全是坏"的模式被曹雪芹彻底打破——"和从前的小说叙好人完全是好、坏人完全是坏的大不相同，所以其所叙的人物，都是真的人物。"</p></div>';
+
+  h+='</div></div>';
+
+  // ===== 曹雪芹的创作哲学与当今红学界前沿 =====
+  h+='<div class="card"><div class="card-title">🧠 曹雪芹的创作思想</div><div class="card-body">';
+
+  h+='<div style="background:var(--al);padding:10px 14px;border-radius:4px;margin-bottom:8px">';
+  h+='<p style="font-size:13px;margin-bottom:4px"><b>1. "追踪蹑迹，不敢稍加穿凿"</b>（第一回自述）</p>';
+  h+='<p style="font-size:12px;color:var(--t2)">人物结局不是作者随意决定的，而是人物性格逻辑的必然结果。黛玉必死，不是作者想让读者哭，而是"绛珠还泪"的设定从一开始就规定了她的终点。这是曹雪芹与一般小说家最大的区别。</p></div>';
+
+  h+='<div style="background:var(--al);padding:10px 14px;border-radius:4px;margin-bottom:8px">';
+  h+='<p style="font-size:13px;margin-bottom:4px"><b>2. "假作真时真亦假"</b>（太虚幻境对联）</p>';
+  h+='<p style="font-size:12px;color:var(--t2)">真假、有无的辩证是全书最根本的哲学立场。任何"黑白分明"的解读都违背了这一哲学。曹雪芹不写纯粹的善或恶——贾政迂腐但有责任感，王夫人念佛但心狠手辣。这种复杂性是"打破了传统写法"的核心。</p></div>';
+
+  h+='<div style="background:var(--al);padding:10px 14px;border-radius:4px;margin-bottom:8px">';
+  h+='<p style="font-size:13px;margin-bottom:4px"><b>3. "千红一哭，万艳同悲"</b>（第五回）</p>';
+  h+='<p style="font-size:12px;color:var(--t2)">所有女儿都是悲剧——这是全书最刚性的约束之一。不可能有任何一个主要女性角色得到"真正幸福"的结局。巧姐被刘姥姥救出，从公侯小姐变为农妇——这是悲剧中的"温暖例外"，但仍然是阶级坠落，不是幸福。</p></div>';
+
+  h+='<div style="background:var(--al);padding:10px 14px;border-radius:4px;margin-bottom:8px">';
+  h+='<p style="font-size:13px;margin-bottom:4px"><b>4. "孤愤假儿女以发之"</b></p>';
+  h+='<p style="font-size:12px;color:var(--t2)">鲁迅和王国维都指出：曹雪芹借儿女之情抒发的是对社会、对命运、对人生的"孤愤"。这决定了《红楼梦》不可能是一本简单的爱情小说——它的终极关怀是哲学层面的。续书之所以被斥为"俗"，因为它把对命运的追问降格为家庭伦理剧。</p></div>';
+
+  h+='</div></div>';
+
+  // ===== 中外文学比较 =====
+  h+='<div class="card"><div class="card-title">🌍 中外文学比较视野</div><div class="card-body">';
+
+  h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px">';
+  h+='<div style="background:var(--al);padding:10px;border-radius:6px"><div style="font-size:13px;font-weight:700;margin-bottom:4px">🇫🇷 普鲁斯特《追忆似水年华》</div><p style="font-size:12px;color:var(--t2)">两者都以童年记忆的重构为创作起点，都通过"回忆"来重建一个失去的世界。区别：普鲁斯特写的是个人心理时间，曹雪芹写的是家族兴衰史。</p></div>';
+  h+='<div style="background:var(--al);padding:10px;border-radius:6px"><div style="font-size:13px;font-weight:700;margin-bottom:4px">🇷🇺 托尔斯泰《战争与和平》</div><p style="font-size:12px;color:var(--t2)">结构上的可比性——鸿篇巨制、多人物、多线索。但托尔斯泰是有神论者，曹雪芹是佛道融合的虚无主义者。托尔斯泰最终给出了"答案"（爱），曹雪芹只呈现"问题"（空）。</p></div>';
+  h+='<div style="background:var(--al);padding:10px;border-radius:6px"><div style="font-size:13px;font-weight:700;margin-bottom:4px">🇯🇵 紫式部《源氏物语》</div><p style="font-size:12px;color:var(--t2)">东方"物哀"美学的两个顶峰。区别：源氏物语的"哀"是个人情感的哀伤，红楼梦的"悲"是存在层面的悲剧。曹雪芹比紫式部多了一个"空"的哲学维度。</p></div>';
+  h+='<div style="background:var(--al);padding:10px;border-radius:6px"><div style="font-size:13px;font-weight:700;margin-bottom:4px">🇬🇧 莎士比亚《哈姆雷特》</div><p style="font-size:12px;color:var(--t2)">王国维在《红楼梦评论》中首次将《红楼梦》与西方悲剧比较。他认为《红楼梦》是"悲剧中之悲剧"——不是坏人作恶，不是偶然意外，而是"由于人物之位置及关系"的必然悲剧。</p></div>';
+  h+='</div>';
+
+  h+='<p style="font-size:12px;color:var(--t3);margin-top:4px">王国维《红楼梦评论》（1904）——第一部系统性地用西方哲学（叔本华）解读《红楼梦》的著作。王国维认为《红楼梦》的悲剧是"彻底的悲剧"，因为它没有给出虚假的安慰。</p></div></div>';
+
+  // ===== 参考文献 =====
+  h+='<div class="card"><div class="card-title">📚 参考文献</div><div class="card-body" style="font-size:12px;color:var(--t2);line-height:2">';
+  h+='• 胡适《红楼梦考证》（1921）<br>';
+  h+='• 俞平伯《红楼梦辨》（1922）<br>';
+  h+='• 鲁迅《中国小说史略》（1923）<br>';
+  h+='• 周汝昌《红楼梦新证》（1953）<br>';
+  h+='• 王国维《红楼梦评论》（1904）<br>';
+  h+='• 余英时《红楼梦的两个世界》（1974）<br>';
+  h+='• 欧丽娟《大观红楼》系列（2014-2018）<br>';
+  h+='• 冯其庸《曹雪芹家世新考》（1980）<br>';
+  h+='• 史景迁《曹寅与康熙》（1966）<br>';
+  h+='• 蔡义江《红楼梦诗词曲赋鉴赏》（2001）<br>';
+  h+='• 梁归智《石头记探佚》（1983）<br>';
+  h+='• 高树伟《红楼梦靖藏本辨伪》（2024）<br>';
+  h+='• 敦诚《四松堂集》、敦敏《懋斋诗钞》<br>';
+  h+='</div></div>';
+
+  getEl('panel-au').innerHTML = h;
+}
 
 function renderStats(){
   var html='<div class="stats-grid">';
@@ -163,7 +302,7 @@ function renderHistory(){
   getEl('panel-his').innerHTML=h;
 }
 
-renderStats();renderCharacters();renderForeshadowings();renderConstraints();renderTimeline();renderPapers();renderHistory();
+renderStats();renderCharacters();renderForeshadowings();renderConstraints();renderTimeline();renderPapers();renderAuthor();renderHistory();
 showPanel('ov');
 </script>
 </body>
